@@ -24,7 +24,7 @@ const Header = () => {
         </div>
         <div>
           <img
-            src="/public/assets/images/pay.svg"
+            src="/src/assets/images/pay.svg"
             alt="hero"
             className="w-full object-contain max-w-[393px]"
           />

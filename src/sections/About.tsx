@@ -5,7 +5,7 @@ const About = () => {
     <div className="flex flex-col gap-10  md:flex-row items-center py-[60px]">
       <div>
         <img
-          src="/public/assets/images/wing.png"
+          src="/src/assets/images/wing.png"
           alt="img"
           className="w-full object-contain max-w-[393px]"
         />
