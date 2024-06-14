@@ -23,7 +23,7 @@ const ToggleMenu = () => {
       )}
       {active ? (
         <img
-          src="/assets/images/close.png"
+          src="/public/assets/images/circle.svg"
           alt="close"
           className="w-[30px] h-[30px] absolute right-[-12px] top-[-8px] "
           onClick={() => setActive(false)}

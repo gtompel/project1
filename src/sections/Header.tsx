@@ -7,7 +7,7 @@ const Header = () => {
       <Navbar />
       <div className="flex flex-col gap-4 items-center md:flex-row md:justify-center  text-center md:text-start  py-[130px]">
         <div>
-          <h4 className="small-text">Digital Media Agency</h4>
+          <h4 className="small-text">WebX</h4>
           <h2 className="head-text">
             We Boost{" "}
             <span className="gradientText">
@@ -24,9 +24,9 @@ const Header = () => {
         </div>
         <div>
           <img
-            src="../assets/images/slider-dec-v3.png"
+            src="/public/assets/images/pay.svg"
             alt="hero"
-            className="w-full object-contain max-w-[593px"
+            className="w-full object-contain max-w-[393px]"
           />
         </div>
       </div>

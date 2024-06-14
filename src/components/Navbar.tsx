@@ -7,7 +7,7 @@ const Navbar = () => {
     <div className="fixed z-10 top-0 left-0 w-full px-4 py-6 bg-white border-b-2 border-gray-100">
       <div className="flex justify-between items-center container mx-auto ">
         <h1 className="text-[25px] font-[600] text-[#30336b]">
-          <span className="gradientText">Digital</span> Media
+          <span className="gradientText">WEB</span>X
         </h1>
         <ul className="hidden lg:flex gap-7">
           {navLink.map((item) => (
@@ -22,7 +22,7 @@ const Navbar = () => {
           ))}
         </ul>
         <div className="hidden md:block">
-          <Button title="Free Quote" fill={false} />
+          <Button title="Бесплатное пробуждение" fill={false} />
         </div>
         <ToggleMenu />
       </div>

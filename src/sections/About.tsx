@@ -5,19 +5,19 @@ const About = () => {
     <div className="flex flex-col gap-10  md:flex-row items-center py-[60px]">
       <div>
         <img
-          src="../assets/images/about-dec-v3.png"
+          src="/public/assets/images/wing.png"
           alt="img"
-          className="w-full object-contain max-w-[503px]"
+          className="w-full object-contain max-w-[393px]"
         />
       </div>
       <div>
-        <h5 className="small-text">About Us</h5>
+        <h5 className="small-text">О сервисе</h5>
         <h2 className="head-text">
-          Who Is <span className="gradientText">DigitalMedia</span> Agency
+          Что такое <span className="gradientText">WEB</span> X
         </h2>
         <p className="paragraph">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Pariatur, ea
-          impedit repellendus architecto dignissimos tempora nulla.
+        История, в которой заключена скорбь, представляет собой архитектурный ансамбль, украшающий элиту.
+        Тем не менее, это препятствует отражению архитектурных изменений во времени.
         </p>
         <div className="flex flex-col md:flex-row items-center gap-8">
           {Skills.map((skill) => (

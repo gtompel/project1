@@ -1,23 +1,23 @@
 export const navLink = [
     {
       route: "/",
-      label: "Home",
+      label: "Домашняя страница",
     },
     {
       route: "/about",
-      label: "About",
+      label: "О нас",
     },
     {
       route: "/services",
-      label: "Services",
+      label: "Услуги",
     },
     {
       route: "/blog",
-      label: "Blog",
+      label: "Блог",
     },
     {
       route: "/contact",
-      label: "Contact",
+      label: "Контакты",
     },
   ];
   export const servicesLink = [
