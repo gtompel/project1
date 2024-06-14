@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind utilities;
+@tailwind components;
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+@layer components {
+  .head-text {
+    @apply relative text-[35px] md:text-[45px] -z-20 mb-[20px]  font-[700] text-[#30336b];
+  }
+
+  .small-text {
+    @apply text-[20px] font-[700] text-[#e84393] mb-[15px] uppercase;
+  }
+  .paragraph {
+    @apply text-[16px] leading-[30px] font-[300] text-[#afafaf] mb-[30px] mr-[45px] max-w-[650px];
+  }
+  .input {
+    @apply outline-none px-4 shadow-md  shadow-slate-300  py-3 border-2 border-gray-300 mb-4 rounded-full;
+  }
+  .blog-title {
+    @apply text-[25px] font-bold text-[#30336b] mb-2;
+  }
+  .blog-para {
+    @apply text-[#afafaf] text-[15px] mb-3;
+  }
+}
+@layer utilities {
+  .gradientText {
+    background: linear-gradient(to right, #e84393, #696063);
+    -webkit-text-fill-color: transparent;
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+}
+.react-multi-carousel-item {
+  width: 260px !important;
+}
