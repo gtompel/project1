@@ -141,7 +141,7 @@ export const navLink = [
     },
   ];
   export const bannerBlog = {
-    imgUrl: "/assets/images/blog-post-01.jpg",
+    imgUrl: "/src/assets/images/blog-post-01.jpg",
     title: "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
     desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempora deserunt sequi soluta ut iusto a incidunt ducimus dignissimos inventore assumenda.",
     authorImg: "/assets/images/author-post.jpg",

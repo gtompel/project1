@@ -4,8 +4,8 @@ export default {
   theme: {
     extend: {
       backgroundImage: {
-        "cta-pattern": "url('/assets/images/quote-bg-v3.jpg')",
-        "footer-bg": "url('/assets/images/footer-bg-v3.jpg')",
+        "cta-pattern": "url('/src/assets/images/quote-bg-v3.png')",
+        "footer-bg": "url('/src/assets/images/footer-bg-v3.jpg')",
       },
     },
   },

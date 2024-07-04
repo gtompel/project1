@@ -9,16 +9,16 @@ const Header = () => {
         <div>
           <h4 className="small-text">WebX</h4>
           <h2 className="head-text">
-            We Boost{" "}
+            Мы сделаем{" "}
             <span className="gradientText">
-              Your <br /> Website{" "}
+              Лучше <br /> Website{" "}
             </span>{" "}
             Traffic
           </h2>
           <p className="paragraph">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quae vel
-            voluptate reprehenderit quia animi, tempore eos dolorem obcaecati
-            minima laboriosam!
+          Я знаю, что такое скорбь, и я знаю, что такое совершеннейшая элита.
+          Что такое сладострастное осуждение для души,
+          во время которого мы должны выполнять минимальные трудозатраты!
           </p>
           <Button title="Free Quote" fill={true} />
         </div>

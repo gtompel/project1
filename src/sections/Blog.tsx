@@ -6,9 +6,9 @@ const Blog = () => {
   return (
     <div>
       <div className="text-center py-[80px]">
-        <h4 className="small-text">Recent News</h4>
+        <h4 className="small-text">Новости</h4>
         <h2 className="head-text">
-          Check Our Blog <br /> <span className="gradientText"> Posts. </span>
+          Наш Блог <br /> <span className="gradientText"> Посты. </span>
         </h2>
       </div>
       <div className="flex flex-col lg:flex-row gap-7">

@@ -4,9 +4,9 @@ import { servicesLink } from "../constant";
 const Service = () => {
   return (
     <div className="flex flex-col items-center mt-4">
-      <h4 className="small-text">Our Services</h4>
+      <h4 className="small-text">Улсуги</h4>
       <h2 className="head-text">
-        What <span className="gradientText">Our Agency</span> Providers.
+        Те <span className="gradientText">Кто Мы</span> Есть.
       </h2>
       <div className="flex flex-row gap-6">
         {servicesLink.map((data) => (
