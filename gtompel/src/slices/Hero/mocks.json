@@ -7,6 +7,16 @@
 				"__TYPE__": "FieldContent",
 				"value": "coat",
 				"type": "Text"
+			},
+			"last_name": {
+				"__TYPE__": "FieldContent",
+				"value": "instance",
+				"type": "Text"
+			},
+			"tag_line": {
+				"__TYPE__": "FieldContent",
+				"value": "in",
+				"type": "Text"
 			}
 		},
 		"items": []
