@@ -21,9 +21,9 @@ useEffect(() => {
     const t1 = gsap.timeline()
     t1.fromTo(
       ".name-animation",
-      {x: 100, opacity: 0, rotate: -10},
-      {x: 0, opacity: 1, rotate:0,}
-    )
+      {x: -100, opacity: 0, rotate: -10},
+      {x: 0, opacity: 1, rotate:0, ease: "elastic", duration: 1, stagger: 0.1, delay: 0.5}
+     )
   }, component)
   return () => ctx.revert()
   }, [])
