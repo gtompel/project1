@@ -22,7 +22,7 @@ useEffect(() => {
     t1.fromTo(
       ".name-animation",
       {x: -100, opacity: 0, rotate: -10},
-      {x: 0, opacity: 1, rotate:0, ease: "elastic", duration: 1, stagger: 0.1, delay: 0.5}
+      {x: 0, opacity: 1, rotate:0, ease: "elastic.out(1,0.3)", duration: 1, transformOrigin: "left top", stagger:{each: 0.1}}
      )
   }, component)
   return () => ctx.revert()
