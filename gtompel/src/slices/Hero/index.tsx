@@ -22,7 +22,12 @@ useEffect(() => {
     t1.fromTo(
       ".name-animation",
       {x: -100, opacity: 0, rotate: -10},
-      {x: 0, opacity: 1, rotate:0, ease: "elastic.out(1,0.3)", duration: 1, transformOrigin: "left top", stagger:{each: 0.1}}
+      {x: 0, opacity: 1, rotate:0, ease: "elastic.out(1,0.3)", duration: 1, transformOrigin: "left top",delay:0.5 ,stagger:{each: 0.1,from:"random"}}
+     )
+     t1.fromTo(
+      ".job-title",
+      {y: 20, opacity: 0, scale: 1.2},
+      {y: 0, opacity: 1,scale:1, duration: 1,ease: "elastic.out(1,0.3)"}
      )
   }, component)
   return () => ctx.revert()
@@ -50,8 +55,8 @@ const renderLetters= (name: KeyTextField, key:string) => {
     <span className="block text-slate-300">{renderLetters(slice.primary.first_name, "first")}</span>
     <span className="-mt-[.2em] block text-slate-500">{renderLetters(slice.primary.last_name, "last")}</span>
     </h1>
-    <span className="block bg-gradient-to-tr from-yellow-400 via-red-200 to-yellow-500
-    bg-clip-text text-2xl font-bold uppercase tracking-[.2em] text-transparent opacity-100 md:text-4xl">{slice.primary.tag_line}</span>
+    <span className="job-title block bg-gradient-to-tr from-green-400 via-purple-300 to-green-400
+    bg-clip-text text-2xl font-bold uppercase tracking-[.2em] text-transparent opacity-0 md:text-4xl">{slice.primary.tag_line}</span>
     </div>
     </div>
     </section>
