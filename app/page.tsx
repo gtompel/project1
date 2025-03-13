@@ -1,10 +1,11 @@
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Github,
   Linkedin,
+  Send,
   Mail,
   TextIcon as Telegram,
   Code,
@@ -15,7 +16,14 @@ import {
   User,
   FileCode,
   MessageSquare,
-} from "lucide-react"
+} from "lucide-react";
+
+interface ProjectCardProps {
+  title: string;
+  description: string;
+  tags: string[];
+  imageUrl?: string; // Этот параметр необязателен
+}
 
 export default function Home() {
   return (
@@ -29,33 +37,64 @@ export default function Home() {
               <span>Юрий Королёв</span>
             </a>
             <nav className="flex items-center space-x-6 text-sm font-medium">
-              <a className="transition-colors hover:text-foreground/80" href="#about">
+              <a
+                className="transition-colors hover:text-foreground/80"
+                href="#about"
+              >
                 Обо мне
               </a>
-              <a className="transition-colors hover:text-foreground/80" href="#skills">
+              <a
+                className="transition-colors hover:text-foreground/80"
+                href="#skills"
+              >
                 Навыки
               </a>
-              <a className="transition-colors hover:text-foreground/80" href="#experience">
+              <a
+                className="transition-colors hover:text-foreground/80"
+                href="#experience"
+              >
                 Опыт
               </a>
-              <a className="transition-colors hover:text-foreground/80" href="#projects">
+              <a
+                className="transition-colors hover:text-foreground/80"
+                href="#projects"
+              >
                 Проекты
               </a>
-              <a className="transition-colors hover:text-foreground/80" href="#contact">
+              <a
+                className="transition-colors hover:text-foreground/80"
+                href="#contact"
+              >
                 Контакты
               </a>
             </nav>
           </div>
           <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
             <div className="w-full flex-1 md:w-auto md:flex-none">
-              <Button variant="outline" size="icon" className="ml-auto hidden h-8 w-8 md:flex">
-                <a href="https://github.com" target="_blank" rel="noreferrer">
+              <Button
+                variant="outline"
+                size="icon"
+                className="ml-auto hidden h-8 w-8 md:flex"
+              >
+                <a
+                  href="https://github.com/gtompel"
+                  target="_blank"
+                  rel="noreferrer"
+                >
                   <Github className="h-4 w-4" />
                   <span className="sr-only">GitHub</span>
                 </a>
               </Button>
             </div>
-            <Button className="hidden md:flex">Связаться</Button>
+            <Button
+              variant="outline"
+              className="ml-auto hidden h-8 w-8 md:flex"
+            >
+              <a href="https://t.me/gtompel" target="_blank" rel="noreferrer">
+                <Send className="h-4 w-4" />
+                <span className="sr-only">Telegram</span>
+              </a>
+            </Button>
           </div>
         </div>
       </header>
@@ -64,8 +103,12 @@ export default function Home() {
         {/* Hero Section */}
         <section className="container py-24 md:py-32 space-y-8">
           <div className="flex flex-col items-center text-center space-y-4">
-            <h1 className="text-4xl md:text-6xl font-bold tracking-tighter">Юрий Королёв</h1>
-            <p className="text-xl md:text-2xl text-muted-foreground max-w-[700px]">Full Stack Web Developer</p>
+            <h1 className="text-4xl md:text-6xl font-bold tracking-tighter">
+              Юрий Королёв
+            </h1>
+            <p className="text-xl md:text-2xl text-muted-foreground max-w-[700px]">
+              Full Stack Web Developer
+            </p>
             <div className="flex gap-4">
               <Button asChild>
                 <a href="#contact">Связаться</a>
@@ -83,27 +126,38 @@ export default function Home() {
             <div className="inline-block rounded-lg bg-muted p-1.5 mb-4">
               <User className="h-5 w-5" />
             </div>
-            <h2 className="text-3xl md:text-4xl font-bold tracking-tighter">Обо мне</h2>
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tighter">
+              Обо мне
+            </h2>
             <p className="text-muted-foreground md:text-xl max-w-[700px]">
-              Я стремлюсь соединять настоящее с будущим через код. Моя философия "Кодируй настоящее, создавай будущее!"
-              отражает уверенность в том, что каждый написанный мной фрагмент кода не просто решает текущие задачи, но
-              закладывает основу для новых технологий и пользовательского опыта.
+              Я стремлюсь соединять настоящее с будущим через код. Моя философия
+              "Кодируй настоящее, создавай будущее!" отражает уверенность в том,
+              что каждый написанный мной фрагмент кода не просто решает текущие
+              задачи, но закладывает основу для новых технологий и
+              пользовательского опыта.
             </p>
             <p className="text-muted-foreground md:text-xl max-w-[700px]">
-              Я убежден в силе открытого кода и совместной работы. Постоянное обучение, адаптация к изменениям и
-              внедрение инноваций — это не просто моя работа, а стиль жизни. Я стремлюсь создавать не только
-              функциональные, но и качественные решения, которые влияют на развитие и улучшение цифрового мира.
+              Я убежден в силе открытого кода и совместной работы. Постоянное
+              обучение, адаптация к изменениям и внедрение инноваций — это не
+              просто моя работа, а стиль жизни. Я стремлюсь создавать не только
+              функциональные, но и качественные решения, которые влияют на
+              развитие и улучшение цифрового мира.
             </p>
           </div>
         </section>
 
         {/* Skills Section */}
-        <section id="skills" className="container py-12 md:py-24 space-y-8 bg-muted/50">
+        <section
+          id="skills"
+          className="container py-12 md:py-24 space-y-8 bg-muted/50"
+        >
           <div className="flex flex-col items-center text-center space-y-4 mb-12">
             <div className="inline-block rounded-lg bg-muted p-1.5 mb-4">
               <Code className="h-5 w-5" />
             </div>
-            <h2 className="text-3xl md:text-4xl font-bold tracking-tighter">Технические навыки</h2>
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tighter">
+              Технические навыки
+            </h2>
             <p className="text-muted-foreground md:text-xl max-w-[700px]">
               Мой технический стек и опыт работы с различными технологиями
             </p>
@@ -171,21 +225,33 @@ export default function Home() {
             <div className="inline-block rounded-lg bg-muted p-1.5 mb-4">
               <Briefcase className="h-5 w-5" />
             </div>
-            <h2 className="text-3xl md:text-4xl font-bold tracking-tighter">Опыт работы</h2>
-            <p className="text-muted-foreground md:text-xl max-w-[700px]">Мой профессиональный путь и достижения</p>
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tighter">
+              Опыт работы
+            </h2>
+            <p className="text-muted-foreground md:text-xl max-w-[700px]">
+              Мой профессиональный путь и достижения
+            </p>
           </div>
 
           <div className="space-y-8">
             <div className="flex flex-col md:flex-row gap-4 md:gap-8">
               <div className="md:w-1/3">
-                <h3 className="text-xl font-semibold">ФГУП НИТИ им. А.П. Александрова</h3>
-                <p className="text-muted-foreground">Октябрь 2022 — настоящее время</p>
+                <h3 className="text-xl font-semibold">
+                  ФГУП НИТИ им. А.П. Александрова
+                </h3>
+                <p className="text-muted-foreground">
+                  Октябрь 2022 — настоящее время
+                </p>
                 <p className="font-medium">Инженер-программист</p>
               </div>
               <div className="md:w-2/3">
                 <ul className="list-disc pl-5 space-y-2">
-                  <li>Разработка веб-приложений с использованием React, Next.js</li>
-                  <li>Создание и поддержка бэкенда на Node.js, Nest.js, Express</li>
+                  <li>
+                    Разработка веб-приложений с использованием React, Next.js
+                  </li>
+                  <li>
+                    Создание и поддержка бэкенда на Node.js, Nest.js, Express
+                  </li>
                   <li>Работа с базами данных PostgreSQL, SQLite</li>
                   <li>Настройка и поддержка CI/CD процессов</li>
                   <li>Контейнеризация приложений с использованием Docker</li>
@@ -195,14 +261,23 @@ export default function Home() {
 
             <div className="flex flex-col md:flex-row gap-4 md:gap-8">
               <div className="md:w-1/3">
-                <h3 className="text-xl font-semibold">Индивидуальное предпринимательство / фриланс</h3>
-                <p className="text-muted-foreground">Май 2019 — Сентябрь 2022</p>
-                <p className="font-medium">Инженер-проектировщик слаботочных систем</p>
+                <h3 className="text-xl font-semibold">
+                  Индивидуальное предпринимательство / фриланс
+                </h3>
+                <p className="text-muted-foreground">
+                  Май 2019 — Сентябрь 2022
+                </p>
+                <p className="font-medium">
+                  Инженер-проектировщик слаботочных систем
+                </p>
               </div>
               <div className="md:w-2/3">
                 <ul className="list-disc pl-5 space-y-2">
                   <li>Проектирование и внедрение систем контроля доступа</li>
-                  <li>Автоматизация мониторинга и управления системами безопасности</li>
+                  <li>
+                    Автоматизация мониторинга и управления системами
+                    безопасности
+                  </li>
                   <li>Проектирование систем видеонаблюдения</li>
                   <li>Разработка комплексных систем безопасности</li>
                 </ul>
@@ -212,14 +287,18 @@ export default function Home() {
             <div className="flex flex-col md:flex-row gap-4 md:gap-8">
               <div className="md:w-1/3">
                 <h3 className="text-xl font-semibold">ООО "Трекон"</h3>
-                <p className="text-muted-foreground">Апрель 2018 — Январь 2019</p>
+                <p className="text-muted-foreground">
+                  Апрель 2018 — Январь 2019
+                </p>
                 <p className="font-medium">Руководитель проектного отдела</p>
               </div>
               <div className="md:w-2/3">
                 <ul className="list-disc pl-5 space-y-2">
-                  <li>Проектирование интегрированных комплексов безопасности</li>
+                  <li>
+                    Проектирование интегрированных комплексов безопасности
+                  </li>
                   <li>Разработка индивидуальных решений под заказчика</li>
-                  <li>Программирование серверов на Python</li>
+                  <li>Программирование на Python</li>
                   <li>Веб-разработка на JavaScript, HTML, CSS</li>
                 </ul>
               </div>
@@ -228,13 +307,20 @@ export default function Home() {
         </section>
 
         {/* Projects Section */}
-        <section id="projects" className="container py-12 md:py-24 space-y-8 bg-muted/50">
+        <section
+          id="projects"
+          className="container py-12 md:py-24 space-y-8 bg-muted/50"
+        >
           <div className="flex flex-col items-center text-center space-y-4 mb-12">
             <div className="inline-block rounded-lg bg-muted p-1.5 mb-4">
               <FileCode className="h-5 w-5" />
             </div>
-            <h2 className="text-3xl md:text-4xl font-bold tracking-tighter">Проекты</h2>
-            <p className="text-muted-foreground md:text-xl max-w-[700px]">Некоторые из моих недавних проектов</p>
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tighter">
+              Проекты
+            </h2>
+            <p className="text-muted-foreground md:text-xl max-w-[700px]">
+              Некоторые из моих недавних проектов
+            </p>
           </div>
 
           <Tabs defaultValue="all" className="w-full">
@@ -305,9 +391,12 @@ export default function Home() {
             <div className="inline-block rounded-lg bg-muted p-1.5 mb-4">
               <MessageSquare className="h-5 w-5" />
             </div>
-            <h2 className="text-3xl md:text-4xl font-bold tracking-tighter">Связаться со мной</h2>
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tighter">
+              Связаться со мной
+            </h2>
             <p className="text-muted-foreground md:text-xl max-w-[700px]">
-              Заинтересованы в сотрудничестве? Свяжитесь со мной любым удобным способом
+              Заинтересованы в сотрудничестве? Свяжитесь со мной любым удобным
+              способом
             </p>
           </div>
 
@@ -317,19 +406,40 @@ export default function Home() {
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">
                     <Mail className="h-5 w-5 text-primary" />
-                    <p>quimpik@yandex.ru</p>
+                    <a
+                      href="mailto:qumpik@yandex.ru"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary"
+                    >
+                      quimpik@yandex.ru
+                    </a>
                   </div>
                   <div className="flex items-center gap-3">
-                    <Telegram className="h-5 w-5 text-primary" />
-                    <p>@gtompel</p>
+                    <Send className="h-5 w-5 text-primary" />
+                    <a
+                      href="https://github.com/gtompel"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary"
+                    >
+                      @gtompel
+                    </a>
                   </div>
-                  <div className="flex items-center gap-3">
+                  {/* <div className="flex items-center gap-3">
                     <Linkedin className="h-5 w-5 text-primary" />
                     <p>linkedin.com/in/yourprofile</p>
-                  </div>
+                  </div> */}
                   <div className="flex items-center gap-3">
                     <Github className="h-5 w-5 text-primary" />
-                    <p>github.com/yourprofile</p>
+                    <a
+                      href="https://github.com/gtompel"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary"
+                    >
+                      github.com/gtompel
+                    </a>
                   </div>
                 </div>
               </CardContent>
@@ -400,10 +510,10 @@ export default function Home() {
         </div>
       </footer>
     </div>
-  )
+  );
 }
 
-function ProjectCard({ title, description, tags, imageUrl }) {
+function ProjectCard({ title, description, tags, imageUrl }: ProjectCardProps) {
   return (
     <Card className="overflow-hidden">
       <div className="aspect-video w-full overflow-hidden">
@@ -425,6 +535,5 @@ function ProjectCard({ title, description, tags, imageUrl }) {
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }
-
