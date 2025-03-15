@@ -3,10 +3,17 @@
 import { useState } from "react"
 import { Elements } from "@stripe/react-stripe-js"
 import { loadStripe } from "@stripe/stripe-js"
+import { ReactNode } from "react"
+
+// Define the props interface for the Stripe component
+interface StripeProps {
+  children: ReactNode; // This will hold any valid React children
+  options?: any; // Optional property, specify the correct type if known
+  className?: string; // Optional property for class names
+}
 
 // This is a placeholder component to simulate the Stripe integration
-// In a real application, you would need to set up Stripe properly
-export function Stripe({ children, options, className }) {
+export function Stripe({ children, options, className }: StripeProps) {
   const [stripePromise] = useState(() => loadStripe("pk_test_placeholder"))
 
   return (
@@ -17,4 +24,3 @@ export function Stripe({ children, options, className }) {
     </div>
   )
 }
-

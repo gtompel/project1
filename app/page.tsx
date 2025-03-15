@@ -17,6 +17,9 @@ import {
   FileCode,
   MessageSquare,
 } from "lucide-react";
+import { ThemeToggle } from "@/components/theme-toggle";
+
+
 
 interface ProjectCardProps {
   title: string;
@@ -70,6 +73,7 @@ export default function Home() {
             </nav>
           </div>
           <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
+            <ThemeToggle />
             <div className="w-full flex-1 md:w-auto md:flex-none">
               <Button
                 variant="outline"
