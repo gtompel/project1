@@ -19,8 +19,6 @@ import {
 } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 
-
-
 interface ProjectCardProps {
   title: string;
   description: string;
@@ -41,31 +39,31 @@ export default function Home() {
             </a>
             <nav className="flex items-center space-x-6 text-sm font-medium">
               <a
-                className="transition-colors hover:text-foreground/80"
+                className="transition-colors hover:text-foreground/80 hover:border-b-2"
                 href="#about"
               >
                 Обо мне
               </a>
               <a
-                className="transition-colors hover:text-foreground/80"
+                className="transition-colors hover:text-foreground/80 hover:border-b-2"
                 href="#skills"
               >
                 Навыки
               </a>
               <a
-                className="transition-colors hover:text-foreground/80"
+                className="transition-colors hover:text-foreground/80 hover:border-b-2"
                 href="#experience"
               >
                 Опыт
               </a>
               <a
-                className="transition-colors hover:text-foreground/80"
+                className="transition-colors hover:text-foreground/80 hover:border-b-2"
                 href="#projects"
               >
                 Проекты
               </a>
               <a
-                className="transition-colors hover:text-foreground/80"
+                className="transition-colors hover:text-foreground/80 hover:border-b-2 "
                 href="#contact"
               >
                 Контакты
@@ -134,18 +132,13 @@ export default function Home() {
               Обо мне
             </h2>
             <p className="text-muted-foreground md:text-xl max-w-[700px]">
-              Я стремлюсь соединять настоящее с будущим через код. Моя философия
-              "Кодируй настоящее, создавай будущее!" отражает уверенность в том,
-              что каждый написанный мной фрагмент кода не просто решает текущие
-              задачи, но закладывает основу для новых технологий и
-              пользовательского опыта.
-            </p>
-            <p className="text-muted-foreground md:text-xl max-w-[700px]">
-              Я убежден в силе открытого кода и совместной работы. Постоянное
-              обучение, адаптация к изменениям и внедрение инноваций — это не
-              просто моя работа, а стиль жизни. Я стремлюсь создавать не только
-              функциональные, но и качественные решения, которые влияют на
-              развитие и улучшение цифрового мира.
+              Мой код — мост между сегодня и завтра. Философия "Кодируй
+              настоящее, создавай будущее!" отражает мою веру в созидательную
+              силу каждой строки, формирующей новые технологии и впечатления. Я
+              приверженец открытости и командной работы. Непрерывный рост,
+              гибкость и новаторство – не просто работа, а мой образ жизни. Я
+              стремлюсь к созданию эффективных и превосходных решений, позитивно
+              влияющих на эволюцию цифровой среды.
             </p>
           </div>
         </section>
@@ -460,6 +453,7 @@ export default function Home() {
                       id="name"
                       className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                       placeholder="Ваше имя"
+                      autoComplete="name"
                     />
                   </div>
                   <div className="grid gap-2">
@@ -471,6 +465,7 @@ export default function Home() {
                       type="email"
                       className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                       placeholder="your@email.com"
+                      autoComplete="email"
                     />
                   </div>
                   <div className="grid gap-2">
@@ -483,7 +478,7 @@ export default function Home() {
                       placeholder="Ваше сообщение..."
                     />
                   </div>
-                  <Button className="w-full">Отправить</Button>
+                  <Button className="w-full bg-gray-400">Отправить</Button>
                 </form>
               </CardContent>
             </Card>
@@ -502,10 +497,10 @@ export default function Home() {
               <Github className="h-5 w-5" />
               <span className="sr-only">GitHub</span>
             </a>
-            <a href="#" className="text-muted-foreground hover:text-foreground">
+            {/* <a href="#" className="text-muted-foreground hover:text-foreground">
               <Linkedin className="h-5 w-5" />
               <span className="sr-only">LinkedIn</span>
-            </a>
+            </a> */}
             <a href="#" className="text-muted-foreground hover:text-foreground">
               <Mail className="h-5 w-5" />
               <span className="sr-only">Email</span>
