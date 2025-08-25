@@ -1,22 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Github,
-  Linkedin,
-  Send,
-  Mail,
-  TextIcon as Telegram,
-  Code,
-  Database,
-  Server,
-  Globe,
-  Briefcase,
-  User,
-  FileCode,
-  MessageSquare,
-} from "lucide-react";
+import { Github, Send, Mail, Code, Database, Server, Globe, Briefcase, User, FileCode, MessageSquare } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 
 interface ProjectCardProps {
@@ -24,6 +9,7 @@ interface ProjectCardProps {
   description: string;
   tags: string[];
   imageUrl?: string; // Этот параметр необязателен
+  href?: string;
 }
 
 export default function Home() {
@@ -122,6 +108,7 @@ export default function Home() {
           </div>
         </section>
 
+        
         {/* About Section */}
         <section id="about" className="container py-12 md:py-24 space-y-8">
           <div className="flex flex-col items-center text-center space-y-4">
@@ -139,6 +126,48 @@ export default function Home() {
               Философия - искать нестандартные решения, быть гибким и
               открытым к изменениям.
             </p>
+          </div>
+        </section>
+
+        {/* Projects Section (after About) */}
+        <section
+          id="projects"
+          className="container py-12 md:py-24 space-y-8 bg-muted/50"
+        >
+          <div className="flex flex-col items-center text-center space-y-4 mb-12">
+            <div className="inline-block rounded-lg bg-muted p-1.5 mb-4">
+              <FileCode className="h-5 w-5" />
+            </div>
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tighter">
+              Проекты
+            </h2>
+            <p className="text-muted-foreground md:text-xl max-w-[700px]">
+              Некоторые из моих недавних проектов
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <ProjectCard
+              title="Портал АРМ"
+              description="Система управления автоматизированными рабочими местами"
+              tags={["Next.js", "RSC", "Tailwind"]}
+              imageUrl="/placeholder.svg?height=200&width=400"
+              href="https://portal-arm.vercel.app"
+            />
+            <ProjectCard
+              title="HR Система"
+              description="Система управления кадрами: задачи, отпуска, отчёты"
+              tags={["Next.js", "ShadcnUI", "Charts"]}
+              imageUrl="/placeholder.svg?height=200&width=400"
+              href="https://kebab-omega.vercel.app/"
+            />
+            <ProjectCard
+              title="Duel2Hero"
+              description="Приложение для сбора уникальных чисел"
+              tags={["Next.js", "App Router", "TypeScript"]}
+              imageUrl="/placeholder.svg?height=200&width=400"
+              href="https://duel2hero.vercel.app/"
+            />
           </div>
         </section>
 
@@ -302,84 +331,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Projects Section */}
-        <section
-          id="projects"
-          className="container py-12 md:py-24 space-y-8 bg-muted/50"
-        >
-          <div className="flex flex-col items-center text-center space-y-4 mb-12">
-            <div className="inline-block rounded-lg bg-muted p-1.5 mb-4">
-              <FileCode className="h-5 w-5" />
-            </div>
-            <h2 className="text-3xl md:text-4xl font-bold tracking-tighter">
-              Проекты
-            </h2>
-            <p className="text-muted-foreground md:text-xl max-w-[700px]">
-              Некоторые из моих недавних проектов
-            </p>
-          </div>
-
-          <Tabs defaultValue="all" className="w-full">
-            <div className="flex justify-center mb-8">
-              <TabsList>
-                <TabsTrigger value="all">Все</TabsTrigger>
-                <TabsTrigger value="web">Веб-разработка</TabsTrigger>
-                <TabsTrigger value="backend">Бэкенд</TabsTrigger>
-              </TabsList>
-            </div>
-
-            <TabsContent value="all" className="space-y-8">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <ProjectCard
-                  title="Корпоративный портал"
-                  description="Внутренний портал компании с системой управления задачами и документами"
-                  tags={["Next.js", "React", "PostgreSQL"]}
-                  imageUrl="/placeholder.svg?height=200&width=400"
-                />
-                <ProjectCard
-                  title="Система мониторинга"
-                  description="Приложение для мониторинга и визуализации данных в реальном времени"
-                  tags={["React", "Node.js", "WebSockets"]}
-                  imageUrl="/placeholder.svg?height=200&width=400"
-                />
-                <ProjectCard
-                  title="API для интеграции"
-                  description="REST API для интеграции различных систем и сервисов"
-                  tags={["Express", "PostgreSQL", "Docker"]}
-                  imageUrl="/placeholder.svg?height=200&width=400"
-                />
-              </div>
-            </TabsContent>
-
-            <TabsContent value="web" className="space-y-8">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <ProjectCard
-                  title="Корпоративный портал"
-                  description="Внутренний портал компании с системой управления задачами и документами"
-                  tags={["Next.js", "React", "PostgreSQL"]}
-                  imageUrl="/placeholder.svg?height=200&width=400"
-                />
-                <ProjectCard
-                  title="Система мониторинга"
-                  description="Приложение для мониторинга и визуализации данных в реальном времени"
-                  tags={["React", "Node.js", "WebSockets"]}
-                  imageUrl="/placeholder.svg?height=200&width=400"
-                />
-              </div>
-            </TabsContent>
-
-            <TabsContent value="backend" className="space-y-8">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <ProjectCard
-                  title="API для интеграции"
-                  description="REST API для интеграции различных систем и сервисов"
-                  tags={["Express", "PostgreSQL", "Docker"]}
-                  imageUrl="/placeholder.svg?height=200&width=400"
-                />
-              </div>
-            </TabsContent>
-          </Tabs>
-        </section>
+        {/* Projects Section (old) removed */}
 
         {/* Contact Section */}
         <section id="contact" className="container py-12 md:py-24 space-y-8">
@@ -511,19 +463,42 @@ export default function Home() {
   );
 }
 
-function ProjectCard({ title, description, tags, imageUrl }: ProjectCardProps) {
+function ProjectCard({ title, description, tags, imageUrl, href }: ProjectCardProps) {
   return (
     <Card className="overflow-hidden">
-      <div className="aspect-video w-full overflow-hidden">
-        <img
-          src={imageUrl || "/placeholder.svg"}
-          alt={title}
-          className="h-full w-full object-cover transition-all hover:scale-105"
-        />
-      </div>
+      <a
+        href={href}
+        target={href ? "_blank" : undefined}
+        rel={href ? "noopener noreferrer" : undefined}
+        className={href ? "block focus:outline-none" : undefined}
+      >
+        <div className="aspect-video w-full overflow-hidden">
+          <img
+            src={imageUrl || "/placeholder.svg"}
+            alt={title}
+            className="h-full w-full object-cover transition-all hover:scale-105"
+            loading="lazy"
+          />
+        </div>
+      </a>
       <CardContent className="p-6">
-        <h3 className="text-xl font-semibold mb-2">{title}</h3>
-        <p className="text-muted-foreground mb-4">{description}</p>
+        <div className="min-w-0">
+          <h3 className="text-xl font-semibold mb-2">
+            {href ? (
+              <a
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:underline"
+              >
+                {title}
+              </a>
+            ) : (
+              title
+            )}
+          </h3>
+          <p className="text-muted-foreground mb-4">{description}</p>
+        </div>
         <div className="flex flex-wrap gap-2">
           {tags.map((tag, i) => (
             <Badge key={i} variant="secondary">
