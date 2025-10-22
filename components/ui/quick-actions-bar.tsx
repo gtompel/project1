@@ -203,6 +203,7 @@ export function QuickActionsBar({ onCVEdit }: QuickActionsBarProps) {
           onClick={() => {
             generateCV();
           }}
+          data-cv-download
         >
           <Download className="h-4 w-4" />
           <span className="hidden sm:inline">CV</span>

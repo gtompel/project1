@@ -11,6 +11,7 @@ import { CVEditorModal } from "@/components/cv-editor-modal";
 import { AchievementTimeline, Achievement } from "@/components/ui/achievement-timeline";
 import { ProgressiveImage } from "@/components/ui/progressive-image";
 import { CollapsibleSection } from "@/components/ui/collapsible-section";
+import { SkillsProgressionChart } from "@/components/ui/skills-progression-chart";
 
 interface Technology {
   name: string;
@@ -38,8 +39,124 @@ interface ProjectCardProps {
 export default function Home() {
   const [isCVEditorOpen, setIsCVEditorOpen] = useState(false);
 
+  // Keyboard navigation
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Navigation shortcuts
+      if (e.ctrlKey || e.metaKey) {
+        switch (e.key) {
+          case '1':
+            e.preventDefault();
+            document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' });
+            break;
+          case '2':
+            e.preventDefault();
+            document.getElementById('skills')?.scrollIntoView({ behavior: 'smooth' });
+            break;
+          case '3':
+            e.preventDefault();
+            document.getElementById('experience')?.scrollIntoView({ behavior: 'smooth' });
+            break;
+          case '4':
+            e.preventDefault();
+            document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' });
+            break;
+          case '5':
+            e.preventDefault();
+            document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+            break;
+          case 'h':
+          case 'Home':
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            break;
+          case 'e':
+            e.preventDefault();
+            setIsCVEditorOpen(true);
+            break;
+          case 'd':
+            e.preventDefault();
+            // Скачивание CV
+            const cvButton = document.querySelector('[data-cv-download]') as HTMLButtonElement;
+            cvButton?.click();
+            break;
+        }
+      }
+
+      // Arrow key navigation for sections
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        const sections = ['about', 'skills', 'experience', 'projects', 'contact'];
+        const currentSection = sections.find(section => {
+          const element = document.getElementById(section);
+          if (element) {
+            const rect = element.getBoundingClientRect();
+            return rect.top <= 100 && rect.bottom >= 100;
+          }
+          return false;
+        });
+
+        if (currentSection) {
+          const currentIndex = sections.indexOf(currentSection);
+          let nextIndex;
+
+          if (e.key === 'ArrowDown') {
+            nextIndex = Math.min(currentIndex + 1, sections.length - 1);
+          } else {
+            nextIndex = Math.max(currentIndex - 1, 0);
+          }
+
+          document.getElementById(sections[nextIndex])?.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   return (
     <div className="min-h-screen bg-background">
+      {/* Skip Links for Accessibility */}
+      <div className="sr-only focus-within:not-sr-only focus-within:absolute focus-within:top-0 focus-within:left-0 focus-within:z-50">
+        <a
+          href="#main"
+          className="bg-primary text-primary-foreground px-4 py-2 rounded-md m-2 focus:outline-none focus:ring-2 focus:ring-ring"
+        >
+          Перейти к основному содержимому
+        </a>
+        <a
+          href="#about"
+          className="bg-primary text-primary-foreground px-4 py-2 rounded-md m-2 focus:outline-none focus:ring-2 focus:ring-ring"
+        >
+          Обо мне
+        </a>
+        <a
+          href="#skills"
+          className="bg-primary text-primary-foreground px-4 py-2 rounded-md m-2 focus:outline-none focus:ring-2 focus:ring-ring"
+        >
+          Навыки
+        </a>
+        <a
+          href="#experience"
+          className="bg-primary text-primary-foreground px-4 py-2 rounded-md m-2 focus:outline-none focus:ring-2 focus:ring-ring"
+        >
+          Опыт
+        </a>
+        <a
+          href="#projects"
+          className="bg-primary text-primary-foreground px-4 py-2 rounded-md m-2 focus:outline-none focus:ring-2 focus:ring-ring"
+        >
+          Проекты
+        </a>
+        <a
+          href="#contact"
+          className="bg-primary text-primary-foreground px-4 py-2 rounded-md m-2 focus:outline-none focus:ring-2 focus:ring-ring"
+        >
+          Контакты
+        </a>
+      </div>
+
       {/* Header */}
       <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container flex h-16 items-center">
@@ -112,7 +229,7 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="flex-1">
+      <main className="flex-1" id="main">
         {/* Hero Section */}
         <section className="container py-24 md:py-32 space-y-8">
           <div className="flex flex-col items-center text-center space-y-4">
@@ -123,10 +240,10 @@ export default function Home() {
               Full Stack Web Developer
             </p>
             <div className="flex gap-4">
-              <Button asChild>
+              <Button asChild className="hover:scale-105 transition-transform duration-200">
                 <a href="#contact">Связаться</a>
               </Button>
-              <Button variant="outline" asChild>
+              <Button variant="outline" asChild className="hover:scale-105 transition-transform duration-200">
                 <a href="#projects">Мои проекты</a>
               </Button>
             </div>
@@ -345,10 +462,10 @@ export default function Home() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <Card>
+              <Card className="group hover:shadow-lg transition-all duration-300 hover:scale-105 cursor-pointer">
                 <CardContent className="pt-6">
                   <div className="flex items-center gap-2 mb-4">
-                    <Globe className="h-5 w-5 text-primary" />
+                    <Globe className="h-5 w-5 text-primary group-hover:scale-110 transition-transform duration-200" />
                     <h3 className="text-xl font-semibold">Frontend</h3>
                   </div>
                   <div className="flex flex-wrap gap-2">
@@ -365,10 +482,10 @@ export default function Home() {
                 </CardContent>
               </Card>
 
-              <Card>
+              <Card className="group hover:shadow-lg transition-all duration-300 hover:scale-105 cursor-pointer">
                 <CardContent className="pt-6">
                   <div className="flex items-center gap-2 mb-4">
-                    <Server className="h-5 w-5 text-primary" />
+                    <Server className="h-5 w-5 text-primary group-hover:scale-110 transition-transform duration-200" />
                     <h3 className="text-xl font-semibold">Backend</h3>
                   </div>
                   <div className="flex flex-wrap gap-2">
@@ -382,10 +499,10 @@ export default function Home() {
                 </CardContent>
               </Card>
 
-              <Card>
+              <Card className="group hover:shadow-lg transition-all duration-300 hover:scale-105 cursor-pointer">
                 <CardContent className="pt-6">
                   <div className="flex items-center gap-2 mb-4">
-                    <Database className="h-5 w-5 text-primary" />
+                    <Database className="h-5 w-5 text-primary group-hover:scale-110 transition-transform duration-200" />
                     <h3 className="text-xl font-semibold">DevOps</h3>
                   </div>
                   <div className="flex flex-wrap gap-2">
@@ -397,6 +514,11 @@ export default function Home() {
                   </div>
                 </CardContent>
               </Card>
+            </div>
+
+            {/* Skills Progression Chart */}
+            <div className="mt-12">
+              <SkillsProgressionChart />
             </div>
           </CollapsibleSection>
         </section>
@@ -418,31 +540,43 @@ export default function Home() {
 
             <AchievementTimeline
               achievements={[
-                {
-                  year: "2022-наст.",
-                  title: "Инженер-программист",
-                  company: "ФГУП НИТИ им. А.П. Александрова",
-                  description: "Разработка веб-приложений и поддержка инфраструктуры",
-                  achievements: [
-                    "Разработал 15+ веб-приложений с использованием React, Next.js",
-                    "Создал и поддерживаю бэкенд на Node.js, Nest.js, Express",
-                    "Работаю с базами данных PostgreSQL, SQLite",
-                    "Настроил и поддерживаю CI/CD процессы",
-                    "Контейнеризую приложения с использованием Docker"
-                  ],
-                  technologies: ["React", "Next.js", "Node.js", "Nest.js", "PostgreSQL", "Docker"],
-                  type: "job"
-                },
+              {
+                year: "2022-наст.",
+                title: "Инженер-программист",
+                company: "ФГУП НИТИ им. А.П. Александрова",
+                description: "Разработка веб-приложений и поддержка инфраструктуры",
+                achievements: [
+                  "Разработал веб-приложения с использованием React, Next.js",
+                  "Создал и поддерживаю бэкенд на Node.js, Nest.js, Express",
+                  "Работаю с базами данных PostgreSQL, SQLite",
+                  "Настроил и поддерживаю CI/CD процессы",
+                  "Контейнеризую приложения с использованием Docker"
+                ],
+                quantifiedAchievements: [
+                  "15+ веб-приложений",
+                  "8 настроек CI/CD",
+                  "5+ интеграций систем",
+                  "1000+ запросов/день"
+                ],
+                technologies: ["React", "Next.js", "Node.js", "Nest.js", "PostgreSQL", "Docker"],
+                type: "job"
+              },
                 {
                   year: "2019-2022",
                   title: "Инженер-проектировщик",
                   company: "Индивидуальное предпринимательство / фриланс",
                   description: "Проектирование и внедрение систем безопасности",
                   achievements: [
-                    "Спроектировал и внедрил 20+ систем контроля доступа",
+                    "Спроектировал и внедрил системы контроля доступа",
                     "Автоматизировал мониторинг и управление системами безопасности",
-                    "Разработал 15+ систем видеонаблюдения",
+                    "Разработал системы видеонаблюдения",
                     "Создал комплексные системы безопасности под ключ"
+                  ],
+                  quantifiedAchievements: [
+                    "20+ систем контроля доступа",
+                    "15+ систем видеонаблюдения",
+                    "10+ комплексных решений",
+                    "50+ клиентов"
                   ],
                   technologies: ["Python", "JavaScript", "Linux", "Network Security"],
                   type: "job"
@@ -453,10 +587,16 @@ export default function Home() {
                   company: "ООО 'Трекон'",
                   description: "Управление проектами в области безопасности",
                   achievements: [
-                    "Спроектировал 10+ интегрированных комплексов безопасности",
+                    "Спроектировал интегрированные комплексы безопасности",
                     "Разработал индивидуальные решения под заказчика",
-                    "Руководил командой из 5 человек",
+                    "Руководил командой разработчиков",
                     "Внедрил процессы проектного управления"
+                  ],
+                  quantifiedAchievements: [
+                    "10+ интегрированных комплексов",
+                    "5 человек в команде",
+                    "100% соблюдение сроков",
+                    "30+ успешных проектов"
                   ],
                   technologies: ["Python", "JavaScript", "HTML", "CSS", "Project Management"],
                   type: "job"
@@ -490,25 +630,25 @@ export default function Home() {
                   <div className="space-y-4">
                     <div className="flex items-center gap-3">
                       <Mail className="h-5 w-5 text-primary" />
-                      <a
-                        href="mailto:qumpik@yandex.ru"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-primary"
-                      >
-                        quimpik@yandex.ru
-                      </a>
+                    <a
+                      href="mailto:qumpik@yandex.ru"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary hover:text-primary/80 transition-colors duration-200 hover:underline"
+                    >
+                      quimpik@yandex.ru
+                    </a>
                     </div>
                     <div className="flex items-center gap-3">
                       <Send className="h-5 w-5 text-primary" />
-                      <a
-                        href="https://github.com/gtompel"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-primary"
-                      >
-                        @gtompel
-                      </a>
+                    <a
+                      href="https://github.com/gtompel"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary hover:text-primary/80 transition-colors duration-200 hover:underline"
+                    >
+                      @gtompel
+                    </a>
                     </div>
                     {/* <div className="flex items-center gap-3">
                       <Linkedin className="h-5 w-5 text-primary" />
@@ -516,14 +656,14 @@ export default function Home() {
                     </div> */}
                     <div className="flex items-center gap-3">
                       <Github className="h-5 w-5 text-primary" />
-                      <a
-                        href="https://github.com/gtompel"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-primary"
-                      >
-                        github.com/gtompel
-                      </a>
+                    <a
+                      href="https://github.com/gtompel"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary hover:text-primary/80 transition-colors duration-200 hover:underline"
+                    >
+                      github.com/gtompel
+                    </a>
                     </div>
                   </div>
                 </CardContent>
@@ -581,7 +721,7 @@ export default function Home() {
             © 2025 Юрий Королёв. Все права защищены.
           </p>
           <div className="flex items-center gap-4">
-            <a href="#" className="text-muted-foreground hover:text-foreground">
+            <a href="#" className="text-muted-foreground hover:text-foreground hover:scale-110 transition-all duration-200 p-2 rounded-md min-h-[44px] min-w-[44px] flex items-center justify-center touch-manipulation">
               <Github className="h-5 w-5" />
               <span className="sr-only">GitHub</span>
             </a>
@@ -589,7 +729,7 @@ export default function Home() {
               <Linkedin className="h-5 w-5" />
               <span className="sr-only">LinkedIn</span>
             </a> */}
-            <a href="#" className="text-muted-foreground hover:text-foreground">
+            <a href="#" className="text-muted-foreground hover:text-foreground hover:scale-110 transition-all duration-200 p-2 rounded-md min-h-[44px] min-w-[44px] flex items-center justify-center touch-manipulation">
               <Mail className="h-5 w-5" />
               <span className="sr-only">Email</span>
             </a>

@@ -9,6 +9,7 @@ export interface Achievement {
   company?: string;
   description: string;
   achievements: string[];
+  quantifiedAchievements?: string[]; // Конкретные количественные достижения
   technologies?: string[];
   type: "job" | "project" | "certification" | "promotion";
 }
@@ -94,6 +95,19 @@ export function AchievementTimeline({ achievements, className = "" }: Achievemen
                           </li>
                         ))}
                       </ul>
+                    </div>
+                  )}
+
+                  {achievement.quantifiedAchievements && achievement.quantifiedAchievements.length > 0 && (
+                    <div className="mb-4">
+                      <h4 className="text-sm font-medium mb-2 text-primary">Количественные показатели:</h4>
+                      <div className="flex flex-wrap gap-2">
+                        {achievement.quantifiedAchievements.map((metric, i) => (
+                          <Badge key={i} variant="secondary" className="text-xs bg-primary/10 text-primary border-primary/20">
+                            {metric}
+                          </Badge>
+                        ))}
+                      </div>
                     </div>
                   )}
 
