@@ -14,7 +14,25 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
-    unoptimized: true,
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'localhost',
+      },
+      {
+        protocol: 'https',
+        hostname: 'portal-arm.vercel.app',
+      },
+      {
+        protocol: 'https',
+        hostname: 'kebab-omega.vercel.app',
+      },
+      {
+        protocol: 'https',
+        hostname: 'duel2hero.vercel.app',
+      },
+    ],
+    formats: ['image/webp', 'image/avif'],
   },
   experimental: {
     webpackBuildWorker: true,
