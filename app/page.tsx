@@ -132,7 +132,7 @@ export default function Home() {
         {/* Projects Section (after About) */}
         <section
           id="projects"
-          className="container py-12 md:py-24 space-y-8 bg-muted/50"
+          className="container py-12 md:py-24 space-y-8"
         >
           <div className="flex flex-col items-center text-center space-y-4 mb-12">
             <div className="inline-block rounded-lg bg-muted p-1.5 mb-4">
@@ -151,21 +151,21 @@ export default function Home() {
               title="Портал АРМ"
               description="Система управления автоматизированными рабочими местами"
               tags={["Next.js", "RSC", "Tailwind"]}
-              imageUrl="/placeholder.svg?height=200&width=400"
+              imageUrl="/Portal.png?height=200&width=400"
               href="https://portal-arm.vercel.app"
             />
             <ProjectCard
               title="HR Система"
               description="Система управления кадрами: задачи, отпуска, отчёты"
               tags={["Next.js", "ShadcnUI", "Charts"]}
-              imageUrl="/placeholder.svg?height=200&width=400"
+              imageUrl="/HR.png?height=200&width=400"
               href="https://kebab-omega.vercel.app/"
             />
             <ProjectCard
               title="Duel2Hero"
               description="Приложение для сбора уникальных чисел"
               tags={["Next.js", "App Router", "TypeScript"]}
-              imageUrl="/placeholder.svg?height=200&width=400"
+              imageUrl="/Duel.png?height=200&width=400"
               href="https://duel2hero.vercel.app/"
             />
           </div>
@@ -174,7 +174,7 @@ export default function Home() {
         {/* Skills Section */}
         <section
           id="skills"
-          className="container py-12 md:py-24 space-y-8 bg-muted/50"
+          className="container py-12 md:py-24 space-y-8"
         >
           <div className="flex flex-col items-center text-center space-y-4 mb-12">
             <div className="inline-block rounded-lg bg-muted p-1.5 mb-4">
@@ -438,7 +438,7 @@ export default function Home() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t py-6 md:py-0">
+      <footer className="border-t py-6 md:py-0 bg-muted/50">
         <div className="container flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row">
           <p className="text-center text-sm leading-loose text-muted-foreground md:text-left">
             © 2025 Юрий Королёв. Все права защищены.
@@ -489,12 +489,14 @@ function ProjectCard({ title, description, tags, imageUrl, href }: ProjectCardPr
                 href={href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:underline"
+                className="transition-colors hover:text-foreground/80 hover:border-b-2"
               >
                 {title}
               </a>
             ) : (
-              title
+              <span className="transition-colors hover:text-foreground/80 hover:border-b-2 cursor-pointer">
+                {title}
+              </span>
             )}
           </h3>
           <p className="text-muted-foreground mb-4">{description}</p>
