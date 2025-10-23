@@ -8,10 +8,12 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { QuickActionsBar } from "@/components/ui/quick-actions-bar";
 import { LiveDemoBadges } from "@/components/ui/live-demo-badges";
 import { CVEditorModal } from "@/components/cv-editor-modal";
+import { CaseStudyModal } from "@/components/case-study-modal";
 import { AchievementTimeline, Achievement } from "@/components/ui/achievement-timeline";
 import { ProgressiveImage } from "@/components/ui/progressive-image";
 import { CollapsibleSection } from "@/components/ui/collapsible-section";
 import { SkillsProgressionChart } from "@/components/ui/skills-progression-chart";
+import { portalARMCaseStudy, hrSystemCaseStudy, duel2HeroCaseStudy } from "@/lib/case-study-data";
 
 interface Technology {
   name: string;
@@ -29,6 +31,7 @@ interface ProjectCardProps {
   demoUrl?: string; // Ссылка на демо
   sourceUrl?: string; // Ссылка на исходный код
   caseStudyUrl?: string; // Ссылка на кейс-стади
+  caseStudyData?: any; // Данные кейс-стади для модального окна
   role?: string; // Роль в проекте
   duration?: string; // Время разработки
   teamSize?: string; // Размер команды
@@ -38,6 +41,27 @@ interface ProjectCardProps {
 
 export default function Home() {
   const [isCVEditorOpen, setIsCVEditorOpen] = useState(false);
+  const [isCaseStudyOpen, setIsCaseStudyOpen] = useState(false);
+  const [currentCaseStudy, setCurrentCaseStudy] = useState<any>(null);
+
+  // Click handler for case study cards
+  const handleCaseStudyClick = (e: React.MouseEvent) => {
+    const target = e.target as HTMLElement;
+    const card = target.closest('[data-case-study="true"]') as HTMLElement;
+    if (card) {
+      const projectTitle = card.getAttribute('data-project-title');
+      if (projectTitle === 'Портал АРМ') {
+        setCurrentCaseStudy(portalARMCaseStudy);
+        setIsCaseStudyOpen(true);
+      } else if (projectTitle === 'HR Система') {
+        setCurrentCaseStudy(hrSystemCaseStudy);
+        setIsCaseStudyOpen(true);
+      } else if (projectTitle === 'Duel2Hero') {
+        setCurrentCaseStudy(duel2HeroCaseStudy);
+        setIsCaseStudyOpen(true);
+      }
+    }
+  };
 
   // Keyboard navigation
   React.useEffect(() => {
@@ -116,7 +140,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background" onClick={handleCaseStudyClick}>
       {/* Skip Links for Accessibility */}
       <div className="sr-only focus-within:not-sr-only focus-within:absolute focus-within:top-0 focus-within:left-0 focus-within:z-50">
         <a
@@ -167,31 +191,31 @@ export default function Home() {
             </a>
             <nav className="flex items-center space-x-6 text-sm font-medium">
               <a
-                className="transition-colors hover:text-foreground/80 hover:border-b-2"
+                className="transition-colors hover:text-foreground/80 hover:border-b-2 min-h-[44px] px-3 py-2 flex items-center touch-manipulation"
                 href="#about"
               >
                 Обо мне
               </a>
               <a
-                className="transition-colors hover:text-foreground/80 hover:border-b-2"
+                className="transition-colors hover:text-foreground/80 hover:border-b-2 min-h-[44px] px-3 py-2 flex items-center touch-manipulation"
                 href="#skills"
               >
                 Навыки
               </a>
               <a
-                className="transition-colors hover:text-foreground/80 hover:border-b-2"
+                className="transition-colors hover:text-foreground/80 hover:border-b-2 min-h-[44px] px-3 py-2 flex items-center touch-manipulation"
                 href="#experience"
               >
                 Опыт
               </a>
               <a
-                className="transition-colors hover:text-foreground/80 hover:border-b-2"
+                className="transition-colors hover:text-foreground/80 hover:border-b-2 min-h-[44px] px-3 py-2 flex items-center touch-manipulation"
                 href="#projects"
               >
                 Проекты
               </a>
               <a
-                className="transition-colors hover:text-foreground/80 hover:border-b-2 "
+                className="transition-colors hover:text-foreground/80 hover:border-b-2 min-h-[44px] px-3 py-2 flex items-center touch-manipulation"
                 href="#contact"
               >
                 Контакты
@@ -233,17 +257,17 @@ export default function Home() {
         {/* Hero Section */}
         <section className="container py-24 md:py-32 space-y-8">
           <div className="flex flex-col items-center text-center space-y-4">
-            <h1 className="text-4xl md:text-6xl font-bold tracking-tighter">
+            <h1 className="text-hero">
               Юрий Королёв
             </h1>
-            <p className="text-xl md:text-2xl text-muted-foreground max-w-[700px]">
+            <p className="text-subtitle max-w-[700px]">
               Full Stack Web Developer
             </p>
             <div className="flex gap-4">
-              <Button asChild className="hover:scale-105 transition-transform duration-200">
+              <Button asChild className="hover:scale-105 transition-transform duration-200 min-h-[44px] px-6 py-3">
                 <a href="#contact">Связаться</a>
               </Button>
-              <Button variant="outline" asChild className="hover:scale-105 transition-transform duration-200">
+              <Button variant="outline" asChild className="hover:scale-105 transition-transform duration-200 min-h-[44px] px-6 py-3">
                 <a href="#projects">Мои проекты</a>
               </Button>
             </div>
@@ -259,13 +283,13 @@ export default function Home() {
             <CardContent>
               <div className="grid grid-cols-2 md:grid-cols-5 gap-6 text-center">
                 <div className="space-y-2">
-                  <div className="text-3xl md:text-4xl font-bold text-primary">
+                  <div className="text-3xl md:text-4xl font-bold text-brand">
                     {new Date().getFullYear() - 2018}+
                   </div>
                   <div className="text-sm text-muted-foreground">лет опыта</div>
                 </div>
                 <div className="space-y-2">
-                  <div className="text-3xl md:text-4xl font-bold text-primary">
+                  <div className="text-3xl md:text-4xl font-bold text-brand">
                     {(() => {
                       const projects = [
                         { title: "Портал АРМ", technologies: ["Next.js", "RSC", "Tailwind"] },
@@ -278,7 +302,7 @@ export default function Home() {
                   <div className="text-sm text-muted-foreground">проектов</div>
                 </div>
                 <div className="space-y-2">
-                  <div className="text-3xl md:text-4xl font-bold text-primary">
+                  <div className="text-3xl md:text-4xl font-bold text-brand">
                     {(() => {
                       const allTechnologies = [
                         "Next.js", "RSC", "Tailwind", "ShadcnUI", "Charts",
@@ -291,13 +315,13 @@ export default function Home() {
                   <div className="text-sm text-muted-foreground">технологий</div>
                 </div>
                 <div className="space-y-2">
-                  <div className="text-3xl md:text-4xl font-bold text-primary">
+                  <div className="text-3xl md:text-4xl font-bold text-brand">
                     B2
                   </div>
                   <div className="text-sm text-muted-foreground">английский</div>
                 </div>
                 <div className="space-y-2">
-                  <div className="text-3xl md:text-4xl font-bold text-primary">
+                  <div className="text-3xl md:text-4xl font-bold text-brand">
                     ✓
                   </div>
                   <div className="text-sm text-muted-foreground">релокация</div>
@@ -329,17 +353,21 @@ export default function Home() {
               <div className="inline-block rounded-lg bg-muted p-1.5 mb-4">
                 <User className="h-5 w-5" />
               </div>
-              <h2 className="text-3xl md:text-4xl font-bold tracking-tighter">
+              <h2 className="text-3xl font-bold">
                 Обо мне
               </h2>
-              <p className="text-muted-foreground md:text-xl max-w-[700px]">
-                Код - мост между сегодняшним днём и завтрашними
-                возможностями. <br/>
-                Проекты - эффективные решения, которые
-                делают жизнь более удобной, безопасной и эффективной.< br/>
-                Философия - искать нестандартные решения, быть гибким и
-                открытым к изменениям.
-              </p>
+              <div className="prose-spacing">
+                <p className="text-body">
+                  Код - мост между сегодняшним днём и завтрашними возможностями.
+                </p>
+                <p className="text-body">
+                  Проекты - эффективные решения, которые делают жизнь более удобной,
+                  безопасной и эффективной.
+                </p>
+                <p className="text-body">
+                  Философия - искать нестандартные решения, быть гибким и открытым к изменениям.
+                </p>
+              </div>
             </div>
           </CollapsibleSection>
         </section>
@@ -353,9 +381,9 @@ export default function Home() {
             <div className="inline-block rounded-lg bg-muted p-1.5 mb-4">
               <FileCode className="h-5 w-5" />
             </div>
-            <h2 className="text-3xl md:text-4xl font-bold tracking-tighter">
-              Проекты
-            </h2>
+              <h2 className="text-3xl font-bold">
+                Проекты
+              </h2>
             <p className="text-muted-foreground md:text-xl max-w-[700px]">
               Некоторые из моих недавних проектов
             </p>
@@ -377,6 +405,7 @@ export default function Home() {
               demoUrl="https://portal-arm.vercel.app"
               sourceUrl="https://github.com/gtompel/portal-arm"
               caseStudyUrl="#"
+              caseStudyData={portalARMCaseStudy}
               role="Full-stack разработчик"
               duration="4 месяца"
               teamSize="Команда 3 человека"
@@ -403,6 +432,7 @@ export default function Home() {
               demoUrl="https://kebab-omega.vercel.app/"
               sourceUrl="https://github.com/gtompel/hr-system"
               caseStudyUrl="#"
+              caseStudyData={hrSystemCaseStudy}
               role="Архитектор и ведущий разработчик"
               duration="6 месяцев"
               teamSize="Команда 4 человека"
@@ -429,6 +459,7 @@ export default function Home() {
               demoUrl="https://duel2hero.vercel.app/"
               sourceUrl="https://github.com/gtompel/duel2hero"
               caseStudyUrl="#"
+              caseStudyData={duel2HeroCaseStudy}
               role="Индивидуальный проект"
               duration="2 месяца"
               teamSize="Соло-разработка"
@@ -453,7 +484,7 @@ export default function Home() {
               <div className="inline-block rounded-lg bg-muted p-1.5 mb-4">
                 <Code className="h-5 w-5" />
               </div>
-              <h2 className="text-3xl md:text-4xl font-bold tracking-tighter">
+              <h2 className="text-3xl font-bold">
                 Технические навыки
               </h2>
               <p className="text-muted-foreground md:text-xl max-w-[700px]">
@@ -465,7 +496,7 @@ export default function Home() {
               <Card className="group hover:shadow-lg transition-all duration-300 hover:scale-105 cursor-pointer">
                 <CardContent className="pt-6">
                   <div className="flex items-center gap-2 mb-4">
-                    <Globe className="h-5 w-5 text-primary group-hover:scale-110 transition-transform duration-200" />
+                    <Globe className="h-5 w-5 text-brand group-hover:scale-110 transition-transform duration-200" />
                     <h3 className="text-xl font-semibold">Frontend</h3>
                   </div>
                   <div className="flex flex-wrap gap-2">
@@ -485,7 +516,7 @@ export default function Home() {
               <Card className="group hover:shadow-lg transition-all duration-300 hover:scale-105 cursor-pointer">
                 <CardContent className="pt-6">
                   <div className="flex items-center gap-2 mb-4">
-                    <Server className="h-5 w-5 text-primary group-hover:scale-110 transition-transform duration-200" />
+                    <Server className="h-5 w-5 text-brand group-hover:scale-110 transition-transform duration-200" />
                     <h3 className="text-xl font-semibold">Backend</h3>
                   </div>
                   <div className="flex flex-wrap gap-2">
@@ -502,7 +533,7 @@ export default function Home() {
               <Card className="group hover:shadow-lg transition-all duration-300 hover:scale-105 cursor-pointer">
                 <CardContent className="pt-6">
                   <div className="flex items-center gap-2 mb-4">
-                    <Database className="h-5 w-5 text-primary group-hover:scale-110 transition-transform duration-200" />
+                    <Database className="h-5 w-5 text-brand group-hover:scale-110 transition-transform duration-200" />
                     <h3 className="text-xl font-semibold">DevOps</h3>
                   </div>
                   <div className="flex flex-wrap gap-2">
@@ -530,7 +561,7 @@ export default function Home() {
               <div className="inline-block rounded-lg bg-muted p-1.5 mb-4">
                 <Briefcase className="h-5 w-5" />
               </div>
-              <h2 className="text-3xl md:text-4xl font-bold tracking-tighter">
+              <h2 className="text-3xl font-bold">
                 Карьерный путь
               </h2>
               <p className="text-muted-foreground md:text-xl max-w-[700px]">
@@ -615,7 +646,7 @@ export default function Home() {
               <div className="inline-block rounded-lg bg-muted p-1.5 mb-4">
                 <MessageSquare className="h-5 w-5" />
               </div>
-              <h2 className="text-3xl md:text-4xl font-bold tracking-tighter">
+              <h2 className="text-3xl font-bold">
                 Связаться со мной
               </h2>
               <p className="text-muted-foreground md:text-xl max-w-[700px]">
@@ -745,6 +776,14 @@ export default function Home() {
         isOpen={isCVEditorOpen}
         onClose={() => setIsCVEditorOpen(false)}
       />
+
+      {/* Case Study Modal */}
+      <CaseStudyModal
+        isOpen={isCaseStudyOpen}
+        onClose={() => setIsCaseStudyOpen(false)}
+        projectName={currentCaseStudy?.title || ""}
+        caseStudyData={currentCaseStudy}
+      />
     </div>
   );
 }
@@ -758,6 +797,7 @@ function ProjectCard({
   demoUrl,
   sourceUrl,
   caseStudyUrl,
+  caseStudyData,
   role,
   duration,
   teamSize,
@@ -765,12 +805,20 @@ function ProjectCard({
   metrics
 }: ProjectCardProps) {
   return (
-    <Card className="overflow-hidden group h-full flex flex-col">
+    <Card
+      className={`overflow-hidden group h-full flex flex-col ${caseStudyData ? 'cursor-pointer' : ''}`}
+      onClick={caseStudyData ? () => {
+        // Логика клика обрабатывается в основном компоненте
+      } : undefined}
+      data-case-study={caseStudyData ? 'true' : 'false'}
+      data-project-title={title}
+    >
       <a
-        href={href}
-        target={href ? "_blank" : undefined}
-        rel={href ? "noopener noreferrer" : undefined}
-        className={href ? "block focus:outline-none flex-shrink-0" : undefined}
+        href={href && !caseStudyData ? href : undefined}
+        target={href && !caseStudyData ? "_blank" : undefined}
+        rel={href && !caseStudyData ? "noopener noreferrer" : undefined}
+        className={href && !caseStudyData ? "block focus:outline-none flex-shrink-0" : "block focus:outline-none flex-shrink-0"}
+        onClick={caseStudyData ? (e) => e.stopPropagation() : undefined}
       >
         <div className="aspect-video w-full overflow-hidden">
           <ProgressiveImage

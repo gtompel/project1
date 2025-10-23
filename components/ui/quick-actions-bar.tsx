@@ -167,7 +167,7 @@ export function QuickActionsBar({ onCVEdit }: QuickActionsBarProps) {
         <Button
           size="sm"
           variant="outline"
-          className="w-full justify-start gap-2"
+          className="w-full justify-start gap-2 min-h-[44px] touch-manipulation"
           onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
         >
           <MessageSquare className="h-4 w-4" />
@@ -177,7 +177,7 @@ export function QuickActionsBar({ onCVEdit }: QuickActionsBarProps) {
         <Button
           size="sm"
           variant="outline"
-          className="w-full justify-start gap-2"
+          className="w-full justify-start gap-2 min-h-[44px] touch-manipulation"
           onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}
         >
           <FileCode className="h-4 w-4" />
@@ -187,7 +187,7 @@ export function QuickActionsBar({ onCVEdit }: QuickActionsBarProps) {
         <Button
           size="sm"
           variant="outline"
-          className="w-full justify-start gap-2"
+          className="w-full justify-start gap-2 min-h-[44px] touch-manipulation"
           asChild
         >
           <a href="https://github.com/gtompel" target="_blank" rel="noopener noreferrer">
@@ -199,7 +199,7 @@ export function QuickActionsBar({ onCVEdit }: QuickActionsBarProps) {
         <Button
           size="sm"
           variant="outline"
-          className="w-full justify-start gap-2"
+          className="w-full justify-start gap-2 min-h-[44px] touch-manipulation"
           onClick={() => {
             generateCV();
           }}
@@ -212,7 +212,7 @@ export function QuickActionsBar({ onCVEdit }: QuickActionsBarProps) {
         <Button
           size="sm"
           variant="outline"
-          className="w-full justify-start gap-2"
+          className="w-full justify-start gap-2 min-h-[44px] touch-manipulation"
           onClick={onCVEdit}
         >
           <FileCode className="h-4 w-4" />
@@ -223,7 +223,7 @@ export function QuickActionsBar({ onCVEdit }: QuickActionsBarProps) {
           <Button
             size="sm"
             variant="ghost"
-            className="w-full justify-center"
+            className="w-full justify-center min-h-[44px] min-w-[44px] touch-manipulation"
             onClick={scrollToTop}
           >
             <ChevronUp className="h-4 w-4" />

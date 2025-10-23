@@ -52,7 +52,11 @@ export function LiveDemoBadges({
         key="case-study"
         variant="outline"
         className={`cursor-pointer hover:bg-blue-50 hover:border-blue-300 ${className}`}
-        onClick={() => window.open(caseStudyUrl, '_blank', 'noopener,noreferrer')}
+        onClick={(e) => {
+          e.preventDefault();
+          // Кейс-стади открывается через клик по карточке проекта
+          // Не используем stopPropagation, чтобы клик распространился на карточку
+        }}
       >
         <FileText className="w-3 h-3 mr-1" />
         Кейс-стади

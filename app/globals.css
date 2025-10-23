@@ -24,6 +24,16 @@
     --input: 214.3 31.8% 91.4%;
     --ring: 221.2 83.2% 53.3%;
     --radius: 0.5rem;
+
+    /* Фирменные цвета портфолио */
+    --brand: 221.2 83.2% 53.3%;
+    --brand-foreground: 210 40% 98%;
+    --brand-secondary: 210 40% 96.1%;
+    --brand-accent: 217.2 91.2% 59.8%;
+    --success: 142 76% 36%;
+    --success-foreground: 138 62% 47%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 48 96% 89%;
   }
 
   .dark {
@@ -46,6 +56,16 @@
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 224.3 76.3% 48%;
+
+    /* Фирменные цвета портфолио для темной темы */
+    --brand: 217.2 91.2% 59.8%;
+    --brand-foreground: 222.2 47.4% 11.2%;
+    --brand-secondary: 217.2 32.6% 17.5%;
+    --brand-accent: 224.3 76.3% 48%;
+    --success: 142 76% 36%;
+    --success-foreground: 138 62% 47%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 48 96% 89%;
   }
 }
 
@@ -58,6 +78,83 @@
   }
   html {
     scroll-behavior: smooth;
+  }
+
+  /* Улучшенная типографика для сканирования */
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.025em;
+  }
+
+  h1 {
+    font-size: 2.25rem;
+    line-height: 1.1;
+  }
+
+  h2 {
+    font-size: 1.875rem;
+    line-height: 1.2;
+  }
+
+  h3 {
+    font-size: 1.5rem;
+    line-height: 1.3;
+  }
+
+  h4 {
+    font-size: 1.25rem;
+    line-height: 1.4;
+  }
+
+  p {
+    line-height: 1.6;
+  }
+
+  .text-hero {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.05em;
+  }
+
+  .text-subtitle {
+    font-size: clamp(1.125rem, 2.5vw, 1.5rem);
+    line-height: 1.4;
+    color: hsl(var(--muted-foreground));
+  }
+
+  .text-body {
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  .text-small {
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+
+  .text-caption {
+    font-size: 0.75rem;
+    line-height: 1.4;
+    color: hsl(var(--muted-foreground));
+  }
+
+  /* Улучшенные spacing для типографики */
+  .prose-spacing > * + * {
+    margin-top: 1.5rem;
+  }
+
+  .prose-spacing h2 + *,
+  .prose-spacing h3 + *,
+  .prose-spacing h4 + * {
+    margin-top: 1rem;
+  }
+
+  .prose-spacing p + h2,
+  .prose-spacing p + h3,
+  .prose-spacing p + h4 {
+    margin-top: 2rem;
   }
 }
 
