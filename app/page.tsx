@@ -13,6 +13,7 @@ import { AchievementTimeline, Achievement } from "@/components/ui/achievement-ti
 import { ProgressiveImage } from "@/components/ui/progressive-image";
 import { CollapsibleSection } from "@/components/ui/collapsible-section";
 import { SkillsProgressionChart } from "@/components/ui/skills-progression-chart";
+import { SwipeableProjects } from "@/components/ui/swipeable-projects";
 import { portalARMCaseStudy, hrSystemCaseStudy, duel2HeroCaseStudy } from "@/lib/case-study-data";
 
 interface Technology {
@@ -22,22 +23,6 @@ interface Technology {
   projects?: number;
 }
 
-interface ProjectCardProps {
-  title: string;
-  description: string;
-  technologies?: Technology[]; // Заменили tags на technologies с уровнями экспертизы
-  imageUrl?: string; // Этот параметр необязателен
-  href?: string;
-  demoUrl?: string; // Ссылка на демо
-  sourceUrl?: string; // Ссылка на исходный код
-  caseStudyUrl?: string; // Ссылка на кейс-стади
-  caseStudyData?: any; // Данные кейс-стади для модального окна
-  role?: string; // Роль в проекте
-  duration?: string; // Время разработки
-  teamSize?: string; // Размер команды
-  impact?: string; // Влияние/результаты
-  metrics?: string[]; // Конкретные метрики
-}
 
 export default function Home() {
   const [isCVEditorOpen, setIsCVEditorOpen] = useState(false);
@@ -389,89 +374,91 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <ProjectCard
-              title="Портал АРМ"
-              description="Корпоративная система управления автоматизированными рабочими местами с модулями мониторинга, отчетности и управления доступом"
-              technologies={[
-                { name: "Next.js", level: "expert", description: "React фреймворк для серверного рендеринга", projects: 3 },
-                { name: "RSC", level: "advanced", description: "React Server Components", projects: 2 },
-                { name: "Tailwind", level: "expert", description: "CSS фреймворк", projects: 4 },
-                { name: "PostgreSQL", level: "advanced", description: "Реляционная база данных", projects: 2 },
-                { name: "Node.js", level: "expert", description: "JavaScript runtime", projects: 3 }
-              ]}
-              imageUrl="/Portal.png"
-              href="https://portal-arm.vercel.app"
-              demoUrl="https://portal-arm.vercel.app"
-              sourceUrl="https://github.com/gtompel/portal-arm"
-              caseStudyUrl="#"
-              caseStudyData={portalARMCaseStudy}
-              role="Full-stack разработчик"
-              duration="4 месяца"
-              teamSize="Команда 3 человека"
-              impact="Улучшил эффективность работы IT-отдела на 60% за счет автоматизации рутинных процессов"
-              metrics={[
-                "Автоматизация 15+ процессов",
-                "Снижение времени отклика на 40%",
-                "Интеграция с 5 системами",
-                "Обработка 1000+ запросов/день"
-              ]}
-            />
-            <ProjectCard
-              title="HR Система"
-              description="Комплексная система управления человеческими ресурсами с модулями учета сотрудников, планирования отпусков и аналитики"
-              technologies={[
-                { name: "Next.js", level: "expert", description: "React фреймворк для серверного рендеринга", projects: 3 },
-                { name: "ShadcnUI", level: "advanced", description: "Компонентная библиотека", projects: 2 },
-                { name: "Charts", level: "intermediate", description: "Библиотека для визуализации данных", projects: 1 },
-                { name: "TypeScript", level: "expert", description: "Типизированный JavaScript", projects: 3 },
-                { name: "Prisma", level: "intermediate", description: "ORM для баз данных", projects: 1 }
-              ]}
-              imageUrl="/HR.png"
-              href="https://kebab-omega.vercel.app/"
-              demoUrl="https://kebab-omega.vercel.app/"
-              sourceUrl="https://github.com/gtompel/hr-system"
-              caseStudyUrl="#"
-              caseStudyData={hrSystemCaseStudy}
-              role="Архитектор и ведущий разработчик"
-              duration="6 месяцев"
-              teamSize="Команда 4 человека"
-              impact="Оптимизировал процессы HR на 70% и сократил время обработки документов с 2 дней до 2 часов"
-              metrics={[
-                "Автоматизация документооборота",
-                "Интерактивные дашборды",
-                "Мобильное приложение",
-                "Интеграция с 1C"
-              ]}
-            />
-            <ProjectCard
-              title="Duel2Hero"
-              description="Игровое приложение для соревнований в сборе уникальных чисел с элементами RPG и социальными функциями"
-              technologies={[
-                { name: "Next.js", level: "expert", description: "React фреймворк для серверного рендеринга", projects: 3 },
-                { name: "App Router", level: "advanced", description: "Новая система маршрутизации Next.js", projects: 2 },
-                { name: "TypeScript", level: "expert", description: "Типизированный JavaScript", projects: 3 },
-                { name: "Socket.io", level: "intermediate", description: "Библиотека для реального времени", projects: 1 },
-                { name: "MongoDB", level: "intermediate", description: "NoSQL база данных", projects: 1 }
-              ]}
-              imageUrl="/Duel.png"
-              href="https://duel2hero.vercel.app/"
-              demoUrl="https://duel2hero.vercel.app/"
-              sourceUrl="https://github.com/gtompel/duel2hero"
-              caseStudyUrl="#"
-              caseStudyData={duel2HeroCaseStudy}
-              role="Индивидуальный проект"
-              duration="2 месяца"
-              teamSize="Соло-разработка"
-              impact="Создал увлекательное игровое приложение с активным сообществом пользователей"
-              metrics={[
-                "Реал-тайм multiplayer",
-                "Геймификация процесса",
-                "Социальные рейтинги",
-                "Адаптивный дизайн"
-              ]}
-            />
-          </div>
+          <SwipeableProjects
+            projects={[
+              {
+                title: "Портал АРМ",
+                description: "Корпоративная система управления автоматизированными рабочими местами с модулями мониторинга, отчетности и управления доступом",
+                technologies: [
+                  { name: "Next.js", level: "expert", description: "React фреймворк для серверного рендеринга", projects: 3 },
+                  { name: "RSC", level: "advanced", description: "React Server Components", projects: 2 },
+                  { name: "Tailwind", level: "expert", description: "CSS фреймворк", projects: 4 },
+                  { name: "PostgreSQL", level: "advanced", description: "Реляционная база данных", projects: 2 },
+                  { name: "Node.js", level: "expert", description: "JavaScript runtime", projects: 3 }
+                ],
+                imageUrl: "/Portal.png",
+                href: "https://portal-arm.vercel.app",
+                demoUrl: "https://portal-arm.vercel.app",
+                sourceUrl: "https://github.com/gtompel/portal-arm",
+                caseStudyUrl: "#",
+                caseStudyData: portalARMCaseStudy,
+                role: "Full-stack разработчик",
+                duration: "4 месяца",
+                teamSize: "Команда 3 человека",
+                impact: "Улучшил эффективность работы IT-отдела на 60% за счет автоматизации рутинных процессов",
+                metrics: [
+                  "Автоматизация 15+ процессов",
+                  "Снижение времени отклика на 40%",
+                  "Интеграция с 5 системами",
+                  "Обработка 1000+ запросов/день"
+                ]
+              },
+              {
+                title: "HR Система",
+                description: "Комплексная система управления человеческими ресурсами с модулями учета сотрудников, планирования отпусков и аналитики",
+                technologies: [
+                  { name: "Next.js", level: "expert", description: "React фреймворк для серверного рендеринга", projects: 3 },
+                  { name: "ShadcnUI", level: "advanced", description: "Компонентная библиотека", projects: 2 },
+                  { name: "Charts", level: "intermediate", description: "Библиотека для визуализации данных", projects: 1 },
+                  { name: "TypeScript", level: "expert", description: "Типизированный JavaScript", projects: 3 },
+                  { name: "Prisma", level: "intermediate", description: "ORM для баз данных", projects: 1 }
+                ],
+                imageUrl: "/HR.png",
+                href: "https://kebab-omega.vercel.app/",
+                demoUrl: "https://kebab-omega.vercel.app/",
+                sourceUrl: "https://github.com/gtompel/hr-system",
+                caseStudyUrl: "#",
+                caseStudyData: hrSystemCaseStudy,
+                role: "Архитектор и ведущий разработчик",
+                duration: "6 месяцев",
+                teamSize: "Команда 4 человека",
+                impact: "Оптимизировал процессы HR на 70% и сократил время обработки документов с 2 дней до 2 часов",
+                metrics: [
+                  "Автоматизация документооборота",
+                  "Интерактивные дашборды",
+                  "Мобильное приложение",
+                  "Интеграция с 1C"
+                ]
+              },
+              {
+                title: "Duel2Hero",
+                description: "Игровое приложение для соревнований в сборе уникальных чисел с элементами RPG и социальными функциями",
+                technologies: [
+                  { name: "Next.js", level: "expert", description: "React фреймворк для серверного рендеринга", projects: 3 },
+                  { name: "App Router", level: "advanced", description: "Новая система маршрутизации Next.js", projects: 2 },
+                  { name: "TypeScript", level: "expert", description: "Типизированный JavaScript", projects: 3 },
+                  { name: "Socket.io", level: "intermediate", description: "Библиотека для реального времени", projects: 1 },
+                  { name: "MongoDB", level: "intermediate", description: "NoSQL база данных", projects: 1 }
+                ],
+                imageUrl: "/Duel.png",
+                href: "https://duel2hero.vercel.app/",
+                demoUrl: "https://duel2hero.vercel.app/",
+                sourceUrl: "https://github.com/gtompel/duel2hero",
+                caseStudyUrl: "#",
+                caseStudyData: duel2HeroCaseStudy,
+                role: "Индивидуальный проект",
+                duration: "2 месяца",
+                teamSize: "Соло-разработка",
+                impact: "Создал увлекательное игровое приложение с активным сообществом пользователей",
+                metrics: [
+                  "Реал-тайм multiplayer",
+                  "Геймификация процесса",
+                  "Социальные рейтинги",
+                  "Адаптивный дизайн"
+                ]
+              }
+            ]}
+          />
         </section>
 
         {/* Skills Section */}
@@ -788,143 +775,3 @@ export default function Home() {
   );
 }
 
-function ProjectCard({
-  title,
-  description,
-  technologies = [],
-  imageUrl,
-  href,
-  demoUrl,
-  sourceUrl,
-  caseStudyUrl,
-  caseStudyData,
-  role,
-  duration,
-  teamSize,
-  impact,
-  metrics
-}: ProjectCardProps) {
-  return (
-    <Card
-      className={`overflow-hidden group h-full flex flex-col ${caseStudyData ? 'cursor-pointer' : ''}`}
-      onClick={caseStudyData ? () => {
-        // Логика клика обрабатывается в основном компоненте
-      } : undefined}
-      data-case-study={caseStudyData ? 'true' : 'false'}
-      data-project-title={title}
-    >
-      <a
-        href={href && !caseStudyData ? href : undefined}
-        target={href && !caseStudyData ? "_blank" : undefined}
-        rel={href && !caseStudyData ? "noopener noreferrer" : undefined}
-        className={href && !caseStudyData ? "block focus:outline-none flex-shrink-0" : "block focus:outline-none flex-shrink-0"}
-        onClick={caseStudyData ? (e) => e.stopPropagation() : undefined}
-      >
-        <div className="aspect-video w-full overflow-hidden">
-          <ProgressiveImage
-            src={imageUrl || "/placeholder.svg"}
-            alt={title}
-            width={400}
-            height={200}
-            priority={true}
-            className="transition-all hover:scale-105"
-          />
-        </div>
-      </a>
-
-      <CardContent className="p-4 md:p-6 flex-1 flex flex-col">
-        {/* Live Demo Badges - мобильная оптимизация */}
-        <div className="px-0 pt-0 pb-3">
-          <LiveDemoBadges
-            demoUrl={demoUrl}
-            sourceUrl={sourceUrl}
-            caseStudyUrl={caseStudyUrl}
-          />
-        </div>
-        <div className="min-w-0 flex-1">
-          <h3 className="text-lg md:text-xl font-semibold mb-2 leading-tight">
-            {href ? (
-              <a
-                href={href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="transition-colors hover:text-foreground/80 hover:border-b-2 block"
-              >
-                {title}
-              </a>
-            ) : (
-              <span className="transition-colors hover:text-foreground/80 hover:border-b-2 cursor-pointer block">
-                {title}
-              </span>
-            )}
-          </h3>
-
-          {/* Метрики проекта - мобильная оптимизация */}
-          {(role || duration || teamSize) && (
-            <div className="flex flex-col sm:flex-row sm:flex-wrap gap-2 sm:gap-4 mb-3 text-sm text-muted-foreground">
-              {role && (
-                <div className="flex items-center gap-1">
-                  <span className="font-medium text-xs">Роль:</span>
-                  <Badge variant="outline" className="text-xs px-2 py-0.5">{role}</Badge>
-                </div>
-              )}
-              {duration && (
-                <div className="flex items-center gap-1">
-                  <span className="font-medium text-xs">Время:</span>
-                  <span className="text-xs">{duration}</span>
-                </div>
-              )}
-              {teamSize && (
-                <div className="flex items-center gap-1">
-                  <span className="font-medium text-xs">Команда:</span>
-                  <span className="text-xs">{teamSize}</span>
-                </div>
-              )}
-            </div>
-          )}
-
-          {impact && (
-            <div className="mb-3 p-2.5 md:p-3 bg-muted/50 rounded-lg">
-              <p className="text-xs md:text-sm font-medium text-primary mb-1">Результат:</p>
-              <p className="text-xs md:text-sm text-muted-foreground leading-relaxed">{impact}</p>
-            </div>
-          )}
-
-          {metrics && metrics.length > 0 && (
-            <div className="mb-3">
-              <div className="flex flex-wrap gap-1.5 md:gap-2">
-                {metrics.map((metric, index) => (
-                  <Badge key={index} variant="secondary" className="text-xs bg-primary/10 text-primary border-primary/20 px-2 py-0.5">
-                    {metric}
-                  </Badge>
-                ))}
-              </div>
-            </div>
-          )}
-
-          <p className="text-sm md:text-base text-muted-foreground mb-4 leading-relaxed flex-1">{description}</p>
-        </div>
-
-        {/* Технологии - мобильная оптимизация */}
-        <div className="flex flex-wrap gap-1.5 md:gap-2 mt-auto">
-          {technologies.slice(0, 6).map((tech, i) => (
-            <TechnologyBadge
-              key={i}
-              technology={tech.name}
-              level={tech.level}
-              description={tech.description}
-              projects={tech.projects || 1}
-              variant="secondary"
-            />
-          ))}
-          {technologies.length > 6 && (
-            <Badge variant="outline" className="text-xs">
-              +{technologies.length - 6}
-            </Badge>
-          )}
-        </div>
-      </CardContent>
-    </Card>
-  );
-}
- 

@@ -13,10 +13,11 @@ interface QuickActionsBarProps {
 export function QuickActionsBar({ onCVEdit }: QuickActionsBarProps) {
   const [isVisible, setIsVisible] = useState(false);
   const { toast } = useToast();
+  const isDevMode = process.env.NODE_ENV === 'development';
 
   useEffect(() => {
     const toggleVisibility = () => {
-      if (window.pageYOffset > 300) {
+      if (window.pageYOffset > 100) {
         setIsVisible(true);
       } else {
         setIsVisible(false);
@@ -162,7 +163,7 @@ export function QuickActionsBar({ onCVEdit }: QuickActionsBarProps) {
   if (!isVisible) return null;
 
   return (
-    <Card className="fixed bottom-6 right-6 z-50 shadow-lg border-2">
+    <Card className="fixed top-1/2 right-6 transform -translate-y-1/2 z-50 shadow-lg border-2">
       <div className="flex flex-col gap-2 p-2">
         <Button
           size="sm"
@@ -209,15 +210,17 @@ export function QuickActionsBar({ onCVEdit }: QuickActionsBarProps) {
           <span className="hidden sm:inline">CV</span>
         </Button>
 
-        <Button
-          size="sm"
-          variant="outline"
-          className="w-full justify-start gap-2 min-h-[44px] touch-manipulation"
-          onClick={onCVEdit}
-        >
-          <FileCode className="h-4 w-4" />
-          <span className="hidden sm:inline">Редактировать CV</span>
-        </Button>
+        {isDevMode && (
+          <Button
+            size="sm"
+            variant="outline"
+            className="w-full justify-start gap-2 min-h-[44px] touch-manipulation"
+            onClick={onCVEdit}
+          >
+            <FileCode className="h-4 w-4" />
+            <span className="hidden sm:inline">Редактировать CV</span>
+          </Button>
+        )}
 
         <div className="border-t pt-2 mt-1">
           <Button
