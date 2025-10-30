@@ -3,18 +3,38 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge, TechnologyBadge } from "@/components/ui/badge";
-import { Github, Send, Mail, Code, Database, Server, Globe, Briefcase, User, FileCode, MessageSquare } from "lucide-react";
+import {
+  Github,
+  Send,
+  Mail,
+  Code,
+  Database,
+  Server,
+  Globe,
+  Briefcase,
+  User,
+  FileCode,
+  MessageSquare,
+} from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { QuickActionsBar } from "@/components/ui/quick-actions-bar";
 import { LiveDemoBadges } from "@/components/ui/live-demo-badges";
 import { CVEditorModal } from "@/components/cv-editor-modal";
 import { CaseStudyModal } from "@/components/case-study-modal";
-import { AchievementTimeline, Achievement } from "@/components/ui/achievement-timeline";
+import {
+  AchievementTimeline,
+  Achievement,
+} from "@/components/ui/achievement-timeline";
 import { ProgressiveImage } from "@/components/ui/progressive-image";
 import { CollapsibleSection } from "@/components/ui/collapsible-section";
 import { SkillsProgressionChart } from "@/components/ui/skills-progression-chart";
 import { SwipeableProjects } from "@/components/ui/swipeable-projects";
-import { portalARMCaseStudy, hrSystemCaseStudy, duel2HeroCaseStudy } from "@/lib/case-study-data";
+import {
+  portalARMCaseStudy,
+  hrSystemCaseStudy,
+  duel2HeroCaseStudy,
+  gtoCaseStudy,
+} from "@/lib/case-study-data";
 
 interface Technology {
   name: string;
@@ -22,7 +42,6 @@ interface Technology {
   description?: string;
   projects?: number;
 }
-
 
 export default function Home() {
   const [isCVEditorOpen, setIsCVEditorOpen] = useState(false);
@@ -34,15 +53,18 @@ export default function Home() {
     const target = e.target as HTMLElement;
     const card = target.closest('[data-case-study="true"]') as HTMLElement;
     if (card) {
-      const projectTitle = card.getAttribute('data-project-title');
-      if (projectTitle === 'Портал АРМ') {
+      const projectTitle = card.getAttribute("data-project-title");
+      if (projectTitle === "Портал АРМ") {
         setCurrentCaseStudy(portalARMCaseStudy);
         setIsCaseStudyOpen(true);
-      } else if (projectTitle === 'HR Система') {
+      } else if (projectTitle === "HR Система") {
         setCurrentCaseStudy(hrSystemCaseStudy);
         setIsCaseStudyOpen(true);
-      } else if (projectTitle === 'Duel2Hero') {
+      } else if (projectTitle === "Duel2Hero") {
         setCurrentCaseStudy(duel2HeroCaseStudy);
+        setIsCaseStudyOpen(true);
+      } else if (projectTitle === "GTO Protocol Management System") {
+        setCurrentCaseStudy(gtoCaseStudy);
         setIsCaseStudyOpen(true);
       }
     }
@@ -54,49 +76,67 @@ export default function Home() {
       // Navigation shortcuts
       if (e.ctrlKey || e.metaKey) {
         switch (e.key) {
-          case '1':
+          case "1":
             e.preventDefault();
-            document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' });
+            document
+              .getElementById("about")
+              ?.scrollIntoView({ behavior: "smooth" });
             break;
-          case '2':
+          case "2":
             e.preventDefault();
-            document.getElementById('skills')?.scrollIntoView({ behavior: 'smooth' });
+            document
+              .getElementById("skills")
+              ?.scrollIntoView({ behavior: "smooth" });
             break;
-          case '3':
+          case "3":
             e.preventDefault();
-            document.getElementById('experience')?.scrollIntoView({ behavior: 'smooth' });
+            document
+              .getElementById("experience")
+              ?.scrollIntoView({ behavior: "smooth" });
             break;
-          case '4':
+          case "4":
             e.preventDefault();
-            document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' });
+            document
+              .getElementById("projects")
+              ?.scrollIntoView({ behavior: "smooth" });
             break;
-          case '5':
+          case "5":
             e.preventDefault();
-            document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+            document
+              .getElementById("contact")
+              ?.scrollIntoView({ behavior: "smooth" });
             break;
-          case 'h':
-          case 'Home':
+          case "h":
+          case "Home":
             e.preventDefault();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            window.scrollTo({ top: 0, behavior: "smooth" });
             break;
-          case 'e':
+          case "e":
             e.preventDefault();
             setIsCVEditorOpen(true);
             break;
-          case 'd':
+          case "d":
             e.preventDefault();
             // Скачивание CV
-            const cvButton = document.querySelector('[data-cv-download]') as HTMLButtonElement;
+            const cvButton = document.querySelector(
+              "[data-cv-download]"
+            ) as HTMLButtonElement;
             cvButton?.click();
             break;
         }
       }
 
       // Arrow key navigation for sections
-      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      if (e.key === "ArrowDown" || e.key === "ArrowUp") {
         e.preventDefault();
-        const sections = ['about', 'skills', 'experience', 'projects', 'contact'];
-        const currentSection = sections.find(section => {
+        const sections = [
+          "about",
+          "skills",
+          "experience",
+          "projects",
+          "contact",
+        ];
+        const currentSection = sections.find((section) => {
           const element = document.getElementById(section);
           if (element) {
             const rect = element.getBoundingClientRect();
@@ -109,19 +149,21 @@ export default function Home() {
           const currentIndex = sections.indexOf(currentSection);
           let nextIndex;
 
-          if (e.key === 'ArrowDown') {
+          if (e.key === "ArrowDown") {
             nextIndex = Math.min(currentIndex + 1, sections.length - 1);
           } else {
             nextIndex = Math.max(currentIndex - 1, 0);
           }
 
-          document.getElementById(sections[nextIndex])?.scrollIntoView({ behavior: 'smooth' });
+          document
+            .getElementById(sections[nextIndex])
+            ?.scrollIntoView({ behavior: "smooth" });
         }
       }
     };
 
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
   }, []);
 
   return (
@@ -242,17 +284,22 @@ export default function Home() {
         {/* Hero Section */}
         <section className="container py-24 md:py-32 space-y-8">
           <div className="flex flex-col items-center text-center space-y-4">
-            <h1 className="text-hero">
-              Юрий Королёв
-            </h1>
+            <h1 className="text-hero">Юрий Королёв</h1>
             <p className="text-subtitle max-w-[700px]">
               Full Stack Web Developer
             </p>
             <div className="flex gap-4">
-              <Button asChild className="hover:scale-105 transition-transform duration-200 min-h-[44px] px-6 py-3">
+              <Button
+                asChild
+                className="hover:scale-105 transition-transform duration-200 min-h-[44px] px-6 py-3"
+              >
                 <a href="#contact">Связаться</a>
               </Button>
-              <Button variant="outline" asChild className="hover:scale-105 transition-transform duration-200 min-h-[44px] px-6 py-3">
+              <Button
+                variant="outline"
+                asChild
+                className="hover:scale-105 transition-transform duration-200 min-h-[44px] px-6 py-3"
+              >
                 <a href="#projects">Мои проекты</a>
               </Button>
             </div>
@@ -263,7 +310,9 @@ export default function Home() {
         <section className="container py-12 space-y-8">
           <Card className="max-w-4xl mx-auto">
             <CardHeader className="text-center pb-8">
-              <CardTitle className="text-2xl md:text-3xl">Ключевые показатели</CardTitle>
+              <CardTitle className="text-2xl md:text-3xl">
+                Ключевые показатели
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 md:grid-cols-5 gap-6 text-center">
@@ -277,9 +326,18 @@ export default function Home() {
                   <div className="text-3xl md:text-4xl font-bold text-brand">
                     {(() => {
                       const projects = [
-                        { title: "Портал АРМ", technologies: ["Next.js", "RSC", "Tailwind"] },
-                        { title: "HR Система", technologies: ["Next.js", "ShadcnUI", "Charts"] },
-                        { title: "Duel2Hero", technologies: ["Next.js", "App Router", "TypeScript"] }
+                        {
+                          title: "Портал АРМ",
+                          technologies: ["Next.js", "RSC", "Tailwind"],
+                        },
+                        {
+                          title: "HR Система",
+                          technologies: ["Next.js", "ShadcnUI", "Charts"],
+                        },
+                        {
+                          title: "Duel2Hero",
+                          technologies: ["Next.js", "App Router", "TypeScript"],
+                        },
                       ];
                       return projects.length;
                     })()}
@@ -290,20 +348,34 @@ export default function Home() {
                   <div className="text-3xl md:text-4xl font-bold text-brand">
                     {(() => {
                       const allTechnologies = [
-                        "Next.js", "RSC", "Tailwind", "ShadcnUI", "Charts",
-                        "App Router", "TypeScript", "Node.js", "Nest.js",
-                        "Express", "PostgreSQL", "SQLite", "REST API"
+                        "Next.js",
+                        "RSC",
+                        "Tailwind",
+                        "ShadcnUI",
+                        "Charts",
+                        "App Router",
+                        "TypeScript",
+                        "Node.js",
+                        "Nest.js",
+                        "Express",
+                        "PostgreSQL",
+                        "SQLite",
+                        "REST API",
                       ];
                       return allTechnologies.length;
                     })()}
                   </div>
-                  <div className="text-sm text-muted-foreground">технологий</div>
+                  <div className="text-sm text-muted-foreground">
+                    технологий
+                  </div>
                 </div>
                 <div className="space-y-2">
                   <div className="text-3xl md:text-4xl font-bold text-brand">
                     B2
                   </div>
-                  <div className="text-sm text-muted-foreground">английский</div>
+                  <div className="text-sm text-muted-foreground">
+                    английский
+                  </div>
                 </div>
                 <div className="space-y-2">
                   <div className="text-3xl md:text-4xl font-bold text-brand">
@@ -317,10 +389,18 @@ export default function Home() {
                 <div className="flex flex-wrap justify-center gap-2">
                   {(() => {
                     const topTechnologies = [
-                      "Next.js", "React", "TypeScript", "Node.js", "PostgreSQL"
+                      "Next.js",
+                      "React",
+                      "TypeScript",
+                      "Node.js",
+                      "PostgreSQL",
                     ];
                     return topTechnologies.map((tech, index) => (
-                      <Badge key={index} variant="secondary" className="text-xs">
+                      <Badge
+                        key={index}
+                        variant="secondary"
+                        className="text-xs"
+                      >
                         {tech}
                       </Badge>
                     ));
@@ -338,19 +418,18 @@ export default function Home() {
               <div className="inline-block rounded-lg bg-muted p-1.5 mb-4">
                 <User className="h-5 w-5" />
               </div>
-              <h2 className="text-3xl font-bold">
-                Обо мне
-              </h2>
+              <h2 className="text-3xl font-bold">Обо мне</h2>
               <div className="prose-spacing">
                 <p className="text-body">
                   Код - мост между сегодняшним днём и завтрашними возможностями.
                 </p>
                 <p className="text-body">
-                  Проекты - эффективные решения, которые делают жизнь более удобной,
-                  безопасной и эффективной.
+                  Проекты - эффективные решения, которые делают жизнь более
+                  удобной, безопасной и эффективной.
                 </p>
                 <p className="text-body">
-                  Философия - искать нестандартные решения, быть гибким и открытым к изменениям.
+                  Философия - искать нестандартные решения, быть гибким и
+                  открытым к изменениям.
                 </p>
               </div>
             </div>
@@ -358,17 +437,12 @@ export default function Home() {
         </section>
 
         {/* Projects Section (after About) */}
-        <section
-          id="projects"
-          className="container py-12 md:py-24 space-y-8"
-        >
+        <section id="projects" className="container py-12 md:py-24 space-y-8">
           <div className="flex flex-col items-center text-center space-y-4 mb-12">
             <div className="inline-block rounded-lg bg-muted p-1.5 mb-4">
               <FileCode className="h-5 w-5" />
             </div>
-              <h2 className="text-3xl font-bold">
-                Проекты
-              </h2>
+            <h2 className="text-3xl font-bold">Проекты</h2>
             <p className="text-muted-foreground md:text-xl max-w-[700px]">
               Некоторые из моих недавних проектов
             </p>
@@ -378,13 +452,39 @@ export default function Home() {
             projects={[
               {
                 title: "Портал АРМ",
-                description: "Корпоративная система управления автоматизированными рабочими местами с модулями мониторинга, отчетности и управления доступом",
+                description:
+                  "Корпоративная система управления автоматизированными рабочими местами с модулями мониторинга, отчетности и управления доступом",
                 technologies: [
-                  { name: "Next.js", level: "expert", description: "React фреймворк для серверного рендеринга", projects: 3 },
-                  { name: "RSC", level: "advanced", description: "React Server Components", projects: 2 },
-                  { name: "Tailwind", level: "expert", description: "CSS фреймворк", projects: 4 },
-                  { name: "PostgreSQL", level: "advanced", description: "Реляционная база данных", projects: 2 },
-                  { name: "Node.js", level: "expert", description: "JavaScript runtime", projects: 3 }
+                  {
+                    name: "Next.js",
+                    level: "expert",
+                    description: "React фреймворк для серверного рендеринга",
+                    projects: 3,
+                  },
+                  {
+                    name: "RSC",
+                    level: "advanced",
+                    description: "React Server Components",
+                    projects: 2,
+                  },
+                  {
+                    name: "Tailwind",
+                    level: "expert",
+                    description: "CSS фреймворк",
+                    projects: 4,
+                  },
+                  {
+                    name: "PostgreSQL",
+                    level: "advanced",
+                    description: "Реляционная база данных",
+                    projects: 2,
+                  },
+                  {
+                    name: "Node.js",
+                    level: "expert",
+                    description: "JavaScript runtime",
+                    projects: 3,
+                  },
                 ],
                 imageUrl: "/Portal.png",
                 href: "https://portal-arm.vercel.app",
@@ -395,23 +495,50 @@ export default function Home() {
                 role: "Full-stack разработчик",
                 duration: "4 месяца",
                 teamSize: "Команда 3 человека",
-                impact: "Улучшил эффективность работы IT-отдела на 60% за счет автоматизации рутинных процессов",
+                impact:
+                  "Улучшил эффективность работы IT-отдела на 60% за счет автоматизации рутинных процессов",
                 metrics: [
                   "Автоматизация 15+ процессов",
                   "Снижение времени отклика на 40%",
                   "Интеграция с 5 системами",
-                  "Обработка 1000+ запросов/день"
-                ]
+                  "Обработка 1000+ запросов/день",
+                ],
               },
               {
                 title: "HR Система",
-                description: "Комплексная система управления человеческими ресурсами с модулями учета сотрудников, планирования отпусков и аналитики",
+                description:
+                  "Комплексная система управления ресурсами с модулями учета сотрудников, планирования отпусков и аналитики",
                 technologies: [
-                  { name: "Next.js", level: "expert", description: "React фреймворк для серверного рендеринга", projects: 3 },
-                  { name: "ShadcnUI", level: "advanced", description: "Компонентная библиотека", projects: 2 },
-                  { name: "Charts", level: "intermediate", description: "Библиотека для визуализации данных", projects: 1 },
-                  { name: "TypeScript", level: "expert", description: "Типизированный JavaScript", projects: 3 },
-                  { name: "Prisma", level: "intermediate", description: "ORM для баз данных", projects: 1 }
+                  {
+                    name: "Next.js",
+                    level: "expert",
+                    description: "React фреймворк для серверного рендеринга",
+                    projects: 3,
+                  },
+                  {
+                    name: "ShadcnUI",
+                    level: "advanced",
+                    description: "Компонентная библиотека",
+                    projects: 2,
+                  },
+                  {
+                    name: "Charts",
+                    level: "intermediate",
+                    description: "Библиотека для визуализации данных",
+                    projects: 1,
+                  },
+                  {
+                    name: "TypeScript",
+                    level: "expert",
+                    description: "Типизированный JavaScript",
+                    projects: 3,
+                  },
+                  {
+                    name: "Prisma",
+                    level: "intermediate",
+                    description: "ORM для баз данных",
+                    projects: 1,
+                  },
                 ],
                 imageUrl: "/HR.png",
                 href: "https://kebab-omega.vercel.app/",
@@ -422,58 +549,75 @@ export default function Home() {
                 role: "Архитектор и ведущий разработчик",
                 duration: "6 месяцев",
                 teamSize: "Команда 4 человека",
-                impact: "Оптимизировал процессы HR на 70% и сократил время обработки документов с 2 дней до 2 часов",
+                impact:
+                  "Оптимизировал процессы HR на 70% и сократил время обработки документов с 2 дней до 2 часов",
                 metrics: [
                   "Автоматизация документооборота",
                   "Интерактивные дашборды",
                   "Мобильное приложение",
-                  "Интеграция с 1C"
-                ]
+                  "Интеграция с 1C",
+                ],
               },
               {
                 title: "GTO Protocol Management System",
-                description: `Приложение для ведения электронных протоколов сдачи норм ГТО (Готов к труду и обороне) — российской системы физкультурных нормативов.\n\nЭто MVP приложение предназначено для:\n- Ведения электронных протоколов выполнения нормативов ГТО\n- Управления справочниками видов испытаний, уровней выполнения и спортивных званий\n- Преобразования текстовых результатов в числовые значения через настраиваемый маппинг\n- Фильтрации и экспорта данных в CSV формат\n- Обеспечения безопасности через систему авторизации и audit logging`,
+                description: `Приложение для ведения электронных протоколов сдачи норм ГТО (Готов к труду и обороне)\n\nВедения электронных протоколов выполнения нормативов ГТО\n- Управления справочниками видов испытаний, уровней выполнения и спортивных званий\n`,
                 technologies: [
-                  { name: "Next.js 16", level: "expert", description: "App Router, React 19, TypeScript" },
-                  { name: "Prisma ORM", level: "advanced", description: "PostgreSQL, localStorage fallback" },
-                  { name: "Tailwind CSS v4", level: "expert", description: "Для стилизации UI" },
-                  { name: "shadcn/ui", level: "advanced", description: "UI компоненты" },
-                  { name: "React Hook Form", level: "expert", description: "+ Zod для валидации форм" }
+                  {
+                    name: "Next.js 16",
+                    level: "expert",
+                    description: "App Router, React 19, TypeScript",
+                  },
+                  {
+                    name: "Prisma ORM",
+                    level: "advanced",
+                    description: "PostgreSQL, localStorage fallback",
+                  },
+                  {
+                    name: "Tailwind CSS v4",
+                    level: "expert",
+                    description: "Для стилизации UI",
+                  },
+                  {
+                    name: "shadcn/ui",
+                    level: "advanced",
+                    description: "UI компоненты",
+                  },
+                  {
+                    name: "React Hook Form",
+                    level: "expert",
+                    description: "+ Zod для валидации форм",
+                  },
                 ],
                 imageUrl: "/Duel.png", // Пока временно, чтобы не ломать сетку
                 href: "https://duel2hero.vercel.app/",
                 demoUrl: "https://duel2hero.vercel.app/",
                 sourceUrl: "https://github.com/gtompel/duel2hero",
                 caseStudyUrl: "#case-gto",
-                caseStudyData: null, // Если потребуется подробный кейс
+                caseStudyData: gtoCaseStudy,
                 role: "Ведущий разработчик",
                 duration: "3 месяца",
                 teamSize: "Соло или небольшая команда",
-                impact: "Автоматизация документооборота по ГТО, прозрачность результатов и повышение безопасности хранения данных.",
+                impact:
+                  "Автоматизация документооборота по ГТО, прозрачность результатов и повышение безопасности хранения данных.",
                 metrics: [
                   "Ведение протоколов онлайн",
                   "Экспорт CSV для организаций",
                   "Раздельные роли: admin/user",
-                  "Аудит операций"
-                ]
-              }
+                  "Аудит операций",
+                ],
+              },
             ]}
           />
         </section>
 
         {/* Skills Section */}
-        <section
-          id="skills"
-          className="container py-12 md:py-24"
-        >
+        <section id="skills" className="container py-12 md:py-24">
           <CollapsibleSection title="Технические навыки" className="space-y-8">
             <div className="flex flex-col items-center text-center space-y-4 mb-12">
               <div className="inline-block rounded-lg bg-muted p-1.5 mb-4">
                 <Code className="h-5 w-5" />
               </div>
-              <h2 className="text-3xl font-bold">
-                Технические навыки
-              </h2>
+              <h2 className="text-3xl font-bold">Технические навыки</h2>
               <p className="text-muted-foreground md:text-xl max-w-[700px]">
                 Мой технический стек и опыт работы с различными технологиями
               </p>
@@ -548,9 +692,7 @@ export default function Home() {
               <div className="inline-block rounded-lg bg-muted p-1.5 mb-4">
                 <Briefcase className="h-5 w-5" />
               </div>
-              <h2 className="text-3xl font-bold">
-                Карьерный путь
-              </h2>
+              <h2 className="text-3xl font-bold">Карьерный путь</h2>
               <p className="text-muted-foreground md:text-xl max-w-[700px]">
                 Мой профессиональный рост и ключевые достижения
               </p>
@@ -558,27 +700,35 @@ export default function Home() {
 
             <AchievementTimeline
               achievements={[
-              {
-                year: "2022-наст.",
-                title: "Инженер-программист",
-                company: "ФГУП НИТИ им. А.П. Александрова",
-                description: "Разработка веб-приложений и поддержка инфраструктуры",
-                achievements: [
-                  "Разработал веб-приложения с использованием React, Next.js",
-                  "Создал и поддерживаю бэкенд на Node.js, Nest.js, Express",
-                  "Работаю с базами данных PostgreSQL, SQLite",
-                  "Настроил и поддерживаю CI/CD процессы",
-                  "Контейнеризую приложения с использованием Docker"
-                ],
-                quantifiedAchievements: [
-                  "15+ веб-приложений",
-                  "8 настроек CI/CD",
-                  "5+ интеграций систем",
-                  "1000+ запросов/день"
-                ],
-                technologies: ["React", "Next.js", "Node.js", "Nest.js", "PostgreSQL", "Docker"],
-                type: "job"
-              },
+                {
+                  year: "2022-наст.",
+                  title: "Инженер-программист",
+                  company: "ФГУП НИТИ им. А.П. Александрова",
+                  description:
+                    "Разработка веб-приложений и поддержка инфраструктуры",
+                  achievements: [
+                    "Разработал веб-приложения с использованием React, Next.js",
+                    "Создал и поддерживаю бэкенд на Node.js, Nest.js, Express",
+                    "Работаю с базами данных PostgreSQL, SQLite",
+                    "Настроил и поддерживаю CI/CD процессы",
+                    "Контейнеризую приложения с использованием Docker",
+                  ],
+                  quantifiedAchievements: [
+                    "15+ веб-приложений",
+                    "8 настроек CI/CD",
+                    "5+ интеграций систем",
+                    "1000+ запросов/день",
+                  ],
+                  technologies: [
+                    "React",
+                    "Next.js",
+                    "Node.js",
+                    "Nest.js",
+                    "PostgreSQL",
+                    "Docker",
+                  ],
+                  type: "job",
+                },
                 {
                   year: "2019-2022",
                   title: "Инженер-проектировщик",
@@ -588,16 +738,21 @@ export default function Home() {
                     "Спроектировал и внедрил системы контроля доступа",
                     "Автоматизировал мониторинг и управление системами безопасности",
                     "Разработал системы видеонаблюдения",
-                    "Создал комплексные системы безопасности под ключ"
+                    "Создал комплексные системы безопасности под ключ",
                   ],
                   quantifiedAchievements: [
                     "20+ систем контроля доступа",
                     "15+ систем видеонаблюдения",
                     "10+ комплексных решений",
-                    "50+ клиентов"
+                    "50+ клиентов",
                   ],
-                  technologies: ["Python", "JavaScript", "Linux", "Network Security"],
-                  type: "job"
+                  technologies: [
+                    "Python",
+                    "JavaScript",
+                    "Linux",
+                    "Network Security",
+                  ],
+                  type: "job",
                 },
                 {
                   year: "2018-2019",
@@ -608,17 +763,23 @@ export default function Home() {
                     "Спроектировал интегрированные комплексы безопасности",
                     "Разработал индивидуальные решения под заказчика",
                     "Руководил командой разработчиков",
-                    "Внедрил процессы проектного управления"
+                    "Внедрил процессы проектного управления",
                   ],
                   quantifiedAchievements: [
                     "10+ интегрированных комплексов",
                     "5 человек в команде",
                     "100% соблюдение сроков",
-                    "30+ успешных проектов"
+                    "30+ успешных проектов",
                   ],
-                  technologies: ["Python", "JavaScript", "HTML", "CSS", "Project Management"],
-                  type: "job"
-                }
+                  technologies: [
+                    "Python",
+                    "JavaScript",
+                    "HTML",
+                    "CSS",
+                    "Project Management",
+                  ],
+                  type: "job",
+                },
               ]}
             />
           </CollapsibleSection>
@@ -633,9 +794,7 @@ export default function Home() {
               <div className="inline-block rounded-lg bg-muted p-1.5 mb-4">
                 <MessageSquare className="h-5 w-5" />
               </div>
-              <h2 className="text-3xl font-bold">
-                Связаться со мной
-              </h2>
+              <h2 className="text-3xl font-bold">Связаться со мной</h2>
               <p className="text-muted-foreground md:text-xl max-w-[700px]">
                 Заинтересованы в сотрудничестве? Свяжитесь со мной любым удобным
                 способом
@@ -648,25 +807,25 @@ export default function Home() {
                   <div className="space-y-4">
                     <div className="flex items-center gap-3">
                       <Mail className="h-5 w-5 text-primary" />
-                    <a
-                      href="mailto:qumpik@yandex.ru"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-primary hover:text-primary/80 transition-colors duration-200 hover:underline"
-                    >
-                      quimpik@yandex.ru
-                    </a>
+                      <a
+                        href="mailto:qumpik@yandex.ru"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary hover:text-primary/80 transition-colors duration-200 hover:underline"
+                      >
+                        quimpik@yandex.ru
+                      </a>
                     </div>
                     <div className="flex items-center gap-3">
                       <Send className="h-5 w-5 text-primary" />
-                    <a
-                      href="https://github.com/gtompel"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-primary hover:text-primary/80 transition-colors duration-200 hover:underline"
-                    >
-                      @gtompel
-                    </a>
+                      <a
+                        href="https://github.com/gtompel"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary hover:text-primary/80 transition-colors duration-200 hover:underline"
+                      >
+                        @gtompel
+                      </a>
                     </div>
                     {/* <div className="flex items-center gap-3">
                       <Linkedin className="h-5 w-5 text-primary" />
@@ -674,14 +833,14 @@ export default function Home() {
                     </div> */}
                     <div className="flex items-center gap-3">
                       <Github className="h-5 w-5 text-primary" />
-                    <a
-                      href="https://github.com/gtompel"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-primary hover:text-primary/80 transition-colors duration-200 hover:underline"
-                    >
-                      github.com/gtompel
-                    </a>
+                      <a
+                        href="https://github.com/gtompel"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary hover:text-primary/80 transition-colors duration-200 hover:underline"
+                      >
+                        github.com/gtompel
+                      </a>
                     </div>
                   </div>
                 </CardContent>
@@ -739,7 +898,10 @@ export default function Home() {
             © 2025 Юрий Королёв. Все права защищены.
           </p>
           <div className="flex items-center gap-4">
-            <a href="#" className="text-muted-foreground hover:text-foreground hover:scale-110 transition-all duration-200 p-2 rounded-md min-h-[44px] min-w-[44px] flex items-center justify-center touch-manipulation">
+            <a
+              href="#"
+              className="text-muted-foreground hover:text-foreground hover:scale-110 transition-all duration-200 p-2 rounded-md min-h-[44px] min-w-[44px] flex items-center justify-center touch-manipulation"
+            >
               <Github className="h-5 w-5" />
               <span className="sr-only">GitHub</span>
             </a>
@@ -747,7 +909,10 @@ export default function Home() {
               <Linkedin className="h-5 w-5" />
               <span className="sr-only">LinkedIn</span>
             </a> */}
-            <a href="#" className="text-muted-foreground hover:text-foreground hover:scale-110 transition-all duration-200 p-2 rounded-md min-h-[44px] min-w-[44px] flex items-center justify-center touch-manipulation">
+            <a
+              href="#"
+              className="text-muted-foreground hover:text-foreground hover:scale-110 transition-all duration-200 p-2 rounded-md min-h-[44px] min-w-[44px] flex items-center justify-center touch-manipulation"
+            >
               <Mail className="h-5 w-5" />
               <span className="sr-only">Email</span>
             </a>
@@ -774,4 +939,3 @@ export default function Home() {
     </div>
   );
 }
-
