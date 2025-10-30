@@ -431,30 +431,30 @@ export default function Home() {
                 ]
               },
               {
-                title: "Duel2Hero",
-                description: "Игровое приложение для соревнований в сборе уникальных чисел с элементами RPG и социальными функциями",
+                title: "GTO Protocol Management System",
+                description: `Приложение для ведения электронных протоколов сдачи норм ГТО (Готов к труду и обороне) — российской системы физкультурных нормативов.\n\nЭто MVP приложение предназначено для:\n- Ведения электронных протоколов выполнения нормативов ГТО\n- Управления справочниками видов испытаний, уровней выполнения и спортивных званий\n- Преобразования текстовых результатов в числовые значения через настраиваемый маппинг\n- Фильтрации и экспорта данных в CSV формат\n- Обеспечения безопасности через систему авторизации и audit logging`,
                 technologies: [
-                  { name: "Next.js", level: "expert", description: "React фреймворк для серверного рендеринга", projects: 3 },
-                  { name: "App Router", level: "advanced", description: "Новая система маршрутизации Next.js", projects: 2 },
-                  { name: "TypeScript", level: "expert", description: "Типизированный JavaScript", projects: 3 },
-                  { name: "Socket.io", level: "intermediate", description: "Библиотека для реального времени", projects: 1 },
-                  { name: "MongoDB", level: "intermediate", description: "NoSQL база данных", projects: 1 }
+                  { name: "Next.js 16", level: "expert", description: "App Router, React 19, TypeScript" },
+                  { name: "Prisma ORM", level: "advanced", description: "PostgreSQL, localStorage fallback" },
+                  { name: "Tailwind CSS v4", level: "expert", description: "Для стилизации UI" },
+                  { name: "shadcn/ui", level: "advanced", description: "UI компоненты" },
+                  { name: "React Hook Form", level: "expert", description: "+ Zod для валидации форм" }
                 ],
-                imageUrl: "/Duel.png",
+                imageUrl: "/Duel.png", // Пока временно, чтобы не ломать сетку
                 href: "https://duel2hero.vercel.app/",
                 demoUrl: "https://duel2hero.vercel.app/",
                 sourceUrl: "https://github.com/gtompel/duel2hero",
-                caseStudyUrl: "#",
-                caseStudyData: duel2HeroCaseStudy,
-                role: "Индивидуальный проект",
-                duration: "2 месяца",
-                teamSize: "Соло-разработка",
-                impact: "Создал увлекательное игровое приложение с активным сообществом пользователей",
+                caseStudyUrl: "#case-gto",
+                caseStudyData: null, // Если потребуется подробный кейс
+                role: "Ведущий разработчик",
+                duration: "3 месяца",
+                teamSize: "Соло или небольшая команда",
+                impact: "Автоматизация документооборота по ГТО, прозрачность результатов и повышение безопасности хранения данных.",
                 metrics: [
-                  "Реал-тайм multiplayer",
-                  "Геймификация процесса",
-                  "Социальные рейтинги",
-                  "Адаптивный дизайн"
+                  "Ведение протоколов онлайн",
+                  "Экспорт CSV для организаций",
+                  "Раздельные роли: admin/user",
+                  "Аудит операций"
                 ]
               }
             ]}
