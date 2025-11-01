@@ -2,15 +2,17 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Download, MessageSquare, FileCode, Github, ChevronUp } from "lucide-react";
+import { Download, MessageSquare, FileCode, Github, ChevronUp, Eye, EyeOff } from "lucide-react";
 import { cvData } from "@/lib/cv-data";
 import { useToast } from "@/hooks/use-toast";
 
 interface QuickActionsBarProps {
   onCVEdit?: () => void;
+  onToggleTestimonials?: () => void;
+  isTestimonialsVisible?: boolean;
 }
 
-export function QuickActionsBar({ onCVEdit }: QuickActionsBarProps) {
+export function QuickActionsBar({ onCVEdit, onToggleTestimonials, isTestimonialsVisible = true }: QuickActionsBarProps) {
   const [isVisible, setIsVisible] = useState(false);
   const { toast } = useToast();
   const isDevMode = process.env.NODE_ENV === 'development';
@@ -211,15 +213,35 @@ export function QuickActionsBar({ onCVEdit }: QuickActionsBarProps) {
         </Button>
 
         {isDevMode && (
-          <Button
-            size="sm"
-            variant="outline"
-            className="w-full justify-start gap-2 min-h-[44px] touch-manipulation"
-            onClick={onCVEdit}
-          >
-            <FileCode className="h-4 w-4" />
-            <span className="hidden sm:inline">Редактировать CV</span>
-          </Button>
+          <>
+            <Button
+              size="sm"
+              variant="outline"
+              className="w-full justify-start gap-2 min-h-[44px] touch-manipulation"
+              onClick={onCVEdit}
+            >
+              <FileCode className="h-4 w-4" />
+              <span className="hidden sm:inline">Редактировать CV</span>
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              className="w-full justify-start gap-2 min-h-[44px] touch-manipulation"
+              onClick={onToggleTestimonials}
+            >
+              {isTestimonialsVisible ? (
+                <>
+                  <EyeOff className="h-4 w-4" />
+                  <span className="hidden sm:inline">Скрыть отзывы</span>
+                </>
+              ) : (
+                <>
+                  <Eye className="h-4 w-4" />
+                  <span className="hidden sm:inline">Показать отзывы</span>
+                </>
+              )}
+            </Button>
+          </>
         )}
 
         <div className="border-t pt-2 mt-1">

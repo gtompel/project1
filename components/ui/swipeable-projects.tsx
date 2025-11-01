@@ -201,7 +201,7 @@ function ProjectCard({ project }: ProjectCardProps) {
 
   return (
     <Card
-      className={`overflow-hidden group h-full flex flex-col ${caseStudyData ? 'cursor-pointer' : ''}`}
+      className={`overflow-hidden group h-full flex flex-col card-hover border-2 transition-all duration-300 ${caseStudyData ? 'cursor-pointer' : ''}`}
       data-case-study={caseStudyData ? 'true' : 'false'}
       data-project-title={title}
     >

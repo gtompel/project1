@@ -15,6 +15,7 @@ import {
   User,
   FileCode,
   MessageSquare,
+  Star,
 } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { QuickActionsBar } from "@/components/ui/quick-actions-bar";
@@ -29,8 +30,11 @@ import { ProgressiveImage } from "@/components/ui/progressive-image";
 import { CollapsibleSection } from "@/components/ui/collapsible-section";
 import { SkillsProgressionChart } from "@/components/ui/skills-progression-chart";
 import { SwipeableProjects } from "@/components/ui/swipeable-projects";
+import { Testimonials } from "@/components/ui/testimonials";
 import { useToast } from "@/hooks/use-toast";
 import { useInView } from "@/hooks/use-in-view";
+import { useScrollSection } from "@/hooks/use-scroll-section";
+import { useScrollReveal } from "@/hooks/use-scroll-reveal";
 import {
   portalARMCaseStudy,
   hrSystemCaseStudy,
@@ -53,11 +57,56 @@ export default function Home() {
   const { toast } = useToast();
   const statsRef = React.useRef<HTMLDivElement>(null);
   const isStatsInView = useInView(statsRef, { threshold: 0.5 });
+  const activeSection = useScrollSection();
   const [counters, setCounters] = useState({
     years: 0,
     projects: 0,
     technologies: 0,
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [parallaxOffset, setParallaxOffset] = useState({ x: 0, y: 0 });
+  
+  // Загружаем состояние видимости отзывов из localStorage
+  const [isTestimonialsVisible, setIsTestimonialsVisible] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('testimonials-visible');
+      if (saved !== null) {
+        return saved === 'true';
+      }
+      // По умолчанию: false в production, true в dev
+      return process.env.NODE_ENV === 'development';
+    }
+    return process.env.NODE_ENV === 'development';
+  });
+
+  // Сохраняем состояние в localStorage при изменении
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('testimonials-visible', String(isTestimonialsVisible));
+    }
+  }, [isTestimonialsVisible]);
+  
+  // Scroll reveal hooks для секций
+  const aboutReveal = useScrollReveal({ threshold: 0.2 });
+  const skillsReveal = useScrollReveal({ threshold: 0.2 });
+  const experienceReveal = useScrollReveal({ threshold: 0.2 });
+  const projectsReveal = useScrollReveal({ threshold: 0.2 });
+  const testimonialsReveal = useScrollReveal({ threshold: 0.2 });
+  const contactReveal = useScrollReveal({ threshold: 0.2 });
+
+  // Параллакс эффект для Hero
+  React.useEffect(() => {
+    const handleParallax = () => {
+      const scrollY = window.scrollY;
+      setParallaxOffset({
+        x: scrollY * 0.3,
+        y: scrollY * 0.2,
+      });
+    };
+
+    window.addEventListener("scroll", handleParallax);
+    return () => window.removeEventListener("scroll", handleParallax);
+  }, []);
 
   // Click handler for case study cards
   const handleCaseStudyClick = (e: React.MouseEvent) => {
@@ -135,6 +184,8 @@ export default function Home() {
   // Обработчик формы контакта
   const handleContactSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (isSubmitting) return;
+    
     const form = e.currentTarget;
     const formData = new FormData(form);
     const name = formData.get("name") as string;
@@ -150,15 +201,19 @@ export default function Home() {
       return;
     }
 
+    setIsSubmitting(true);
+
     // Имитация отправки (можно заменить на реальный API)
     try {
       // Здесь можно добавить реальную отправку через API
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // Имитация задержки
+      
       const mailtoLink = `mailto:qumpik@yandex.ru?subject=Сообщение от ${encodeURIComponent(name)}&body=${encodeURIComponent(message + "\n\nОт: " + email)}`;
       window.location.href = mailtoLink;
       
       toast({
         title: "Сообщение отправлено",
-        description: "Спасибо за ваше сообщение!",
+        description: "Спасибо за ваше сообщение! Я свяжусь с вами в ближайшее время.",
       });
       
       form.reset();
@@ -168,6 +223,8 @@ export default function Home() {
         description: "Не удалось отправить сообщение. Попробуйте позже.",
         variant: "destructive",
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -324,31 +381,51 @@ export default function Home() {
             </a>
             <nav className="flex items-center space-x-6 text-sm font-medium">
               <a
-                className="transition-colors hover:text-foreground/80 hover:border-b-2 min-h-[44px] px-3 py-2 flex items-center touch-manipulation"
+                className={`transition-all hover:text-foreground/80 hover:border-b-2 min-h-[44px] px-3 py-2 flex items-center touch-manipulation ${
+                  activeSection === "about" 
+                    ? "text-primary border-b-2 border-primary font-medium" 
+                    : ""
+                }`}
                 href="#about"
               >
                 Обо мне
               </a>
               <a
-                className="transition-colors hover:text-foreground/80 hover:border-b-2 min-h-[44px] px-3 py-2 flex items-center touch-manipulation"
+                className={`transition-all hover:text-foreground/80 hover:border-b-2 min-h-[44px] px-3 py-2 flex items-center touch-manipulation ${
+                  activeSection === "skills" 
+                    ? "text-primary border-b-2 border-primary font-medium" 
+                    : ""
+                }`}
                 href="#skills"
               >
                 Навыки
               </a>
               <a
-                className="transition-colors hover:text-foreground/80 hover:border-b-2 min-h-[44px] px-3 py-2 flex items-center touch-manipulation"
+                className={`transition-all hover:text-foreground/80 hover:border-b-2 min-h-[44px] px-3 py-2 flex items-center touch-manipulation ${
+                  activeSection === "experience" 
+                    ? "text-primary border-b-2 border-primary font-medium" 
+                    : ""
+                }`}
                 href="#experience"
               >
                 Опыт
               </a>
               <a
-                className="transition-colors hover:text-foreground/80 hover:border-b-2 min-h-[44px] px-3 py-2 flex items-center touch-manipulation"
+                className={`transition-all hover:text-foreground/80 hover:border-b-2 min-h-[44px] px-3 py-2 flex items-center touch-manipulation ${
+                  activeSection === "projects" 
+                    ? "text-primary border-b-2 border-primary font-medium" 
+                    : ""
+                }`}
                 href="#projects"
               >
                 Проекты
               </a>
               <a
-                className="transition-colors hover:text-foreground/80 hover:border-b-2 min-h-[44px] px-3 py-2 flex items-center touch-manipulation"
+                className={`transition-all hover:text-foreground/80 hover:border-b-2 min-h-[44px] px-3 py-2 flex items-center touch-manipulation ${
+                  activeSection === "contact" 
+                    ? "text-primary border-b-2 border-primary font-medium" 
+                    : ""
+                }`}
                 href="#contact"
               >
                 Контакты
@@ -389,9 +466,14 @@ export default function Home() {
       <main className="flex-1" id="main">
         {/* Hero Section */}
         <section className="container py-24 md:py-32 space-y-8 relative overflow-hidden">
-          {/* Градиентный фон */}
+          {/* Градиентный фон с параллакс */}
           <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/5 via-background to-primary/5 dark:from-primary/10 dark:via-background dark:to-primary/10" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/5 dark:bg-primary/10 rounded-full blur-3xl animate-pulse" />
+          <div 
+            className="absolute top-1/2 left-1/2 w-[600px] h-[600px] bg-primary/5 dark:bg-primary/10 rounded-full blur-3xl animate-pulse transition-transform duration-300 ease-out"
+            style={{
+              transform: `translate(calc(-50% + ${parallaxOffset.x}px), calc(-50% + ${parallaxOffset.y}px))`,
+            }}
+          />
           
           <div className="flex flex-col items-center text-center space-y-4 relative z-10">
             <div className="inline-block rounded-full bg-gradient-to-r from-primary to-primary/60 p-1 mb-4 animate-fade-in">
@@ -499,7 +581,15 @@ export default function Home() {
         </section>
 
         {/* About Section */}
-        <section id="about" className="container py-12 md:py-24">
+        <section 
+          id="about" 
+          ref={aboutReveal.ref as React.RefObject<HTMLElement>}
+          className={`container py-12 md:py-24 transition-all duration-1000 ${
+            aboutReveal.isVisible 
+              ? "opacity-100 translate-y-0" 
+              : "opacity-0 translate-y-10"
+          }`}
+        >
           <CollapsibleSection title="Обо мне" className="space-y-8">
             <div className="flex flex-col items-center text-center space-y-6">
               <div className="relative">
@@ -558,8 +648,207 @@ export default function Home() {
           </CollapsibleSection>
         </section>
 
-        {/* Projects Section (after About) */}
-        <section id="projects" className="container py-12 md:py-24 space-y-8">
+        {/* Skills Section */}
+        <section 
+          id="skills" 
+          ref={skillsReveal.ref as React.RefObject<HTMLElement>}
+          className={`container py-12 md:py-24 transition-all duration-1000 ${
+            skillsReveal.isVisible 
+              ? "opacity-100 translate-y-0" 
+              : "opacity-0 translate-y-10"
+          }`}
+        >
+          <CollapsibleSection title="Технические навыки" className="space-y-8">
+            <div className="flex flex-col items-center text-center space-y-4 mb-12">
+              <div className="inline-block rounded-lg bg-muted p-1.5 mb-4">
+                <Code className="h-5 w-5" />
+              </div>
+              <h2 className="text-3xl font-bold">Технические навыки</h2>
+              <p className="text-muted-foreground md:text-xl max-w-[700px]">
+                Мой технический стек и опыт работы с различными технологиями
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <Card className="group hover:shadow-lg transition-all duration-300 hover:scale-105 cursor-pointer">
+                <CardContent className="pt-6">
+                  <div className="flex items-center gap-2 mb-4">
+                    <Globe className="h-5 w-5 text-brand group-hover:scale-110 transition-transform duration-200" />
+                    <h3 className="text-xl font-semibold">Frontend</h3>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <Badge>JavaScript</Badge>
+                    <Badge>TypeScript</Badge>
+                    <Badge>React</Badge>
+                    <Badge>Next.js</Badge>
+                    <Badge>Vite</Badge>
+                    <Badge>Tailwind CSS</Badge>
+                    <Badge>Shadcn/UI</Badge>
+                    <Badge>HTML</Badge>
+                    <Badge>CSS</Badge>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="group hover:shadow-lg transition-all duration-300 hover:scale-105 cursor-pointer">
+                <CardContent className="pt-6">
+                  <div className="flex items-center gap-2 mb-4">
+                    <Server className="h-5 w-5 text-brand group-hover:scale-110 transition-transform duration-200" />
+                    <h3 className="text-xl font-semibold">Backend</h3>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <Badge>Node.js</Badge>
+                    <Badge>Nest.js</Badge>
+                    <Badge>Express</Badge>
+                    <Badge>PostgreSQL</Badge>
+                    <Badge>SQLite</Badge>
+                    <Badge>REST API</Badge>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="group hover:shadow-lg transition-all duration-300 hover:scale-105 cursor-pointer">
+                <CardContent className="pt-6">
+                  <div className="flex items-center gap-2 mb-4">
+                    <Database className="h-5 w-5 text-brand group-hover:scale-110 transition-transform duration-200" />
+                    <h3 className="text-xl font-semibold">DevOps</h3>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <Badge>Git</Badge>
+                    <Badge>Docker</Badge>
+                    <Badge>Nginx</Badge>
+                    <Badge>Linux</Badge>
+                    <Badge>CI/CD</Badge>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Skills Progression Chart */}
+            <div className="mt-12">
+              <SkillsProgressionChart />
+            </div>
+          </CollapsibleSection>
+        </section>
+
+        {/* Experience Section */}
+        <section 
+          id="experience" 
+          ref={experienceReveal.ref as React.RefObject<HTMLElement>}
+          className={`container py-12 md:py-24 transition-all duration-1000 ${
+            experienceReveal.isVisible 
+              ? "opacity-100 translate-y-0" 
+              : "opacity-0 translate-y-10"
+          }`}
+        >
+          <CollapsibleSection title="Карьерный путь" className="space-y-8">
+            <div className="flex flex-col items-center text-center space-y-4 mb-12">
+              <div className="inline-block rounded-lg bg-muted p-1.5 mb-4">
+                <Briefcase className="h-5 w-5" />
+              </div>
+              <h2 className="text-3xl font-bold">Карьерный путь</h2>
+              <p className="text-muted-foreground md:text-xl max-w-[700px]">
+                Мой профессиональный рост и ключевые достижения
+              </p>
+            </div>
+
+            <AchievementTimeline
+              achievements={[
+                {
+                  year: "2022-наст.",
+                  title: "Инженер-программист",
+                  company: "ФГУП НИТИ им. А.П. Александрова",
+                  description:
+                    "Разработка веб-приложений и поддержка инфраструктуры",
+                  achievements: [
+                    "Разработал веб-приложения с использованием React, Next.js",
+                    "Создал и поддерживаю бэкенд на Node.js, Nest.js, Express",
+                    "Работаю с базами данных PostgreSQL, SQLite",
+                    "Настроил и поддерживаю CI/CD процессы",
+                    "Контейнеризую приложения с использованием Docker",
+                  ],
+                  quantifiedAchievements: [
+                    "15+ веб-приложений",
+                    "8 настроек CI/CD",
+                    "5+ интеграций систем",
+                    "1000+ запросов/день",
+                  ],
+                  technologies: [
+                    "React",
+                    "Next.js",
+                    "Node.js",
+                    "Nest.js",
+                    "PostgreSQL",
+                    "Docker",
+                  ],
+                  type: "job",
+                },
+                {
+                  year: "2019-2022",
+                  title: "Инженер-проектировщик",
+                  company: "Индивидуальное предпринимательство / фриланс",
+                  description: "Проектирование и внедрение систем безопасности",
+                  achievements: [
+                    "Спроектировал и внедрил системы контроля доступа",
+                    "Автоматизировал мониторинг и управление системами безопасности",
+                    "Разработал системы видеонаблюдения",
+                    "Создал комплексные системы безопасности под ключ",
+                  ],
+                  quantifiedAchievements: [
+                    "20+ систем контроля доступа",
+                    "15+ систем видеонаблюдения",
+                    "10+ комплексных решений",
+                    "50+ клиентов",
+                  ],
+                  technologies: [
+                    "Python",
+                    "JavaScript",
+                    "Linux",
+                    "Network Security",
+                  ],
+                  type: "job",
+                },
+                {
+                  year: "2018-2019",
+                  title: "Руководитель проектного отдела",
+                  company: "ООО 'Трекон'",
+                  description: "Управление проектами в области безопасности",
+                  achievements: [
+                    "Спроектировал интегрированные комплексы безопасности",
+                    "Разработал индивидуальные решения под заказчика",
+                    "Руководил командой разработчиков",
+                    "Внедрил процессы проектного управления",
+                  ],
+                  quantifiedAchievements: [
+                    "10+ интегрированных комплексов",
+                    "5 человек в команде",
+                    "100% соблюдение сроков",
+                    "30+ успешных проектов",
+                  ],
+                  technologies: [
+                    "Python",
+                    "JavaScript",
+                    "HTML",
+                    "CSS",
+                    "Project Management",
+                  ],
+                  type: "job",
+                },
+              ]}
+            />
+          </CollapsibleSection>
+        </section>
+
+        {/* Projects Section */}
+        <section 
+          id="projects" 
+          ref={projectsReveal.ref as React.RefObject<HTMLElement>}
+          className={`container py-12 md:py-24 space-y-8 transition-all duration-1000 ${
+            projectsReveal.isVisible 
+              ? "opacity-100 translate-y-0" 
+              : "opacity-0 translate-y-10"
+          }`}
+        >
           <div className="flex flex-col items-center text-center space-y-4 mb-12">
             <div className="inline-block rounded-lg bg-muted p-1.5 mb-4">
               <FileCode className="h-5 w-5" />
@@ -710,7 +999,7 @@ export default function Home() {
                     description: "+ Zod для валидации форм",
                   },
                 ],
-                imageUrl: "/Duel.png", // Пока временно, чтобы не ломать сетку
+                imageUrl: "/Duel.png",
                 href: "https://duel2hero.vercel.app/",
                 demoUrl: "https://duel2hero.vercel.app/",
                 sourceUrl: "https://github.com/gtompel/duel2hero",
@@ -732,185 +1021,80 @@ export default function Home() {
           />
         </section>
 
-        {/* Skills Section */}
-        <section id="skills" className="container py-12 md:py-24">
-          <CollapsibleSection title="Технические навыки" className="space-y-8">
-            <div className="flex flex-col items-center text-center space-y-4 mb-12">
-              <div className="inline-block rounded-lg bg-muted p-1.5 mb-4">
-                <Code className="h-5 w-5" />
-              </div>
-              <h2 className="text-3xl font-bold">Технические навыки</h2>
-              <p className="text-muted-foreground md:text-xl max-w-[700px]">
-                Мой технический стек и опыт работы с различными технологиями
-              </p>
+        {/* Testimonials Section */}
+        {isTestimonialsVisible && (
+          <section 
+            id="testimonials" 
+            ref={testimonialsReveal.ref as React.RefObject<HTMLElement>}
+            className={`container py-12 md:py-24 transition-all duration-1000 ${
+              testimonialsReveal.isVisible 
+                ? "opacity-100 translate-y-0" 
+                : "opacity-0 translate-y-10"
+            }`}
+          >
+          <div className="flex flex-col items-center text-center space-y-4 mb-12">
+            <div className="inline-block rounded-lg bg-muted p-1.5 mb-4">
+              <Star className="h-5 w-5" />
             </div>
+            <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
+              Отзывы
+            </h2>
+            <p className="text-muted-foreground md:text-xl max-w-[700px]">
+              Что говорят коллеги и клиенты о моей работе
+            </p>
+          </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <Card className="group hover:shadow-lg transition-all duration-300 hover:scale-105 cursor-pointer">
-                <CardContent className="pt-6">
-                  <div className="flex items-center gap-2 mb-4">
-                    <Globe className="h-5 w-5 text-brand group-hover:scale-110 transition-transform duration-200" />
-                    <h3 className="text-xl font-semibold">Frontend</h3>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    <Badge>JavaScript</Badge>
-                    <Badge>TypeScript</Badge>
-                    <Badge>React</Badge>
-                    <Badge>Next.js</Badge>
-                    <Badge>Vite</Badge>
-                    <Badge>Tailwind CSS</Badge>
-                    <Badge>Shadcn/UI</Badge>
-                    <Badge>HTML</Badge>
-                    <Badge>CSS</Badge>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="group hover:shadow-lg transition-all duration-300 hover:scale-105 cursor-pointer">
-                <CardContent className="pt-6">
-                  <div className="flex items-center gap-2 mb-4">
-                    <Server className="h-5 w-5 text-brand group-hover:scale-110 transition-transform duration-200" />
-                    <h3 className="text-xl font-semibold">Backend</h3>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    <Badge>Node.js</Badge>
-                    <Badge>Nest.js</Badge>
-                    <Badge>Express</Badge>
-                    <Badge>PostgreSQL</Badge>
-                    <Badge>SQLite</Badge>
-                    <Badge>REST API</Badge>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="group hover:shadow-lg transition-all duration-300 hover:scale-105 cursor-pointer">
-                <CardContent className="pt-6">
-                  <div className="flex items-center gap-2 mb-4">
-                    <Database className="h-5 w-5 text-brand group-hover:scale-110 transition-transform duration-200" />
-                    <h3 className="text-xl font-semibold">DevOps</h3>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    <Badge>Git</Badge>
-                    <Badge>Docker</Badge>
-                    <Badge>Nginx</Badge>
-                    <Badge>Linux</Badge>
-                    <Badge>CI/CD</Badge>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Skills Progression Chart */}
-            <div className="mt-12">
-              <SkillsProgressionChart />
-            </div>
-          </CollapsibleSection>
-        </section>
-
-        {/* Experience Section */}
-        <section id="experience" className="container py-12 md:py-24">
-          <CollapsibleSection title="Карьерный путь" className="space-y-8">
-            <div className="flex flex-col items-center text-center space-y-4 mb-12">
-              <div className="inline-block rounded-lg bg-muted p-1.5 mb-4">
-                <Briefcase className="h-5 w-5" />
-              </div>
-              <h2 className="text-3xl font-bold">Карьерный путь</h2>
-              <p className="text-muted-foreground md:text-xl max-w-[700px]">
-                Мой профессиональный рост и ключевые достижения
-              </p>
-            </div>
-
-            <AchievementTimeline
-              achievements={[
-                {
-                  year: "2022-наст.",
-                  title: "Инженер-программист",
-                  company: "ФГУП НИТИ им. А.П. Александрова",
-                  description:
-                    "Разработка веб-приложений и поддержка инфраструктуры",
-                  achievements: [
-                    "Разработал веб-приложения с использованием React, Next.js",
-                    "Создал и поддерживаю бэкенд на Node.js, Nest.js, Express",
-                    "Работаю с базами данных PostgreSQL, SQLite",
-                    "Настроил и поддерживаю CI/CD процессы",
-                    "Контейнеризую приложения с использованием Docker",
-                  ],
-                  quantifiedAchievements: [
-                    "15+ веб-приложений",
-                    "8 настроек CI/CD",
-                    "5+ интеграций систем",
-                    "1000+ запросов/день",
-                  ],
-                  technologies: [
-                    "React",
-                    "Next.js",
-                    "Node.js",
-                    "Nest.js",
-                    "PostgreSQL",
-                    "Docker",
-                  ],
-                  type: "job",
-                },
-                {
-                  year: "2019-2022",
-                  title: "Инженер-проектировщик",
-                  company: "Индивидуальное предпринимательство / фриланс",
-                  description: "Проектирование и внедрение систем безопасности",
-                  achievements: [
-                    "Спроектировал и внедрил системы контроля доступа",
-                    "Автоматизировал мониторинг и управление системами безопасности",
-                    "Разработал системы видеонаблюдения",
-                    "Создал комплексные системы безопасности под ключ",
-                  ],
-                  quantifiedAchievements: [
-                    "20+ систем контроля доступа",
-                    "15+ систем видеонаблюдения",
-                    "10+ комплексных решений",
-                    "50+ клиентов",
-                  ],
-                  technologies: [
-                    "Python",
-                    "JavaScript",
-                    "Linux",
-                    "Network Security",
-                  ],
-                  type: "job",
-                },
-                {
-                  year: "2018-2019",
-                  title: "Руководитель проектного отдела",
-                  company: "ООО 'Трекон'",
-                  description: "Управление проектами в области безопасности",
-                  achievements: [
-                    "Спроектировал интегрированные комплексы безопасности",
-                    "Разработал индивидуальные решения под заказчика",
-                    "Руководил командой разработчиков",
-                    "Внедрил процессы проектного управления",
-                  ],
-                  quantifiedAchievements: [
-                    "10+ интегрированных комплексов",
-                    "5 человек в команде",
-                    "100% соблюдение сроков",
-                    "30+ успешных проектов",
-                  ],
-                  technologies: [
-                    "Python",
-                    "JavaScript",
-                    "HTML",
-                    "CSS",
-                    "Project Management",
-                  ],
-                  type: "job",
-                },
-              ]}
-            />
-          </CollapsibleSection>
-        </section>
-
-        {/* Projects Section (old) removed */}
+          <Testimonials
+            testimonials={[
+              {
+                id: "1",
+                name: "Алексей Иванов",
+                role: "Руководитель IT-отдела",
+                company: "ФГУП НИТИ",
+                content: "Юрий проявил себя как ответственный и профессиональный разработчик. Портал АРМ, который он создал, значительно упростил нашу работу и повысил эффективность процессов.",
+                rating: 5,
+                project: "Портал АРМ",
+              },
+              {
+                id: "2",
+                name: "Мария Петрова",
+                role: "HR-директор",
+                company: "Корпорация",
+                content: "Работа с Юрием над HR-системой была очень продуктивной. Он внимательно выслушал все требования и создал решение, которое превзошло наши ожидания. Система работает стабильно и удобна в использовании.",
+                rating: 5,
+                project: "HR Система",
+              },
+              {
+                id: "3",
+                name: "Дмитрий Сидоров",
+                role: "CTO",
+                company: "Технологический стартап",
+                content: "Юрий показал отличные навыки в full-stack разработке. Его код чистый, хорошо структурирован и легко поддерживается. Рекомендую его как надежного специалиста.",
+                rating: 5,
+              },
+              {
+                id: "4",
+                name: "Елена Козлова",
+                role: "Менеджер проектов",
+                company: "IT-компания",
+                content: "В работе с Юрием впечатлила его способность быстро вникать в задачи и предлагать оптимальные решения. Все проекты были сданы в срок и с высоким качеством.",
+                rating: 5,
+              },
+            ]}
+          />
+          </section>
+        )}
 
         {/* Contact Section */}
-        <section id="contact" className="container py-12 md:py-24">
+        <section 
+          id="contact" 
+          ref={contactReveal.ref as React.RefObject<HTMLElement>}
+          className={`container py-12 md:py-24 transition-all duration-1000 ${
+            contactReveal.isVisible 
+              ? "opacity-100 translate-y-0" 
+              : "opacity-0 translate-y-10"
+          }`}
+        >
           <CollapsibleSection title="Связаться со мной" className="space-y-8">
             <div className="flex flex-col items-center text-center space-y-4 mb-12">
               <div className="inline-block rounded-lg bg-muted p-1.5 mb-4">
@@ -968,7 +1152,7 @@ export default function Home() {
                 </CardContent>
               </Card>
 
-              <Card className="border-2 shadow-lg">
+              <Card className="border-2 shadow-lg glass">
                 <CardContent className="pt-6">
                   <form onSubmit={handleContactSubmit} className="space-y-4">
                     <div className="grid gap-2">
@@ -1012,9 +1196,17 @@ export default function Home() {
                     </div>
                     <Button 
                       type="submit" 
-                      className="w-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg hover:shadow-xl transition-all duration-300"
+                      disabled={isSubmitting}
+                      className="w-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      Отправить сообщение
+                      {isSubmitting ? (
+                        <>
+                          <span className="mr-2">Отправка...</span>
+                          <span className="animate-spin inline-block w-4 h-4 border-2 border-current border-t-transparent rounded-full" />
+                        </>
+                      ) : (
+                        "Отправить сообщение"
+                      )}
                     </Button>
                   </form>
                 </CardContent>
@@ -1054,7 +1246,11 @@ export default function Home() {
       </footer>
 
       {/* Quick Actions Bar */}
-      <QuickActionsBar onCVEdit={() => setIsCVEditorOpen(true)} />
+      <QuickActionsBar 
+        onCVEdit={() => setIsCVEditorOpen(true)}
+        onToggleTestimonials={() => setIsTestimonialsVisible(!isTestimonialsVisible)}
+        isTestimonialsVisible={isTestimonialsVisible}
+      />
 
       {/* CV Editor Modal */}
       <CVEditorModal

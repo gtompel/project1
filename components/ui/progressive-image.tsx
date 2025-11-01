@@ -40,10 +40,18 @@ export function ProgressiveImage({
   };
 
   return (
-    <div className={`relative overflow-hidden ${className}`}>
-      {/* Placeholder/Skeleton */}
+    <div className={`relative overflow-hidden bg-muted ${className}`}>
+      {/* Placeholder/Skeleton - улучшенный для проектов */}
       {!isLoaded && !hasError && (
-        <Skeleton className="absolute inset-0 w-full h-full" />
+        <div className="absolute inset-0 w-full h-full">
+          <Skeleton className="absolute inset-0 w-full h-full" />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="flex flex-col items-center gap-2 opacity-40">
+              <div className="w-12 h-12 border-2 border-primary/30 rounded-lg animate-pulse" />
+              <div className="h-2 w-20 bg-primary/20 rounded animate-pulse" />
+            </div>
+          </div>
+        </div>
       )}
 
       {/* Error state */}

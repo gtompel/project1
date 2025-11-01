@@ -185,5 +185,79 @@
   .animation-delay-600 {
     animation-delay: 0.6s;
   }
+
+  /* Glassmorphism эффекты */
+  .glass {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .dark .glass {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  /* Плавные переходы для reveal анимаций */
+  .reveal-hidden {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+  }
+
+  .reveal-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Улучшенные hover эффекты */
+  .card-hover {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  }
+
+  /* Улучшенная типографика 2025 */
+  @supports (font-variation-settings: normal) {
+    body {
+      font-feature-settings: "kern" 1, "liga" 1;
+      font-optical-sizing: auto;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+  }
+
+  /* Плавные переходы для всех интерактивных элементов */
+  a, button {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Улучшенные фокус-состояния для accessibility */
+  *:focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* Стили для улучшенной читаемости */
+  .prose-spacing p {
+    text-align: left;
+    max-width: 65ch;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* Градиентные тексты для акцентов */
+  .gradient-text {
+    background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary)) / 0.8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
 }
 

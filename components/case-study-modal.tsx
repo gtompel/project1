@@ -71,7 +71,7 @@ export function CaseStudyModal({ isOpen, onClose, projectName, caseStudyData }: 
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="glass max-w-6xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-3xl font-bold text-center mb-4">
             {caseStudyData.title}

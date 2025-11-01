@@ -8,8 +8,11 @@ import { Toaster } from "@/components/ui/toaster"
 import { Analytics } from "@vercel/analytics/react"
 import { ReactNode } from "react"
 
-
-const inter = Inter({ subsets: ["latin", "cyrillic"] })
+const inter = Inter({ 
+  subsets: ["latin", "cyrillic"],
+  display: "swap",
+  variable: "--font-inter",
+})
 
 export const metadata = {
   title: "Юрий Королёв - Full Stack Web Developer",
@@ -87,7 +90,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
       <head>
         <StructuredData />
       </head>
-      <body className={inter.className}>
+      <body className={`${inter.variable} ${inter.className}`}>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           <Analytics />
           {children}
@@ -97,7 +100,5 @@ export default function RootLayout({ children }: RootLayoutProps) {
     </html>
   )
 }
-
-import './globals.css'
 
 
