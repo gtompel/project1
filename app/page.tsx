@@ -29,6 +29,8 @@ import { ProgressiveImage } from "@/components/ui/progressive-image";
 import { CollapsibleSection } from "@/components/ui/collapsible-section";
 import { SkillsProgressionChart } from "@/components/ui/skills-progression-chart";
 import { SwipeableProjects } from "@/components/ui/swipeable-projects";
+import { useToast } from "@/hooks/use-toast";
+import { useInView } from "@/hooks/use-in-view";
 import {
   portalARMCaseStudy,
   hrSystemCaseStudy,
@@ -47,6 +49,15 @@ export default function Home() {
   const [isCVEditorOpen, setIsCVEditorOpen] = useState(false);
   const [isCaseStudyOpen, setIsCaseStudyOpen] = useState(false);
   const [currentCaseStudy, setCurrentCaseStudy] = useState<any>(null);
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const { toast } = useToast();
+  const statsRef = React.useRef<HTMLDivElement>(null);
+  const isStatsInView = useInView(statsRef, { threshold: 0.5 });
+  const [counters, setCounters] = useState({
+    years: 0,
+    projects: 0,
+    technologies: 0,
+  });
 
   // Click handler for case study cards
   const handleCaseStudyClick = (e: React.MouseEvent) => {
@@ -67,6 +78,96 @@ export default function Home() {
         setCurrentCaseStudy(gtoCaseStudy);
         setIsCaseStudyOpen(true);
       }
+    }
+  };
+
+  // Прогресс скролла
+  React.useEffect(() => {
+    const handleScroll = () => {
+      const windowHeight = window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight;
+      const scrollTop = window.scrollY;
+      const progress = (scrollTop / (documentHeight - windowHeight)) * 100;
+      setScrollProgress(progress);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Анимация счетчиков
+  React.useEffect(() => {
+    if (!isStatsInView) return;
+
+    const targetYears = new Date().getFullYear() - 2018;
+    const targetProjects = 3;
+    const targetTechnologies = 13;
+
+    const duration = 2000;
+    const steps = 60;
+    const stepTime = duration / steps;
+    let currentStep = 0;
+
+    const timer = setInterval(() => {
+      currentStep++;
+      const progress = currentStep / steps;
+      const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+
+      setCounters({
+        years: Math.floor(targetYears * easeOutQuart),
+        projects: Math.floor(targetProjects * easeOutQuart),
+        technologies: Math.floor(targetTechnologies * easeOutQuart),
+      });
+
+      if (currentStep >= steps) {
+        clearInterval(timer);
+        setCounters({
+          years: targetYears,
+          projects: targetProjects,
+          technologies: targetTechnologies,
+        });
+      }
+    }, stepTime);
+
+    return () => clearInterval(timer);
+  }, [isStatsInView]);
+
+  // Обработчик формы контакта
+  const handleContactSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+    const name = formData.get("name") as string;
+    const email = formData.get("email") as string;
+    const message = formData.get("message") as string;
+
+    if (!name || !email || !message) {
+      toast({
+        title: "Ошибка",
+        description: "Пожалуйста, заполните все поля",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Имитация отправки (можно заменить на реальный API)
+    try {
+      // Здесь можно добавить реальную отправку через API
+      const mailtoLink = `mailto:qumpik@yandex.ru?subject=Сообщение от ${encodeURIComponent(name)}&body=${encodeURIComponent(message + "\n\nОт: " + email)}`;
+      window.location.href = mailtoLink;
+      
+      toast({
+        title: "Сообщение отправлено",
+        description: "Спасибо за ваше сообщение!",
+      });
+      
+      form.reset();
+    } catch (error) {
+      toast({
+        title: "Ошибка",
+        description: "Не удалось отправить сообщение. Попробуйте позже.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -210,6 +311,11 @@ export default function Home() {
 
       {/* Header */}
       <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        {/* Прогресс скролла */}
+        <div
+          className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-primary via-primary/80 to-primary transition-all duration-150"
+          style={{ width: `${scrollProgress}%` }}
+        />
         <div className="container flex h-16 items-center">
           <div className="mr-4 hidden md:flex">
             <a className="mr-6 flex items-center space-x-2 font-bold" href="/">
@@ -282,23 +388,37 @@ export default function Home() {
 
       <main className="flex-1" id="main">
         {/* Hero Section */}
-        <section className="container py-24 md:py-32 space-y-8">
-          <div className="flex flex-col items-center text-center space-y-4">
-            <h1 className="text-hero">Юрий Королёв</h1>
-            <p className="text-subtitle max-w-[700px]">
+        <section className="container py-24 md:py-32 space-y-8 relative overflow-hidden">
+          {/* Градиентный фон */}
+          <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/5 via-background to-primary/5 dark:from-primary/10 dark:via-background dark:to-primary/10" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/5 dark:bg-primary/10 rounded-full blur-3xl animate-pulse" />
+          
+          <div className="flex flex-col items-center text-center space-y-4 relative z-10">
+            <div className="inline-block rounded-full bg-gradient-to-r from-primary to-primary/60 p-1 mb-4 animate-fade-in">
+              <div className="rounded-full bg-background p-2">
+                <Code className="h-8 w-8 text-primary" />
+              </div>
+            </div>
+            <h1 className="text-hero bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent animate-fade-in">
+              Юрий Королёв
+            </h1>
+            <p className="text-subtitle max-w-[700px] animate-fade-in animation-delay-200">
               Full Stack Web Developer
             </p>
-            <div className="flex gap-4">
+            <p className="text-muted-foreground max-w-[600px] animate-fade-in animation-delay-400">
+              Создаю современные веб-приложения с акцентом на производительность и пользовательский опыт
+            </p>
+            <div className="flex gap-4 pt-4 animate-fade-in animation-delay-600">
               <Button
                 asChild
-                className="hover:scale-105 transition-transform duration-200 min-h-[44px] px-6 py-3"
+                className="hover:scale-105 transition-transform duration-200 min-h-[44px] px-6 py-3 bg-gradient-to-r from-primary to-primary/80 shadow-lg hover:shadow-xl"
               >
                 <a href="#contact">Связаться</a>
               </Button>
               <Button
                 variant="outline"
                 asChild
-                className="hover:scale-105 transition-transform duration-200 min-h-[44px] px-6 py-3"
+                className="hover:scale-105 transition-transform duration-200 min-h-[44px] px-6 py-3 border-2"
               >
                 <a href="#projects">Мои проекты</a>
               </Button>
@@ -307,78 +427,45 @@ export default function Home() {
         </section>
 
         {/* Executive Summary Section */}
-        <section className="container py-12 space-y-8">
-          <Card className="max-w-4xl mx-auto">
+        <section className="container py-12 space-y-8" ref={statsRef}>
+          <Card className="max-w-4xl mx-auto border-2 shadow-lg hover:shadow-xl transition-shadow duration-300">
             <CardHeader className="text-center pb-8">
-              <CardTitle className="text-2xl md:text-3xl">
+              <CardTitle className="text-2xl md:text-3xl bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
                 Ключевые показатели
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 md:grid-cols-5 gap-6 text-center">
-                <div className="space-y-2">
-                  <div className="text-3xl md:text-4xl font-bold text-brand">
-                    {new Date().getFullYear() - 2018}+
+                <div className="space-y-2 p-4 rounded-lg bg-gradient-to-br from-primary/10 to-primary/5 hover:from-primary/20 hover:to-primary/10 transition-all duration-300 group">
+                  <div className="text-3xl md:text-4xl font-bold text-brand group-hover:scale-110 transition-transform duration-300">
+                    {counters.years}+
                   </div>
                   <div className="text-sm text-muted-foreground">лет опыта</div>
                 </div>
-                <div className="space-y-2">
-                  <div className="text-3xl md:text-4xl font-bold text-brand">
-                    {(() => {
-                      const projects = [
-                        {
-                          title: "Портал АРМ",
-                          technologies: ["Next.js", "RSC", "Tailwind"],
-                        },
-                        {
-                          title: "HR Система",
-                          technologies: ["Next.js", "ShadcnUI", "Charts"],
-                        },
-                        {
-                          title: "Duel2Hero",
-                          technologies: ["Next.js", "App Router", "TypeScript"],
-                        },
-                      ];
-                      return projects.length;
-                    })()}
+                <div className="space-y-2 p-4 rounded-lg bg-gradient-to-br from-primary/10 to-primary/5 hover:from-primary/20 hover:to-primary/10 transition-all duration-300 group">
+                  <div className="text-3xl md:text-4xl font-bold text-brand group-hover:scale-110 transition-transform duration-300">
+                    {counters.projects}
                   </div>
                   <div className="text-sm text-muted-foreground">проектов</div>
                 </div>
-                <div className="space-y-2">
-                  <div className="text-3xl md:text-4xl font-bold text-brand">
-                    {(() => {
-                      const allTechnologies = [
-                        "Next.js",
-                        "RSC",
-                        "Tailwind",
-                        "ShadcnUI",
-                        "Charts",
-                        "App Router",
-                        "TypeScript",
-                        "Node.js",
-                        "Nest.js",
-                        "Express",
-                        "PostgreSQL",
-                        "SQLite",
-                        "REST API",
-                      ];
-                      return allTechnologies.length;
-                    })()}
+                <div className="space-y-2 p-4 rounded-lg bg-gradient-to-br from-primary/10 to-primary/5 hover:from-primary/20 hover:to-primary/10 transition-all duration-300 group">
+                  <div className="text-3xl md:text-4xl font-bold text-brand group-hover:scale-110 transition-transform duration-300">
+                    {counters.technologies}
                   </div>
                   <div className="text-sm text-muted-foreground">
                     технологий
                   </div>
                 </div>
-                <div className="space-y-2">
-                  <div className="text-3xl md:text-4xl font-bold text-brand">
+                <div className="space-y-2 p-4 rounded-lg bg-gradient-to-br from-primary/10 to-primary/5 hover:from-primary/20 hover:to-primary/10 transition-all duration-300 group">
+                  <div className="text-3xl md:text-4xl font-bold text-brand group-hover:scale-110 transition-transform duration-300">
                     B2
                   </div>
                   <div className="text-sm text-muted-foreground">
                     английский
                   </div>
                 </div>
-                <div className="space-y-2">
-                  <div className="text-3xl md:text-4xl font-bold text-brand">
+                <div className="space-y-2 p-4 rounded-lg bg-gradient-to-br from-primary/10 to-primary/5 hover:from-primary/20 hover:to-primary/10 transition-all duration-300 group">
+                  <div className="text-3xl md:text-4xl font-bold text-brand group-hover:scale-110 transition-transform duration-300">
                     ✓
                   </div>
                   <div className="text-sm text-muted-foreground">релокация</div>
@@ -414,23 +501,58 @@ export default function Home() {
         {/* About Section */}
         <section id="about" className="container py-12 md:py-24">
           <CollapsibleSection title="Обо мне" className="space-y-8">
-            <div className="flex flex-col items-center text-center space-y-4">
-              <div className="inline-block rounded-lg bg-muted p-1.5 mb-4">
-                <User className="h-5 w-5" />
+            <div className="flex flex-col items-center text-center space-y-6">
+              <div className="relative">
+                <div className="inline-block rounded-full bg-gradient-to-r from-primary to-primary/60 p-1 mb-4 animate-pulse">
+                  <div className="rounded-full bg-background p-3">
+                    <User className="h-8 w-8 text-primary" />
+                  </div>
+                </div>
               </div>
-              <h2 className="text-3xl font-bold">Обо мне</h2>
-              <div className="prose-spacing">
-                <p className="text-body">
-                  Код - мост между сегодняшним днём и завтрашними возможностями.
-                </p>
-                <p className="text-body">
-                  Проекты - эффективные решения, которые делают жизнь более
-                  удобной, безопасной и эффективной.
-                </p>
-                <p className="text-body">
-                  Философия - искать нестандартные решения, быть гибким и
-                  открытым к изменениям.
-                </p>
+              <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
+                Обо мне
+              </h2>
+              <div className="max-w-3xl prose-spacing">
+                <Card className="p-6 md:p-8 bg-gradient-to-br from-card to-card/50 border-2 shadow-lg">
+                  <div className="space-y-4 text-left">
+                    <div className="flex items-start gap-4">
+                      <div className="rounded-lg bg-primary/10 p-2 mt-1">
+                        <Code className="h-5 w-5 text-primary" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-lg mb-2">Код</h3>
+                        <p className="text-body text-muted-foreground">
+                          Мост между сегодняшним днём и завтрашними возможностями. 
+                          Пишу чистый, поддерживаемый код с фокусом на производительность.
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-4">
+                      <div className="rounded-lg bg-primary/10 p-2 mt-1">
+                        <Briefcase className="h-5 w-5 text-primary" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-lg mb-2">Проекты</h3>
+                        <p className="text-body text-muted-foreground">
+                          Эффективные решения, которые делают жизнь более
+                          удобной, безопасной и эффективной. От корпоративных систем до игровых приложений.
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-4">
+                      <div className="rounded-lg bg-primary/10 p-2 mt-1">
+                        <Globe className="h-5 w-5 text-primary" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-lg mb-2">Философия</h3>
+                        <p className="text-body text-muted-foreground">
+                          Искать нестандартные решения, быть гибким и
+                          открытым к изменениям. Постоянно изучаю новые технологии и подходы.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </Card>
               </div>
             </div>
           </CollapsibleSection>
@@ -846,16 +968,18 @@ export default function Home() {
                 </CardContent>
               </Card>
 
-              <Card>
+              <Card className="border-2 shadow-lg">
                 <CardContent className="pt-6">
-                  <form className="space-y-4">
+                  <form onSubmit={handleContactSubmit} className="space-y-4">
                     <div className="grid gap-2">
                       <label htmlFor="name" className="text-sm font-medium">
                         Имя
                       </label>
                       <input
                         id="name"
-                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                        name="name"
+                        required
+                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all"
                         placeholder="Ваше имя"
                         autoComplete="name"
                       />
@@ -866,8 +990,10 @@ export default function Home() {
                       </label>
                       <input
                         id="email"
+                        name="email"
                         type="email"
-                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                        required
+                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all"
                         placeholder="your@email.com"
                         autoComplete="email"
                       />
@@ -878,11 +1004,18 @@ export default function Home() {
                       </label>
                       <textarea
                         id="message"
-                        className="flex min-h-[120px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                        name="message"
+                        required
+                        className="flex min-h-[120px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all resize-none"
                         placeholder="Ваше сообщение..."
                       />
                     </div>
-                    <Button className="w-full bg-gray-400">Отправить</Button>
+                    <Button 
+                      type="submit" 
+                      className="w-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg hover:shadow-xl transition-all duration-300"
+                    >
+                      Отправить сообщение
+                    </Button>
                   </form>
                 </CardContent>
               </Card>
