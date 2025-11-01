@@ -1,5 +1,5 @@
 import "@/app/globals.css"
-import { Inter } from "next/font/google"
+import { JetBrains_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider"
 import { StructuredData } from "@/components/structured-data"
 import { Toaster } from "@/components/ui/toaster"
@@ -8,11 +8,12 @@ import { Toaster } from "@/components/ui/toaster"
 import { Analytics } from "@vercel/analytics/react"
 import { ReactNode } from "react"
 
-const inter = Inter({ 
+const jetbrain = JetBrains_Mono({
   subsets: ["latin", "cyrillic"],
-  display: "swap",
-  variable: "--font-inter",
-})
+  display: 'swap',
+  preload: false,
+  variable: "--font-jetbrain",
+});
 
 export const metadata = {
   title: "Юрий Королёв - Full Stack Web Developer",
@@ -90,7 +91,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
       <head>
         <StructuredData />
       </head>
-      <body className={`${inter.variable} ${inter.className}`}>
+      <body className={`${jetbrain.variable} ${jetbrain.className}`}>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           <Analytics />
           {children}
