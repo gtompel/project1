@@ -20,7 +20,6 @@ import {
 import { ThemeToggle } from "@/components/theme-toggle";
 import { LiveDev } from "@/components/live-dev";
 import { QuickActionsBar } from "@/components/ui/quick-actions-bar";
-import { LiveDemoBadges } from "@/components/ui/live-demo-badges";
 import { CVEditorModal } from "@/components/cv-editor-modal";
 import { CaseStudyModal } from "@/components/case-study-modal";
 import {
@@ -57,8 +56,10 @@ export default function Home() {
   const [currentCaseStudy, setCurrentCaseStudy] = useState<any>(null);
   const [scrollProgress, setScrollProgress] = useState(0);
   const { toast } = useToast();
-  const statsRef = React.useRef<HTMLDivElement>(null);
-  const isStatsInView = useInView(statsRef, { threshold: 0.5 });
+  const statsRef = React.useRef<HTMLDivElement | null>(null);
+  const isStatsInView = useInView(statsRef as React.RefObject<HTMLElement>, {
+    threshold: 0.5,
+  });
   const activeSection = useScrollSection();
   const [counters, setCounters] = useState({
     years: 0,
@@ -67,16 +68,19 @@ export default function Home() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [parallaxOffset, setParallaxOffset] = useState({ x: 0, y: 0 });
-  
+
   // Гидратация и стабильное SSR: не читаем localStorage до монтирования
   const [isHydrated, setIsHydrated] = useState(false);
   const [isTestimonialsVisible, setIsTestimonialsVisible] = useState(false);
 
   React.useEffect(() => {
     setIsHydrated(true);
-    const saved = typeof window !== 'undefined' ? localStorage.getItem('testimonials-visible') : null;
+    const saved =
+      typeof window !== "undefined"
+        ? localStorage.getItem("testimonials-visible")
+        : null;
     if (saved !== null) {
-      setIsTestimonialsVisible(saved === 'true');
+      setIsTestimonialsVisible(saved === "true");
     } else {
       // По умолчанию скрыто, без завязки на NODE_ENV, чтобы избежать рассинхронизации
       setIsTestimonialsVisible(false);
@@ -85,11 +89,14 @@ export default function Home() {
 
   // Сохраняем состояние в localStorage при изменении
   React.useEffect(() => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('testimonials-visible', String(isTestimonialsVisible));
+    if (typeof window !== "undefined") {
+      localStorage.setItem(
+        "testimonials-visible",
+        String(isTestimonialsVisible)
+      );
     }
   }, [isTestimonialsVisible]);
-  
+
   // Scroll reveal hooks для секций
   const aboutReveal = useScrollReveal({ threshold: 0.2 });
   const skillsReveal = useScrollReveal({ threshold: 0.2 });
@@ -100,7 +107,10 @@ export default function Home() {
 
   // Параллакс эффект для Hero
   React.useEffect(() => {
-    const reduceMotion = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const reduceMotion =
+      typeof window !== "undefined" &&
+      window.matchMedia &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduceMotion) return;
 
     const handleParallax = () => {
@@ -189,7 +199,7 @@ export default function Home() {
   const handleContactSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (isSubmitting) return;
-    
+
     const form = e.currentTarget;
     const formData = new FormData(form);
     const name = formData.get("name") as string;
@@ -211,15 +221,18 @@ export default function Home() {
     try {
       // Здесь можно добавить реальную отправку через API
       await new Promise((resolve) => setTimeout(resolve, 1000)); // Имитация задержки
-      
-      const mailtoLink = `mailto:quimpik@yandex.ru?subject=Сообщение от ${encodeURIComponent(name)}&body=${encodeURIComponent(message + "\n\nОт: " + email)}`;
+
+      const mailtoLink = `mailto:quimpik@yandex.ru?subject=Сообщение от ${encodeURIComponent(
+        name
+      )}&body=${encodeURIComponent(message + "\n\nОт: " + email)}`;
       window.location.href = mailtoLink;
-      
+
       toast({
         title: "Сообщение отправлено",
-        description: "Спасибо за ваше сообщение! Я свяжусь с вами в ближайшее время.",
+        description:
+          "Спасибо за ваше сообщение! Я свяжусь с вами в ближайшее время.",
       });
-      
+
       form.reset();
     } catch (error) {
       toast({
@@ -386,8 +399,8 @@ export default function Home() {
             <nav className="flex items-center space-x-6 text-sm font-medium">
               <a
                 className={`transition-all hover:text-foreground/80 hover:border-b-2 min-h-[44px] px-3 py-2 flex items-center touch-manipulation ${
-                  activeSection === "about" 
-                    ? "text-primary border-b-2 border-primary font-medium" 
+                  activeSection === "about"
+                    ? "text-primary border-b-2 border-primary font-medium"
                     : ""
                 }`}
                 href="#about"
@@ -396,8 +409,8 @@ export default function Home() {
               </a>
               <a
                 className={`transition-all hover:text-foreground/80 hover:border-b-2 min-h-[44px] px-3 py-2 flex items-center touch-manipulation ${
-                  activeSection === "skills" 
-                    ? "text-primary border-b-2 border-primary font-medium" 
+                  activeSection === "skills"
+                    ? "text-primary border-b-2 border-primary font-medium"
                     : ""
                 }`}
                 href="#skills"
@@ -406,8 +419,8 @@ export default function Home() {
               </a>
               <a
                 className={`transition-all hover:text-foreground/80 hover:border-b-2 min-h-[44px] px-3 py-2 flex items-center touch-manipulation ${
-                  activeSection === "experience" 
-                    ? "text-primary border-b-2 border-primary font-medium" 
+                  activeSection === "experience"
+                    ? "text-primary border-b-2 border-primary font-medium"
                     : ""
                 }`}
                 href="#experience"
@@ -416,8 +429,8 @@ export default function Home() {
               </a>
               <a
                 className={`transition-all hover:text-foreground/80 hover:border-b-2 min-h-[44px] px-3 py-2 flex items-center touch-manipulation ${
-                  activeSection === "projects" 
-                    ? "text-primary border-b-2 border-primary font-medium" 
+                  activeSection === "projects"
+                    ? "text-primary border-b-2 border-primary font-medium"
                     : ""
                 }`}
                 href="#projects"
@@ -426,8 +439,8 @@ export default function Home() {
               </a>
               <a
                 className={`transition-all hover:text-foreground/80 hover:border-b-2 min-h-[44px] px-3 py-2 flex items-center touch-manipulation ${
-                  activeSection === "contact" 
-                    ? "text-primary border-b-2 border-primary font-medium" 
+                  activeSection === "contact"
+                    ? "text-primary border-b-2 border-primary font-medium"
                     : ""
                 }`}
                 href="#contact"
@@ -438,7 +451,8 @@ export default function Home() {
           </div>
           <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
             <ThemeToggle />
-            {(process.env.NODE_ENV === 'development' || process.env.NEXT_PUBLIC_LIVE_DEV === '1') && (
+            {(process.env.NODE_ENV === "development" ||
+              process.env.NEXT_PUBLIC_LIVE_DEV === "1") && (
               <LiveDev inline buttonClassName="h-8 w-8" />
             )}
             <div className="w-full flex-1 md:w-auto md:flex-none">
@@ -475,13 +489,13 @@ export default function Home() {
         <section className="container py-24 md:py-32 space-y-8 relative overflow-hidden">
           {/* Градиентный фон с параллакс */}
           <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/5 via-background to-primary/5 dark:from-primary/10 dark:via-background dark:to-primary/10" />
-          <div 
+          <div
             className="absolute top-1/2 left-1/2 w-[600px] h-[600px] bg-primary/5 dark:bg-primary/10 rounded-full blur-3xl animate-pulse transition-transform duration-300 ease-out"
             style={{
               transform: `translate(calc(-50% + ${parallaxOffset.x}px), calc(-50% + ${parallaxOffset.y}px))`,
             }}
           />
-          
+
           <div className="flex flex-col items-center text-center space-y-4 relative z-10">
             <div className="inline-block rounded-full bg-gradient-to-r from-primary to-primary/60 p-1 mb-4 animate-fade-in">
               <div className="rounded-full bg-background p-2">
@@ -495,7 +509,8 @@ export default function Home() {
               Full Stack Web Developer
             </p>
             <p className="text-muted-foreground max-w-[600px] animate-fade-in animation-delay-400">
-              Создаю современные веб-приложения с акцентом на производительность и пользовательский опыт
+              Создаю современные веб-приложения с акцентом на производительность
+              и пользовательский опыт
             </p>
             <div className="flex gap-4 pt-4 animate-fade-in animation-delay-600">
               <Button
@@ -588,12 +603,12 @@ export default function Home() {
         </section>
 
         {/* About Section */}
-        <section 
-          id="about" 
+        <section
+          id="about"
           ref={aboutReveal.ref as React.RefObject<HTMLElement>}
           className={`container py-12 md:py-24 transition-all duration-1000 ${
-            aboutReveal.isVisible 
-              ? "opacity-100 translate-y-0" 
+            aboutReveal.isVisible
+              ? "opacity-100 translate-y-0"
               : "opacity-0 translate-y-10"
           }`}
         >
@@ -619,8 +634,8 @@ export default function Home() {
                       <div>
                         <h3 className="font-semibold text-lg mb-2">Код</h3>
                         <p className="text-body text-muted-foreground">
-                          Мост между сегодняшним днём и завтрашними возможностями. 
-                          Пишу чистый, поддерживаемый код с фокусом на производительность.
+                          Создаю масштабируемые веб‑приложения с акцентом на
+                          быстродействие и комфорт пользователя.
                         </p>
                       </div>
                     </div>
@@ -631,8 +646,8 @@ export default function Home() {
                       <div>
                         <h3 className="font-semibold text-lg mb-2">Проекты</h3>
                         <p className="text-body text-muted-foreground">
-                          Эффективные решения, которые делают жизнь более
-                          удобной, безопасной и эффективной. От корпоративных систем до игровых приложений.
+                          Инженерно продуманные решения, повышающие удобство,
+                          безопасность и эффективность.
                         </p>
                       </div>
                     </div>
@@ -641,10 +656,12 @@ export default function Home() {
                         <Globe className="h-5 w-5 text-primary" />
                       </div>
                       <div>
-                        <h3 className="font-semibold text-lg mb-2">Философия</h3>
+                        <h3 className="font-semibold text-lg mb-2">
+                          Философия
+                        </h3>
                         <p className="text-body text-muted-foreground">
-                          Искать нестандартные решения, быть гибким и
-                          открытым к изменениям. Постоянно изучаю новые технологии и подходы.
+                          Стремлюсь к инновациям, сохраняю гибкость в работе и
+                          непрерывно изучаю актуальные технологии и практики.
                         </p>
                       </div>
                     </div>
@@ -656,12 +673,12 @@ export default function Home() {
         </section>
 
         {/* Skills Section */}
-        <section 
-          id="skills" 
+        <section
+          id="skills"
           ref={skillsReveal.ref as React.RefObject<HTMLElement>}
           className={`container py-12 md:py-24 transition-all duration-1000 ${
-            skillsReveal.isVisible 
-              ? "opacity-100 translate-y-0" 
+            skillsReveal.isVisible
+              ? "opacity-100 translate-y-0"
               : "opacity-0 translate-y-10"
           }`}
         >
@@ -739,12 +756,12 @@ export default function Home() {
         </section>
 
         {/* Experience Section */}
-        <section 
-          id="experience" 
+        <section
+          id="experience"
           ref={experienceReveal.ref as React.RefObject<HTMLElement>}
           className={`container py-12 md:py-24 transition-all duration-1000 ${
-            experienceReveal.isVisible 
-              ? "opacity-100 translate-y-0" 
+            experienceReveal.isVisible
+              ? "opacity-100 translate-y-0"
               : "opacity-0 translate-y-10"
           }`}
         >
@@ -847,12 +864,12 @@ export default function Home() {
         </section>
 
         {/* Projects Section */}
-        <section 
-          id="projects" 
+        <section
+          id="projects"
           ref={projectsReveal.ref as React.RefObject<HTMLElement>}
           className={`container py-12 md:py-24 space-y-8 transition-all duration-1000 ${
-            projectsReveal.isVisible 
-              ? "opacity-100 translate-y-0" 
+            projectsReveal.isVisible
+              ? "opacity-100 translate-y-0"
               : "opacity-0 translate-y-10"
           }`}
         >
@@ -1030,75 +1047,79 @@ export default function Home() {
 
         {/* Testimonials Section */}
         {isHydrated && isTestimonialsVisible && (
-          <section 
-            id="testimonials" 
+          <section
+            id="testimonials"
             ref={testimonialsReveal.ref as React.RefObject<HTMLElement>}
             className={`container py-12 md:py-24 transition-all duration-1000 ${
-              testimonialsReveal.isVisible 
-                ? "opacity-100 translate-y-0" 
+              testimonialsReveal.isVisible
+                ? "opacity-100 translate-y-0"
                 : "opacity-0 translate-y-10"
             }`}
           >
-          <div className="flex flex-col items-center text-center space-y-4 mb-12">
-            <GradientIcon className="mb-4" size={48} padding={8}>
-              <Star className="h-5 w-5 text-primary" />
-            </GradientIcon>
-            <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
-              Отзывы
-            </h2>
-            <p className="text-muted-foreground md:text-xl max-w-[700px]">
-              Что говорят коллеги и клиенты о моей работе
-            </p>
-          </div>
+            <div className="flex flex-col items-center text-center space-y-4 mb-12">
+              <GradientIcon className="mb-4" size={48} padding={8}>
+                <Star className="h-5 w-5 text-primary" />
+              </GradientIcon>
+              <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
+                Отзывы
+              </h2>
+              <p className="text-muted-foreground md:text-xl max-w-[700px]">
+                Что говорят коллеги и клиенты о моей работе
+              </p>
+            </div>
 
-          <Testimonials
-            testimonials={[
-              {
-                id: "1",
-                name: "Алексей Иванов",
-                role: "Руководитель IT-отдела",
-                company: "ФГУП НИТИ",
-                content: "Юрий проявил себя как ответственный и профессиональный разработчик. Портал АРМ, который он создал, значительно упростил нашу работу и повысил эффективность процессов.",
-                rating: 5,
-                project: "Портал АРМ",
-              },
-              {
-                id: "2",
-                name: "Мария Петрова",
-                role: "HR-директор",
-                company: "Корпорация",
-                content: "Работа с Юрием над HR-системой была очень продуктивной. Он внимательно выслушал все требования и создал решение, которое превзошло наши ожидания. Система работает стабильно и удобна в использовании.",
-                rating: 5,
-                project: "HR Система",
-              },
-              {
-                id: "3",
-                name: "Дмитрий Сидоров",
-                role: "CTO",
-                company: "Технологический стартап",
-                content: "Юрий показал отличные навыки в full-stack разработке. Его код чистый, хорошо структурирован и легко поддерживается. Рекомендую его как надежного специалиста.",
-                rating: 5,
-              },
-              {
-                id: "4",
-                name: "Елена Козлова",
-                role: "Менеджер проектов",
-                company: "IT-компания",
-                content: "В работе с Юрием впечатлила его способность быстро вникать в задачи и предлагать оптимальные решения. Все проекты были сданы в срок и с высоким качеством.",
-                rating: 5,
-              },
-            ]}
-          />
+            <Testimonials
+              testimonials={[
+                {
+                  id: "1",
+                  name: "Алексей Иванов",
+                  role: "Руководитель IT-отдела",
+                  company: "ФГУП НИТИ",
+                  content:
+                    "Юрий проявил себя как ответственный и профессиональный разработчик. Портал АРМ, который он создал, значительно упростил нашу работу и повысил эффективность процессов.",
+                  rating: 5,
+                  project: "Портал АРМ",
+                },
+                {
+                  id: "2",
+                  name: "Мария Петрова",
+                  role: "HR-директор",
+                  company: "Корпорация",
+                  content:
+                    "Работа с Юрием над HR-системой была очень продуктивной. Он внимательно выслушал все требования и создал решение, которое превзошло наши ожидания. Система работает стабильно и удобна в использовании.",
+                  rating: 5,
+                  project: "HR Система",
+                },
+                {
+                  id: "3",
+                  name: "Дмитрий Сидоров",
+                  role: "CTO",
+                  company: "Технологический стартап",
+                  content:
+                    "Юрий показал отличные навыки в full-stack разработке. Его код чистый, хорошо структурирован и легко поддерживается. Рекомендую его как надежного специалиста.",
+                  rating: 5,
+                },
+                {
+                  id: "4",
+                  name: "Елена Козлова",
+                  role: "Менеджер проектов",
+                  company: "IT-компания",
+                  content:
+                    "В работе с Юрием впечатлила его способность быстро вникать в задачи и предлагать оптимальные решения. Все проекты были сданы в срок и с высоким качеством.",
+                  rating: 5,
+                },
+              ]}
+            />
           </section>
         )}
 
         {/* Contact Section */}
-        <section 
-          id="contact" 
+        <section
+          id="contact"
           ref={contactReveal.ref as React.RefObject<HTMLElement>}
           className={`container py-12 md:py-24 transition-all duration-1000 ${
-            contactReveal.isVisible 
-              ? "opacity-100 translate-y-0" 
+            contactReveal.isVisible
+              ? "opacity-100 translate-y-0"
               : "opacity-0 translate-y-10"
           }`}
         >
@@ -1201,8 +1222,8 @@ export default function Home() {
                         placeholder="Ваше сообщение..."
                       />
                     </div>
-                    <Button 
-                      type="submit" 
+                    <Button
+                      type="submit"
                       disabled={isSubmitting}
                       className="w-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
@@ -1253,9 +1274,11 @@ export default function Home() {
       </footer>
 
       {/* Quick Actions Bar */}
-      <QuickActionsBar 
+      <QuickActionsBar
         onCVEdit={() => setIsCVEditorOpen(true)}
-        onToggleTestimonials={() => setIsTestimonialsVisible(!isTestimonialsVisible)}
+        onToggleTestimonials={() =>
+          setIsTestimonialsVisible(!isTestimonialsVisible)
+        }
         isTestimonialsVisible={isTestimonialsVisible}
       />
 
