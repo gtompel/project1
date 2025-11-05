@@ -3,7 +3,6 @@ import { JetBrains_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider"
 import { StructuredData } from "@/components/structured-data"
 import { Toaster } from "@/components/ui/toaster"
-import { LiveDev } from "@/components/live-dev"
 
 // My
 import { Analytics } from "@vercel/analytics/react"
@@ -104,9 +103,6 @@ export default function RootLayout({ children }: RootLayoutProps) {
           <Analytics />
           {children}
           <Toaster />
-          {(process.env.NODE_ENV === 'development' || process.env.NEXT_PUBLIC_LIVE_DEV === '1') && (
-            <LiveDev />
-          )}
         </ThemeProvider>
       </body>
     </html>

@@ -18,6 +18,7 @@ import {
   Star,
 } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { LiveDev } from "@/components/live-dev";
 import { QuickActionsBar } from "@/components/ui/quick-actions-bar";
 import { LiveDemoBadges } from "@/components/ui/live-demo-badges";
 import { CVEditorModal } from "@/components/cv-editor-modal";
@@ -31,6 +32,7 @@ import { CollapsibleSection } from "@/components/ui/collapsible-section";
 import { SkillsProgressionChart } from "@/components/ui/skills-progression-chart";
 import { SwipeableProjects } from "@/components/ui/swipeable-projects";
 import { Testimonials } from "@/components/ui/testimonials";
+import { GradientIcon } from "@/components/ui/gradient-icon";
 import { useToast } from "@/hooks/use-toast";
 import { useInView } from "@/hooks/use-in-view";
 import { useScrollSection } from "@/hooks/use-scroll-section";
@@ -436,6 +438,9 @@ export default function Home() {
           </div>
           <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
             <ThemeToggle />
+            {(process.env.NODE_ENV === 'development' || process.env.NEXT_PUBLIC_LIVE_DEV === '1') && (
+              <LiveDev inline buttonClassName="h-8 w-8" />
+            )}
             <div className="w-full flex-1 md:w-auto md:flex-none">
               <Button
                 variant="outline"
@@ -662,9 +667,9 @@ export default function Home() {
         >
           <CollapsibleSection title="Технические навыки" className="space-y-8">
             <div className="flex flex-col items-center text-center space-y-4 mb-12">
-              <div className="inline-block rounded-lg bg-muted p-1.5 mb-4">
-                <Code className="h-5 w-5" />
-              </div>
+              <GradientIcon className="mb-4" size={48} padding={8}>
+                <Code className="h-5 w-5 text-primary" />
+              </GradientIcon>
               <h2 className="text-3xl font-bold">Технические навыки</h2>
               <p className="text-muted-foreground md:text-xl max-w-[700px]">
                 Мой технический стек и опыт работы с различными технологиями
@@ -745,9 +750,9 @@ export default function Home() {
         >
           <CollapsibleSection title="Карьерный путь" className="space-y-8">
             <div className="flex flex-col items-center text-center space-y-4 mb-12">
-              <div className="inline-block rounded-lg bg-muted p-1.5 mb-4">
-                <Briefcase className="h-5 w-5" />
-              </div>
+              <GradientIcon className="mb-4" size={48} padding={8}>
+                <Briefcase className="h-5 w-5 text-primary" />
+              </GradientIcon>
               <h2 className="text-3xl font-bold">Карьерный путь</h2>
               <p className="text-muted-foreground md:text-xl max-w-[700px]">
                 Мой профессиональный рост и ключевые достижения
@@ -852,9 +857,9 @@ export default function Home() {
           }`}
         >
           <div className="flex flex-col items-center text-center space-y-4 mb-12">
-            <div className="inline-block rounded-lg bg-muted p-1.5 mb-4">
-              <FileCode className="h-5 w-5" />
-            </div>
+            <GradientIcon className="mb-4" size={48} padding={8}>
+              <FileCode className="h-5 w-5 text-primary" />
+            </GradientIcon>
             <h2 className="text-3xl font-bold">Проекты</h2>
             <p className="text-muted-foreground md:text-xl max-w-[700px]">
               Некоторые из моих недавних проектов
@@ -1035,9 +1040,9 @@ export default function Home() {
             }`}
           >
           <div className="flex flex-col items-center text-center space-y-4 mb-12">
-            <div className="inline-block rounded-lg bg-muted p-1.5 mb-4">
-              <Star className="h-5 w-5" />
-            </div>
+            <GradientIcon className="mb-4" size={48} padding={8}>
+              <Star className="h-5 w-5 text-primary" />
+            </GradientIcon>
             <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
               Отзывы
             </h2>
@@ -1099,9 +1104,9 @@ export default function Home() {
         >
           <CollapsibleSection title="Связаться со мной" className="space-y-8">
             <div className="flex flex-col items-center text-center space-y-4 mb-12">
-              <div className="inline-block rounded-lg bg-muted p-1.5 mb-4">
-                <MessageSquare className="h-5 w-5" />
-              </div>
+              <GradientIcon className="mb-4" size={48} padding={8}>
+                <MessageSquare className="h-5 w-5 text-primary" />
+              </GradientIcon>
               <h2 className="text-3xl font-bold">Связаться со мной</h2>
               <p className="text-muted-foreground md:text-xl max-w-[700px]">
                 Заинтересованы в сотрудничестве? Свяжитесь со мной любым удобным

@@ -13,7 +13,7 @@ type LiveData = {
   usedAPIs: Record<string, boolean>
 }
 
-export function LiveDev() {
+export function LiveDev({ inline = false, buttonClassName }: { inline?: boolean; buttonClassName?: string }) {
   const [open, setOpen] = React.useState(false)
   const [data, setData] = React.useState<LiveData | null>(null)
   const [perf, setPerf] = React.useState<{ ttfb?: number; fcp?: number; domContentLoaded?: number; load?: number }>({})
@@ -40,11 +40,11 @@ export function LiveDev() {
 
   return (
     <>
-      <div className="fixed right-4 bottom-4 z-[60]">
+      <div className={inline ? undefined : "fixed right-4 bottom-4 z-[60]"}>
         <Button
           variant="outline"
           size="icon"
-          className="h-10 w-10"
+          className={buttonClassName ?? (inline ? "h-8 w-8" : "h-10 w-10")}
           aria-label="Live Dev Mode"
           onClick={() => setOpen(v => !v)}
         >
@@ -53,7 +53,7 @@ export function LiveDev() {
       </div>
 
       {open && (
-        <div className="fixed right-4 bottom-16 z-[60] w-[340px] max-w-[90vw]">
+        <div className={inline ? "fixed right-4 top-16 z-[60] w-[340px] max-w-[90vw]" : "fixed right-4 bottom-16 z-[60] w-[340px] max-w-[90vw]"}>
           <Card className="p-4 space-y-3 text-sm">
             <div className="flex items-center justify-between">
               <strong>Live Dev Mode</strong>
