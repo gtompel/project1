@@ -3,6 +3,7 @@ import { JetBrains_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider"
 import { StructuredData } from "@/components/structured-data"
 import { Toaster } from "@/components/ui/toaster"
+import { LiveDev } from "@/components/live-dev"
 
 // My
 import { Analytics } from "@vercel/analytics/react"
@@ -41,20 +42,20 @@ export const metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL("https://your-portfolio-url.com"), // Заменить на реальный URL
+  metadataBase: new URL("https://youchoice.vercel.app"),
   alternates: {
     canonical: "/",
   },
   openGraph: {
     type: "website",
     locale: "ru_RU",
-    url: "https://your-portfolio-url.com", // Заменить на реальный URL
+    url: "https://youchoice.vercel.app",
     title: "Юрий Королёв - Full Stack Web Developer",
     description: "Портфолио Full Stack Web Developer с опытом работы в React, Next.js, PostgreSQL, Docker, Git, CI/CD",
     siteName: "Портфолио Юрия Королёва",
     images: [
       {
-        url: "/og-image.jpg", // Создать это изображение
+        url: "https://youchoice.vercel.app/opengraph-image",
         width: 1200,
         height: 630,
         alt: "Юрий Королёв - Full Stack Web Developer",
@@ -65,7 +66,7 @@ export const metadata = {
     card: "summary_large_image",
     title: "Юрий Королёв - Full Stack Web Developer",
     description: "Портфолио Full Stack Web Developer с опытом работы в React, Next.js, PostgreSQL, Docker, Git, CI/CD",
-    images: ["/og-image.jpg"], // Создать это изображение
+    images: ["https://youchoice.vercel.app/opengraph-image"],
     creator: "@gtompel",
   },
   robots: {
@@ -79,6 +80,13 @@ export const metadata = {
       "max-snippet": -1,
     },
   },
+}
+
+export const viewport = {
+  themeColor: [
+    { media: '(prefers-color-scheme: dark)', color: '#0b1220' },
+    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
+  ],
 }
 
 interface RootLayoutProps {
@@ -96,6 +104,9 @@ export default function RootLayout({ children }: RootLayoutProps) {
           <Analytics />
           {children}
           <Toaster />
+          {(process.env.NODE_ENV === 'development' || process.env.NEXT_PUBLIC_LIVE_DEV === '1') && (
+            <LiveDev />
+          )}
         </ThemeProvider>
       </body>
     </html>

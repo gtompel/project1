@@ -7,10 +7,10 @@ export function StructuredData() {
     "name": "Юрий Королёв",
     "jobTitle": "Full Stack Web Developer",
     "description": "Опытный Full Stack разработчик с экспертизой в React, Next.js, Node.js, PostgreSQL и DevOps практиках",
-    "url": "https://your-portfolio-url.com", // Заменить на реальный URL
+    "url": "https://youchoice.vercel.app",
     "sameAs": [
       "https://github.com/gtompel",
-      "mailto:qumpik@yandex.ru"
+      "mailto:quimpik@yandex.ru"
     ],
     "knowsAbout": [
       "React",

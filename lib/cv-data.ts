@@ -25,7 +25,7 @@ export const cvData: CVData = {
   personal: {
     name: 'Юрий Королёв',
     title: 'Full Stack Web Developer',
-    email: 'qumpik@yandex.ru',
+    email: 'quimpik@yandex.ru',
     github: 'github.com/gtompel',
     telegram: '@gtompel'
   },

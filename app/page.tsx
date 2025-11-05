@@ -66,18 +66,20 @@ export default function Home() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [parallaxOffset, setParallaxOffset] = useState({ x: 0, y: 0 });
   
-  // Загружаем состояние видимости отзывов из localStorage
-  const [isTestimonialsVisible, setIsTestimonialsVisible] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('testimonials-visible');
-      if (saved !== null) {
-        return saved === 'true';
-      }
-      // По умолчанию: false в production, true в dev
-      return process.env.NODE_ENV === 'development';
+  // Гидратация и стабильное SSR: не читаем localStorage до монтирования
+  const [isHydrated, setIsHydrated] = useState(false);
+  const [isTestimonialsVisible, setIsTestimonialsVisible] = useState(false);
+
+  React.useEffect(() => {
+    setIsHydrated(true);
+    const saved = typeof window !== 'undefined' ? localStorage.getItem('testimonials-visible') : null;
+    if (saved !== null) {
+      setIsTestimonialsVisible(saved === 'true');
+    } else {
+      // По умолчанию скрыто, без завязки на NODE_ENV, чтобы избежать рассинхронизации
+      setIsTestimonialsVisible(false);
     }
-    return process.env.NODE_ENV === 'development';
-  });
+  }, []);
 
   // Сохраняем состояние в localStorage при изменении
   React.useEffect(() => {
@@ -96,12 +98,12 @@ export default function Home() {
 
   // Параллакс эффект для Hero
   React.useEffect(() => {
+    const reduceMotion = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduceMotion) return;
+
     const handleParallax = () => {
       const scrollY = window.scrollY;
-      setParallaxOffset({
-        x: scrollY * 0.3,
-        y: scrollY * 0.2,
-      });
+      setParallaxOffset({ x: scrollY * 0.3, y: scrollY * 0.2 });
     };
 
     window.addEventListener("scroll", handleParallax);
@@ -208,7 +210,7 @@ export default function Home() {
       // Здесь можно добавить реальную отправку через API
       await new Promise((resolve) => setTimeout(resolve, 1000)); // Имитация задержки
       
-      const mailtoLink = `mailto:qumpik@yandex.ru?subject=Сообщение от ${encodeURIComponent(name)}&body=${encodeURIComponent(message + "\n\nОт: " + email)}`;
+      const mailtoLink = `mailto:quimpik@yandex.ru?subject=Сообщение от ${encodeURIComponent(name)}&body=${encodeURIComponent(message + "\n\nОт: " + email)}`;
       window.location.href = mailtoLink;
       
       toast({
@@ -1022,7 +1024,7 @@ export default function Home() {
         </section>
 
         {/* Testimonials Section */}
-        {isTestimonialsVisible && (
+        {isHydrated && isTestimonialsVisible && (
           <section 
             id="testimonials" 
             ref={testimonialsReveal.ref as React.RefObject<HTMLElement>}
@@ -1114,7 +1116,7 @@ export default function Home() {
                     <div className="flex items-center gap-3">
                       <Mail className="h-5 w-5 text-primary" />
                       <a
-                        href="mailto:qumpik@yandex.ru"
+                        href="mailto:quimpik@yandex.ru"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-primary hover:text-primary/80 transition-colors duration-200 hover:underline"
