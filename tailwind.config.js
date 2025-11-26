@@ -9,9 +9,17 @@ module.exports = {
     "*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
+    screens: {
+      xs: "375px",
+      sm: "640px",
+      md: "768px",
+      lg: "1024px",
+      xl: "1280px",
+      "2xl": "1400px",
+    },
     container: {
       center: true,
-      padding: "2rem",
+      padding: "1.5rem",
       screens: {
         "2xl": "1400px",
       },
@@ -70,6 +78,16 @@ module.exports = {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+      },
+      fontSize: {
+        xs: ["0.75rem", { lineHeight: "1.4" }],
+        sm: ["0.875rem", { lineHeight: "1.5" }],
+        base: ["1rem", { lineHeight: "1.6" }],
+        lg: ["1.125rem", { lineHeight: "1.6" }],
+        xl: ["clamp(1.25rem, 3.5vw, 1.5rem)", { lineHeight: "1.4" }],
+        "2xl": ["clamp(1.5rem, 4vw, 1.875rem)", { lineHeight: "1.3" }],
+        "3xl": ["clamp(1.875rem, 4.5vw, 2.25rem)", { lineHeight: "1.25" }],
+        "4xl": ["clamp(2.25rem, 5vw, 2.75rem)", { lineHeight: "1.2" }],
       },
       keyframes: {
         "accordion-down": {

@@ -16,6 +16,7 @@ import {
   FileCode,
   MessageSquare,
   Star,
+  Menu,
 } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { LiveDev } from "@/components/live-dev";
@@ -32,6 +33,11 @@ import { SkillsProgressionChart } from "@/components/ui/skills-progression-chart
 import { SwipeableProjects } from "@/components/ui/swipeable-projects";
 import { Testimonials } from "@/components/ui/testimonials";
 import { GradientIcon } from "@/components/ui/gradient-icon";
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { useToast } from "@/hooks/use-toast";
 import { useInView } from "@/hooks/use-in-view";
 import { useScrollSection } from "@/hooks/use-scroll-section";
@@ -450,7 +456,59 @@ export default function Home() {
             </nav>
           </div>
           <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
-            <ThemeToggle />
+            <div className="flex items-center gap-2">
+              <ThemeToggle />
+              {/* Мобильное меню */}
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="md:hidden h-10 w-10"
+                    aria-label="Открыть навигацию"
+                  >
+                    <Menu className="h-5 w-5" />
+                  </Button>
+                </SheetTrigger>
+                <SheetContent
+                  side="top"
+                  className="flex flex-col gap-6 pt-10 pb-8"
+                >
+                  <nav className="flex flex-col gap-4 text-lg">
+                    <a
+                      href="#about"
+                      className="min-h-[44px] flex items-center rounded-md px-3 py-2 hover:bg-accent"
+                    >
+                      Обо мне
+                    </a>
+                    <a
+                      href="#skills"
+                      className="min-h-[44px] flex items-center rounded-md px-3 py-2 hover:bg-accent"
+                    >
+                      Навыки
+                    </a>
+                    <a
+                      href="#experience"
+                      className="min-h-[44px] flex items-center rounded-md px-3 py-2 hover:bg-accent"
+                    >
+                      Опыт
+                    </a>
+                    <a
+                      href="#projects"
+                      className="min-h-[44px] flex items-center rounded-md px-3 py-2 hover:bg-accent"
+                    >
+                      Проекты
+                    </a>
+                    <a
+                      href="#contact"
+                      className="min-h-[44px] flex items-center rounded-md px-3 py-2 hover:bg-accent"
+                    >
+                      Контакты
+                    </a>
+                  </nav>
+                </SheetContent>
+              </Sheet>
+            </div>
             {(process.env.NODE_ENV === "development" ||
               process.env.NEXT_PUBLIC_LIVE_DEV === "1") && (
               <LiveDev inline buttonClassName="h-8 w-8" />

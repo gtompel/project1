@@ -82,9 +82,13 @@ export const metadata = {
 }
 
 export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  viewportFit: "cover" as const,
   themeColor: [
-    { media: '(prefers-color-scheme: dark)', color: '#0b1220' },
-    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
+    { media: "(prefers-color-scheme: dark)", color: "#0b1220" },
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
   ],
 }
 
@@ -98,7 +102,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
       <head>
         <StructuredData />
       </head>
-      <body className={`${jetbrain.variable} ${jetbrain.className}`}>
+      <body className={`${jetbrain.variable} ${jetbrain.className} safe-area`}>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           <Analytics />
           {children}

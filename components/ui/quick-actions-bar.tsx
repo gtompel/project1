@@ -14,6 +14,7 @@ interface QuickActionsBarProps {
 
 export function QuickActionsBar({ onCVEdit, onToggleTestimonials, isTestimonialsVisible = true }: QuickActionsBarProps) {
   const [isVisible, setIsVisible] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(false);
   const { toast } = useToast();
   const isDevMode = process.env.NODE_ENV === 'development';
 
@@ -28,6 +29,21 @@ export function QuickActionsBar({ onCVEdit, onToggleTestimonials, isTestimonials
 
     window.addEventListener("scroll", toggleVisibility);
     return () => window.removeEventListener("scroll", toggleVisibility);
+  }, []);
+
+  // Показываем панель только на десктопе (min-width: 640px)
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const mq = window.matchMedia("(min-width: 640px)");
+    const update = (event?: MediaQueryList | MediaQueryListEvent) => {
+      const matches = "matches" in mq ? mq.matches : (event as MediaQueryListEvent).matches;
+      setIsDesktop(matches);
+    };
+
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
   }, []);
 
   const scrollToTop = () => {
@@ -162,10 +178,12 @@ export function QuickActionsBar({ onCVEdit, onToggleTestimonials, isTestimonials
     `;
   };
 
-  if (!isVisible) return null;
+  if (!isVisible || !isDesktop) return null;
 
   return (
-    <Card className="fixed top-1/2 right-6 transform -translate-y-1/2 z-50 shadow-lg border-2">
+    <Card
+      className="fixed top-1/2 right-6 z-50 -translate-y-1/2 shadow-lg border-2"
+    >
       <div className="flex flex-col gap-2 p-2">
         <Button
           size="sm"

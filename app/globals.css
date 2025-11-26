@@ -80,6 +80,12 @@
     scroll-behavior: smooth;
   }
 
+  /* Safe area для устройств с вырезами */
+  .safe-area {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
   /* Уважение prefers-reduced-motion */
   @media (prefers-reduced-motion: reduce) {
     *:not(.sr-only) {
@@ -121,7 +127,7 @@
   }
 
   .text-hero {
-    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-size: clamp(2.25rem, 6vw, 4rem);
     font-weight: 700;
     line-height: 1.1;
     letter-spacing: -0.05em;
