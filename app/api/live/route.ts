@@ -3,7 +3,18 @@ import pkg from '@/package.json'
 
 export const runtime = 'nodejs'
 
-export async function GET() {
+export async function GET(request: Request) {
+  const isDevOrPreview =
+    process.env.NODE_ENV !== 'production' ||
+    process.env.VERCEL_ENV === 'preview'
+
+  // В проде скрываем эндпоинт, если не передан корректный токен
+  if (!isDevOrPreview) {
+    const token = request.headers.get('x-live-token')
+    if (!token || token !== process.env.LIVE_DEV_TOKEN) {
+      return NextResponse.json({ error: 'Not found' }, { status: 404 })
+    }
+  }
   // Gather environment/build info (best-effort)
   const nextVersion = (pkg as any).dependencies?.next || (pkg as any).devDependencies?.next || 'unknown'
   const reactVersion = (pkg as any).dependencies?.react || 'unknown'
@@ -23,11 +34,13 @@ export async function GET() {
   return NextResponse.json({
     nextVersion,
     reactVersion,
-    vercel,
-    vercelEnv,
-    commitSha,
+    environment: {
+      vercel,
+      vercelEnv,
+    },
     time: new Date().toISOString(),
-    usedAPIs,
+    features: usedAPIs,
+    commitSha: isDevOrPreview ? commitSha : null,
   })
 }
 
