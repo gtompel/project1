@@ -486,11 +486,11 @@ export default function Home() {
 
       <main className="flex-1" id="main">
         {/* Hero Section */}
-        <section className="container py-24 md:py-32 space-y-8 relative overflow-hidden">
+        <section className="container py-24 md:py-32 space-y-8 relative">
           {/* Градиентный фон с параллакс */}
           <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/5 via-background to-primary/5 dark:from-primary/10 dark:via-background dark:to-primary/10" />
           <div
-            className="absolute top-1/2 left-1/2 w-[600px] h-[600px] bg-primary/5 dark:bg-primary/10 rounded-full blur-3xl animate-pulse transition-transform duration-300 ease-out"
+            className="pointer-events-none absolute top-1/2 left-1/2 w-[720px] h-[720px] bg-primary/15 dark:bg-primary/20 rounded-full blur-3xl md:blur-[120px] opacity-70 dark:opacity-50 transition-transform duration-500 ease-out"
             style={{
               transform: `translate(calc(-50% + ${parallaxOffset.x}px), calc(-50% + ${parallaxOffset.y}px))`,
             }}
