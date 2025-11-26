@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -76,6 +76,9 @@ export function CaseStudyModal({ isOpen, onClose, projectName, caseStudyData }: 
           <DialogTitle className="text-3xl font-bold text-center mb-4">
             {caseStudyData.title}
           </DialogTitle>
+          <DialogDescription className="text-center text-muted-foreground">
+            Детальный разбор проекта: цели, архитектура, ключевые модули и результаты
+          </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-8">
