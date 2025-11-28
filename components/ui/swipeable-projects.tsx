@@ -7,8 +7,9 @@ import { TechnologyBadge } from "@/components/ui/badge";
 import { Badge } from "@/components/ui/badge";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/components/language-provider";
 
-interface Project {
+export interface Project {
   title: string;
   description: string;
   technologies?: Array<{
@@ -23,6 +24,7 @@ interface Project {
   sourceUrl?: string;
   caseStudyUrl?: string;
   caseStudyData?: any;
+  caseStudyKey?: string;
   role?: string;
   duration?: string;
   teamSize?: string;
@@ -79,30 +81,6 @@ export function SwipeableProjects({ projects, className = "" }: SwipeableProject
       setCurrentIndex(currentIndex + 1);
     }
   };
-
-  // Обработчик клика для карточки
-  const handleCardClick = (e: React.MouseEvent) => {
-    const target = e.target as HTMLElement;
-    const card = target.closest('[data-case-study="true"]') as HTMLElement;
-    if (card) {
-      const projectTitle = card.getAttribute('data-project-title');
-      // Логика клика по кейс-стади обрабатывается в основном компоненте
-      return;
-    }
-
-    // Если клик по ссылке или кнопке - не обрабатываем
-    if (target.closest('a') || target.closest('button')) {
-      return;
-    }
-
-    // Открываем проект в новой вкладке
-    const project = projects[currentIndex];
-    if (project.href) {
-      window.open(project.href, '_blank', 'noopener,noreferrer');
-    }
-  };
-
-  const currentProject = projects[currentIndex];
 
   return (
     <div className={`relative ${className}`}>
@@ -182,6 +160,8 @@ interface ProjectCardProps {
 }
 
 function ProjectCard({ project }: ProjectCardProps) {
+  const { translations } = useLanguage();
+  const labels = translations.projects.cardLabels;
   const {
     title,
     description,
@@ -199,11 +179,22 @@ function ProjectCard({ project }: ProjectCardProps) {
     metrics
   } = project;
 
+  const handleProjectClick = (e: React.MouseEvent) => {
+    if (caseStudyData || !href) return;
+    const target = e.target as HTMLElement;
+    if (target.closest("a") || target.closest("button")) {
+      return;
+    }
+    window.open(href, "_blank", "noopener,noreferrer");
+  };
+
   return (
     <Card
       className={`overflow-hidden group h-full flex flex-col card-hover border-2 transition-all duration-300 ${caseStudyData ? 'cursor-pointer' : ''}`}
       data-case-study={caseStudyData ? 'true' : 'false'}
       data-project-title={title}
+      data-project-key={project.caseStudyKey}
+      onClick={handleProjectClick}
     >
       <a
         href={href && !caseStudyData ? href : undefined}
@@ -256,19 +247,19 @@ function ProjectCard({ project }: ProjectCardProps) {
             <div className="flex flex-col sm:flex-row sm:flex-wrap gap-2 sm:gap-4 mb-3 text-sm text-muted-foreground">
               {role && (
                 <div className="flex items-center gap-1">
-                  <span className="font-medium text-xs">Роль:</span>
+                  <span className="font-medium text-xs">{labels.role}:</span>
                   <Badge variant="outline" className="text-xs px-2 py-0.5">{role}</Badge>
                 </div>
               )}
               {duration && (
                 <div className="flex items-center gap-1">
-                  <span className="font-medium text-xs">Время:</span>
+                  <span className="font-medium text-xs">{labels.duration}:</span>
                   <span className="text-xs">{duration}</span>
                 </div>
               )}
               {teamSize && (
                 <div className="flex items-center gap-1">
-                  <span className="font-medium text-xs">Команда:</span>
+                  <span className="font-medium text-xs">{labels.team}:</span>
                   <span className="text-xs">{teamSize}</span>
                 </div>
               )}
@@ -277,7 +268,7 @@ function ProjectCard({ project }: ProjectCardProps) {
 
           {impact && (
             <div className="mb-3 p-2.5 md:p-3 bg-muted/50 rounded-lg">
-              <p className="text-xs md:text-sm font-medium text-primary mb-1">Результат:</p>
+              <p className="text-xs md:text-sm font-medium text-primary mb-1">{labels.impact}:</p>
               <p className="text-xs md:text-sm text-muted-foreground leading-relaxed">{impact}</p>
             </div>
           )}

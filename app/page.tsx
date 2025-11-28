@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge, TechnologyBadge } from "@/components/ui/badge";
+import { Badge } from "@/components/ui/badge";
 import {
   Github,
   Send,
@@ -27,10 +27,9 @@ import {
   AchievementTimeline,
   Achievement,
 } from "@/components/ui/achievement-timeline";
-import { ProgressiveImage } from "@/components/ui/progressive-image";
 import { CollapsibleSection } from "@/components/ui/collapsible-section";
 import { SkillsProgressionChart } from "@/components/ui/skills-progression-chart";
-import { SwipeableProjects } from "@/components/ui/swipeable-projects";
+import { SwipeableProjects, type Project } from "@/components/ui/swipeable-projects";
 import { Testimonials } from "@/components/ui/testimonials";
 import { GradientIcon } from "@/components/ui/gradient-icon";
 import {
@@ -45,18 +44,40 @@ import { useScrollReveal } from "@/hooks/use-scroll-reveal";
 import {
   portalARMCaseStudy,
   hrSystemCaseStudy,
-  duel2HeroCaseStudy,
   gtoCaseStudy,
 } from "@/lib/case-study-data";
+import { LanguageSwitcher } from "@/components/language-switcher";
+import { useLanguage } from "@/components/language-provider";
 
-interface Technology {
-  name: string;
-  level: "beginner" | "intermediate" | "advanced" | "expert";
-  description?: string;
-  projects?: number;
-}
+const cloneTranslations = <T,>(data: T): T => {
+  if (typeof structuredClone === "function") {
+    return structuredClone(data);
+  }
+  return JSON.parse(JSON.stringify(data));
+};
+
+type CaseStudyKey = "portalARM" | "hrSystem" | "gto";
+
+const CASE_STUDY_MAP: Record<
+  CaseStudyKey,
+  typeof portalARMCaseStudy | typeof hrSystemCaseStudy | typeof gtoCaseStudy
+> = {
+  portalARM: portalARMCaseStudy,
+  hrSystem: hrSystemCaseStudy,
+  gto: gtoCaseStudy,
+};
+const ABOUT_ICON_MAP = {
+  code: Code,
+  briefcase: Briefcase,
+  globe: Globe,
+} as const;
 
 export default function Home() {
+  const { translations: rawTranslations } = useLanguage();
+  const translations = React.useMemo(
+    () => cloneTranslations(rawTranslations),
+    [rawTranslations]
+  );
   const [isCVEditorOpen, setIsCVEditorOpen] = useState(false);
   const [isCaseStudyOpen, setIsCaseStudyOpen] = useState(false);
   const [currentCaseStudy, setCurrentCaseStudy] = useState<any>(null);
@@ -79,6 +100,66 @@ export default function Home() {
   const [isHydrated, setIsHydrated] = useState(false);
   const [isTestimonialsVisible, setIsTestimonialsVisible] = useState(false);
 
+  const navItems = Array.isArray(translations.nav.items)
+    ? translations.nav.items.map((item) =>
+        item && typeof item === "object" ? { ...item } : item
+      )
+    : [];
+  const skipLinks = Array.isArray(translations.header.skipLinks)
+    ? translations.header.skipLinks.map((item) =>
+        item && typeof item === "object" ? { ...item } : item
+      )
+    : [];
+  const topTechnologies = ["Next.js", "React", "TypeScript", "Node.js", "PostgreSQL"];
+  const aboutCardsRaw = Array.isArray(translations.about.cards)
+    ? translations.about.cards
+    : [];
+  const aboutCards: typeof aboutCardsRaw = [];
+  for (const card of aboutCardsRaw) {
+    if (card && typeof card === "object") {
+      aboutCards.push(card);
+    }
+  }
+  const skillsCategories = Array.isArray(translations.skills.categories)
+    ? translations.skills.categories.map((category) =>
+        category && typeof category === "object" ? { ...category } : category
+      )
+    : [];
+  const timeline = Array.isArray(translations.experience.timeline)
+    ? (translations.experience.timeline.map((item) =>
+        item && typeof item === "object" ? { ...item } : item
+      ) as Achievement[])
+    : [];
+  const projectCards = Array.isArray(translations.projects.list)
+    ? translations.projects.list.map((project) => ({
+        ...project,
+        caseStudyData: project.caseStudyKey
+          ? CASE_STUDY_MAP[project.caseStudyKey as CaseStudyKey]
+          : undefined,
+      }))
+    : [];
+  const testimonialsData = Array.isArray(translations.testimonials.items)
+    ? translations.testimonials.items.map((item) =>
+        item && typeof item === "object" ? { ...item } : item
+      )
+    : [];
+  const aboutCardElements: React.ReactNode[] = [];
+  for (const card of aboutCards) {
+    const Icon =
+      ABOUT_ICON_MAP[card.icon as keyof typeof ABOUT_ICON_MAP] ?? Code;
+    aboutCardElements.push(
+      <div key={card.title} className="flex items-start gap-4">
+        <div className="rounded-lg bg-primary/10 p-2 mt-1">
+          <Icon className="h-5 w-5 text-primary" />
+        </div>
+        <div>
+          <h3 className="font-semibold text-lg mb-2">{card.title}</h3>
+          <p className="text-body text-muted-foreground">{card.description}</p>
+        </div>
+      </div>
+    );
+  }
+
   React.useEffect(() => {
     setIsHydrated(true);
     const saved =
@@ -88,12 +169,10 @@ export default function Home() {
     if (saved !== null) {
       setIsTestimonialsVisible(saved === "true");
     } else {
-      // По умолчанию скрыто, без завязки на NODE_ENV, чтобы избежать рассинхронизации
       setIsTestimonialsVisible(false);
     }
   }, []);
 
-  // Сохраняем состояние в localStorage при изменении
   React.useEffect(() => {
     if (typeof window !== "undefined") {
       localStorage.setItem(
@@ -103,7 +182,6 @@ export default function Home() {
     }
   }, [isTestimonialsVisible]);
 
-  // Scroll reveal hooks для секций
   const aboutReveal = useScrollReveal({ threshold: 0.2 });
   const skillsReveal = useScrollReveal({ threshold: 0.2 });
   const experienceReveal = useScrollReveal({ threshold: 0.2 });
@@ -111,7 +189,6 @@ export default function Home() {
   const testimonialsReveal = useScrollReveal({ threshold: 0.2 });
   const contactReveal = useScrollReveal({ threshold: 0.2 });
 
-  // Параллакс эффект для Hero
   React.useEffect(() => {
     const reduceMotion =
       typeof window !== "undefined" &&
@@ -128,29 +205,18 @@ export default function Home() {
     return () => window.removeEventListener("scroll", handleParallax);
   }, []);
 
-  // Click handler for case study cards
   const handleCaseStudyClick = (e: React.MouseEvent) => {
     const target = e.target as HTMLElement;
-    const card = target.closest('[data-case-study="true"]') as HTMLElement;
+    const card = target.closest('[data-case-study="true"]') as HTMLElement | null;
     if (card) {
-      const projectTitle = card.getAttribute("data-project-title");
-      if (projectTitle === "Портал АРМ") {
-        setCurrentCaseStudy(portalARMCaseStudy);
-        setIsCaseStudyOpen(true);
-      } else if (projectTitle === "HR Система") {
-        setCurrentCaseStudy(hrSystemCaseStudy);
-        setIsCaseStudyOpen(true);
-      } else if (projectTitle === "Duel2Hero") {
-        setCurrentCaseStudy(duel2HeroCaseStudy);
-        setIsCaseStudyOpen(true);
-      } else if (projectTitle === "GTO Protocol Management System") {
-        setCurrentCaseStudy(gtoCaseStudy);
+      const key = card.getAttribute("data-project-key") as CaseStudyKey | null;
+      if (key && CASE_STUDY_MAP[key]) {
+        setCurrentCaseStudy(CASE_STUDY_MAP[key]);
         setIsCaseStudyOpen(true);
       }
     }
   };
 
-  // Прогресс скролла
   React.useEffect(() => {
     const handleScroll = () => {
       const windowHeight = window.innerHeight;
@@ -164,7 +230,6 @@ export default function Home() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Анимация счетчиков
   React.useEffect(() => {
     if (!isStatsInView) return;
 
@@ -201,7 +266,6 @@ export default function Home() {
     return () => clearInterval(timer);
   }, [isStatsInView]);
 
-  // Обработчик формы контакта
   const handleContactSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (isSubmitting) return;
@@ -214,8 +278,8 @@ export default function Home() {
 
     if (!name || !email || !message) {
       toast({
-        title: "Ошибка",
-        description: "Пожалуйста, заполните все поля",
+        title: translations.contact.toast.missingFieldsTitle,
+        description: translations.contact.toast.missingFieldsDescription,
         variant: "destructive",
       });
       return;
@@ -223,27 +287,26 @@ export default function Home() {
 
     setIsSubmitting(true);
 
-    // Имитация отправки (можно заменить на реальный API)
     try {
-      // Здесь можно добавить реальную отправку через API
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // Имитация задержки
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      const mailtoLink = `mailto:quimpik@yandex.ru?subject=Сообщение от ${encodeURIComponent(
-        name
-      )}&body=${encodeURIComponent(message + "\n\nОт: " + email)}`;
+      const mailtoLink = `mailto:quimpik@yandex.ru?subject=${
+        translations.contact.mailSubjectPrefix
+      } ${encodeURIComponent(name)}&body=${encodeURIComponent(
+        `${message}\n\n${translations.contact.mailSubjectPrefix}: ${email}`
+      )}`;
       window.location.href = mailtoLink;
 
       toast({
-        title: "Сообщение отправлено",
-        description:
-          "Спасибо за ваше сообщение! Я свяжусь с вами в ближайшее время.",
+        title: translations.contact.toast.successTitle,
+        description: translations.contact.toast.successDescription,
       });
 
       form.reset();
     } catch (error) {
       toast({
-        title: "Ошибка",
-        description: "Не удалось отправить сообщение. Попробуйте позже.",
+        title: translations.contact.toast.errorTitle,
+        description: translations.contact.toast.errorDescription,
         variant: "destructive",
       });
     } finally {
@@ -251,10 +314,8 @@ export default function Home() {
     }
   };
 
-  // Keyboard navigation
   React.useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Navigation shortcuts
       if (e.ctrlKey || e.metaKey) {
         switch (e.key) {
           case "1":
@@ -298,7 +359,6 @@ export default function Home() {
             break;
           case "d":
             e.preventDefault();
-            // Скачивание CV
             const cvButton = document.querySelector(
               "[data-cv-download]"
             ) as HTMLButtonElement;
@@ -307,7 +367,6 @@ export default function Home() {
         }
       }
 
-      // Arrow key navigation for sections
       if (e.key === "ArrowDown" || e.key === "ArrowUp") {
         e.preventDefault();
         const sections = [
@@ -347,51 +406,44 @@ export default function Home() {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, []);
 
+  const renderSummaryValue = (key: string) => {
+    const card = translations.summary.cards.find((item) => item.key === key);
+    if (!card) return "";
+    if (card.value) return card.value;
+
+    let value = "";
+    switch (key) {
+      case "years":
+        value = `${counters.years}`;
+        break;
+      case "projects":
+        value = `${counters.projects}`;
+        break;
+      case "technologies":
+        value = `${counters.technologies}`;
+        break;
+      default:
+        value = "";
+    }
+
+    return `${value}${card.suffix ?? ""}`;
+  };
+
   return (
     <div className="min-h-screen bg-background" onClick={handleCaseStudyClick}>
-      {/* Skip Links for Accessibility */}
       <div className="sr-only focus-within:not-sr-only focus-within:absolute focus-within:top-0 focus-within:left-0 focus-within:z-50">
-        <a
-          href="#main"
-          className="bg-primary text-primary-foreground px-4 py-2 rounded-md m-2 focus:outline-none focus:ring-2 focus:ring-ring"
-        >
-          Перейти к основному содержимому
-        </a>
-        <a
-          href="#about"
-          className="bg-primary text-primary-foreground px-4 py-2 rounded-md m-2 focus:outline-none focus:ring-2 focus:ring-ring"
-        >
-          Обо мне
-        </a>
-        <a
-          href="#skills"
-          className="bg-primary text-primary-foreground px-4 py-2 rounded-md m-2 focus:outline-none focus:ring-2 focus:ring-ring"
-        >
-          Навыки
-        </a>
-        <a
-          href="#experience"
-          className="bg-primary text-primary-foreground px-4 py-2 rounded-md m-2 focus:outline-none focus:ring-2 focus:ring-ring"
-        >
-          Опыт
-        </a>
-        <a
-          href="#projects"
-          className="bg-primary text-primary-foreground px-4 py-2 rounded-md m-2 focus:outline-none focus:ring-2 focus:ring-ring"
-        >
-          Проекты
-        </a>
-        <a
-          href="#contact"
-          className="bg-primary text-primary-foreground px-4 py-2 rounded-md m-2 focus:outline-none focus:ring-2 focus:ring-ring"
-        >
-          Контакты
-        </a>
+        {skipLinks.map((link) => (
+          <a
+            key={link.href}
+            href={link.href}
+            className="bg-primary text-primary-foreground px-4 py-2 rounded-md m-2 focus:outline-none focus:ring-2 focus:ring-ring"
+          >
+            {link.label}
+          </a>
+        ))}
       </div>
 
-      {/* Header */}
       <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        {/* Прогресс скролла */}
         <div
           className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-primary via-primary/80 to-primary transition-all duration-150"
           style={{ width: `${scrollProgress}%` }}
@@ -400,72 +452,35 @@ export default function Home() {
           <div className="mr-4 hidden md:flex">
             <a className="mr-6 flex items-center space-x-2 font-bold" href="/">
               <Code className="h-6 w-6" />
-              <span>Юрий Королёв</span>
+              <span>{translations.header.logo}</span>
             </a>
             <nav className="flex items-center space-x-6 text-sm font-medium">
-              <a
-                className={`transition-all hover:text-foreground/80 hover:border-b-2 min-h-[44px] px-3 py-2 flex items-center touch-manipulation ${
-                  activeSection === "about"
-                    ? "text-primary border-b-2 border-primary font-medium"
-                    : ""
-                }`}
-                href="#about"
-              >
-                Обо мне
-              </a>
-              <a
-                className={`transition-all hover:text-foreground/80 hover:border-b-2 min-h-[44px] px-3 py-2 flex items-center touch-manipulation ${
-                  activeSection === "skills"
-                    ? "text-primary border-b-2 border-primary font-medium"
-                    : ""
-                }`}
-                href="#skills"
-              >
-                Навыки
-              </a>
-              <a
-                className={`transition-all hover:text-foreground/80 hover:border-b-2 min-h-[44px] px-3 py-2 flex items-center touch-manipulation ${
-                  activeSection === "experience"
-                    ? "text-primary border-b-2 border-primary font-medium"
-                    : ""
-                }`}
-                href="#experience"
-              >
-                Опыт
-              </a>
-              <a
-                className={`transition-all hover:text-foreground/80 hover:border-b-2 min-h-[44px] px-3 py-2 flex items-center touch-manipulation ${
-                  activeSection === "projects"
-                    ? "text-primary border-b-2 border-primary font-medium"
-                    : ""
-                }`}
-                href="#projects"
-              >
-                Проекты
-              </a>
-              <a
-                className={`transition-all hover:text-foreground/80 hover:border-b-2 min-h-[44px] px-3 py-2 flex items-center touch-manipulation ${
-                  activeSection === "contact"
-                    ? "text-primary border-b-2 border-primary font-medium"
-                    : ""
-                }`}
-                href="#contact"
-              >
-                Контакты
-              </a>
+              {navItems.map((item) => (
+                <a
+                  key={item.id}
+                  className={`transition-all hover:text-foreground/80 hover:border-b-2 min-h-[44px] px-3 py-2 flex items-center touch-manipulation ${
+                    activeSection === item.id
+                      ? "text-primary border-b-2 border-primary font-medium"
+                      : ""
+                  }`}
+                  href={`#${item.id}`}
+                >
+                  {item.label}
+                </a>
+              ))}
             </nav>
           </div>
           <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
             <div className="flex items-center gap-2">
+              <LanguageSwitcher />
               <ThemeToggle />
-              {/* Мобильное меню */}
               <Sheet>
                 <SheetTrigger asChild>
                   <Button
                     variant="outline"
                     size="icon"
                     className="md:hidden h-10 w-10"
-                    aria-label="Открыть навигацию"
+                    aria-label={translations.header.mobileMenuLabel}
                   >
                     <Menu className="h-5 w-5" />
                   </Button>
@@ -475,36 +490,15 @@ export default function Home() {
                   className="flex flex-col gap-6 pt-10 pb-8"
                 >
                   <nav className="flex flex-col gap-4 text-lg">
-                    <a
-                      href="#about"
-                      className="min-h-[44px] flex items-center rounded-md px-3 py-2 hover:bg-accent"
-                    >
-                      Обо мне
-                    </a>
-                    <a
-                      href="#skills"
-                      className="min-h-[44px] flex items-center rounded-md px-3 py-2 hover:bg-accent"
-                    >
-                      Навыки
-                    </a>
-                    <a
-                      href="#experience"
-                      className="min-h-[44px] flex items-center rounded-md px-3 py-2 hover:bg-accent"
-                    >
-                      Опыт
-                    </a>
-                    <a
-                      href="#projects"
-                      className="min-h-[44px] flex items-center rounded-md px-3 py-2 hover:bg-accent"
-                    >
-                      Проекты
-                    </a>
-                    <a
-                      href="#contact"
-                      className="min-h-[44px] flex items-center rounded-md px-3 py-2 hover:bg-accent"
-                    >
-                      Контакты
-                    </a>
+                    {navItems.map((item) => (
+                      <a
+                        key={item.id}
+                        href={`#${item.id}`}
+                        className="min-h-[44px] flex items-center rounded-md px-3 py-2 hover:bg-accent"
+                      >
+                        {item.label}
+                      </a>
+                    ))}
                   </nav>
                 </SheetContent>
               </Sheet>
@@ -529,10 +523,7 @@ export default function Home() {
                 </a>
               </Button>
             </div>
-            <Button
-              variant="outline"
-              className="ml-auto hidden h-8 w-8 md:flex"
-            >
+            <Button variant="outline" className="ml-auto hidden h-8 w-8 md:flex">
               <a href="https://t.me/gtompel" target="_blank" rel="noreferrer">
                 <Send className="h-4 w-4" />
                 <span className="sr-only">Telegram</span>
@@ -543,9 +534,7 @@ export default function Home() {
       </header>
 
       <main className="flex-1" id="main">
-        {/* Hero Section */}
         <section className="container py-24 md:py-32 space-y-8 relative">
-          {/* Градиентный фон с параллакс (декоративный) */}
           <div
             aria-hidden="true"
             className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/5 via-background to-primary/5 dark:from-primary/10 dark:via-background dark:to-primary/10"
@@ -565,106 +554,67 @@ export default function Home() {
               </div>
             </div>
             <h1 className="text-hero bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent animate-fade-in">
-              Юрий Королёв
+              {translations.hero.title}
             </h1>
             <p className="text-subtitle max-w-[700px] animate-fade-in animation-delay-200">
-              Full Stack Web Developer
+              {translations.hero.subtitle}
             </p>
             <p className="text-muted-foreground max-w-[600px] animate-fade-in animation-delay-400">
-              Создаю современные веб-приложения с акцентом на производительность
-              и пользовательский опыт
+              {translations.hero.description}
             </p>
             <div className="flex gap-4 pt-4 animate-fade-in animation-delay-600">
               <Button
                 asChild
                 className="hover:scale-105 transition-transform duration-200 min-h-[44px] px-6 py-3 bg-gradient-to-r from-primary to-primary/80 shadow-lg hover:shadow-xl"
               >
-                <a href="#contact">Связаться</a>
+                <a href="#contact">{translations.hero.primaryCta}</a>
               </Button>
               <Button
                 variant="outline"
                 asChild
                 className="hover:scale-105 transition-transform duration-200 min-h-[44px] px-6 py-3 border-2"
               >
-                <a href="#projects">Мои проекты</a>
+                <a href="#projects">{translations.hero.secondaryCta}</a>
               </Button>
             </div>
           </div>
         </section>
 
-        {/* Executive Summary Section */}
         <section className="container py-12 space-y-8" ref={statsRef}>
           <Card className="max-w-4xl mx-auto border-2 shadow-lg hover:shadow-xl transition-shadow duration-300">
             <CardHeader className="text-center pb-8">
               <CardTitle className="text-2xl md:text-3xl bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
-                Ключевые показатели
+                {translations.summary.title}
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 md:grid-cols-5 gap-6 text-center">
-                <div className="space-y-2 p-4 rounded-lg bg-gradient-to-br from-primary/10 to-primary/5 hover:from-primary/20 hover:to-primary/10 transition-all duration-300 group">
-                  <div className="text-3xl md:text-4xl font-bold text-brand group-hover:scale-110 transition-transform duration-300">
-                    {counters.years}+
+                {translations.summary.cards.map((card) => (
+                  <div
+                    key={card.key}
+                    className="space-y-2 p-4 rounded-lg bg-gradient-to-br from-primary/10 to-primary/5 hover:from-primary/20 hover:to-primary/10 transition-all duration-300 group"
+                  >
+                    <div className="text-3xl md:text-4xl font-bold text-brand group-hover:scale-110 transition-transform duration-300">
+                      {renderSummaryValue(card.key)}
+                    </div>
+                    <div className="text-sm text-muted-foreground">{card.label}</div>
                   </div>
-                  <div className="text-sm text-muted-foreground">лет опыта</div>
-                </div>
-                <div className="space-y-2 p-4 rounded-lg bg-gradient-to-br from-primary/10 to-primary/5 hover:from-primary/20 hover:to-primary/10 transition-all duration-300 group">
-                  <div className="text-3xl md:text-4xl font-bold text-brand group-hover:scale-110 transition-transform duration-300">
-                    {counters.projects}
-                  </div>
-                  <div className="text-sm text-muted-foreground">проектов</div>
-                </div>
-                <div className="space-y-2 p-4 rounded-lg bg-gradient-to-br from-primary/10 to-primary/5 hover:from-primary/20 hover:to-primary/10 transition-all duration-300 group">
-                  <div className="text-3xl md:text-4xl font-bold text-brand group-hover:scale-110 transition-transform duration-300">
-                    {counters.technologies}
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    технологий
-                  </div>
-                </div>
-                <div className="space-y-2 p-4 rounded-lg bg-gradient-to-br from-primary/10 to-primary/5 hover:from-primary/20 hover:to-primary/10 transition-all duration-300 group">
-                  <div className="text-3xl md:text-4xl font-bold text-brand group-hover:scale-110 transition-transform duration-300">
-                    B2
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    английский
-                  </div>
-                </div>
-                <div className="space-y-2 p-4 rounded-lg bg-gradient-to-br from-primary/10 to-primary/5 hover:from-primary/20 hover:to-primary/10 transition-all duration-300 group">
-                  <div className="text-3xl md:text-4xl font-bold text-brand group-hover:scale-110 transition-transform duration-300">
-                    ✓
-                  </div>
-                  <div className="text-sm text-muted-foreground">релокация</div>
-                </div>
+                ))}
               </div>
 
               <div className="mt-8 pt-8 border-t">
                 <div className="flex flex-wrap justify-center gap-2">
-                  {(() => {
-                    const topTechnologies = [
-                      "Next.js",
-                      "React",
-                      "TypeScript",
-                      "Node.js",
-                      "PostgreSQL",
-                    ];
-                    return topTechnologies.map((tech, index) => (
-                      <Badge
-                        key={index}
-                        variant="secondary"
-                        className="text-xs"
-                      >
-                        {tech}
-                      </Badge>
-                    ));
-                  })()}
+                  {topTechnologies.map((tech, index) => (
+                    <Badge key={index} variant="secondary" className="text-xs">
+                      {tech}
+                    </Badge>
+                  ))}
                 </div>
               </div>
             </CardContent>
           </Card>
         </section>
 
-        {/* About Section */}
         <section
           id="about"
           ref={aboutReveal.ref as React.RefObject<HTMLElement>}
@@ -674,7 +624,7 @@ export default function Home() {
               : "opacity-0 translate-y-10"
           }`}
         >
-          <CollapsibleSection title="Обо мне" className="space-y-8">
+          <CollapsibleSection title={translations.about.sectionTitle} className="space-y-8">
             <div className="flex flex-col items-center text-center space-y-6">
               <div className="relative">
                 <div className="inline-block rounded-full bg-gradient-to-r from-primary to-primary/60 p-1 mb-4 animate-pulse">
@@ -684,49 +634,12 @@ export default function Home() {
                 </div>
               </div>
               <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
-                Обо мне
+                {translations.about.sectionTitle}
               </h2>
               <div className="max-w-3xl prose-spacing">
                 <Card className="p-6 md:p-8 bg-gradient-to-br from-card to-card/50 border-2 shadow-lg">
                   <div className="space-y-4 text-left">
-                    <div className="flex items-start gap-4">
-                      <div className="rounded-lg bg-primary/10 p-2 mt-1">
-                        <Code className="h-5 w-5 text-primary" />
-                      </div>
-                      <div>
-                        <h3 className="font-semibold text-lg mb-2">Код</h3>
-                        <p className="text-body text-muted-foreground">
-                          Создаю масштабируемые веб‑приложения с акцентом на
-                          быстродействие и комфорт пользователя.
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-4">
-                      <div className="rounded-lg bg-primary/10 p-2 mt-1">
-                        <Briefcase className="h-5 w-5 text-primary" />
-                      </div>
-                      <div>
-                        <h3 className="font-semibold text-lg mb-2">Проекты</h3>
-                        <p className="text-body text-muted-foreground">
-                          Инженерно продуманные решения, повышающие удобство,
-                          безопасность и эффективность.
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-4">
-                      <div className="rounded-lg bg-primary/10 p-2 mt-1">
-                        <Globe className="h-5 w-5 text-primary" />
-                      </div>
-                      <div>
-                        <h3 className="font-semibold text-lg mb-2">
-                          Философия
-                        </h3>
-                        <p className="text-body text-muted-foreground">
-                          Стремлюсь к инновациям, сохраняю гибкость в работе и
-                          непрерывно изучаю актуальные технологии и практики.
-                        </p>
-                      </div>
-                    </div>
+                    {aboutCardElements}
                   </div>
                 </Card>
               </div>
@@ -734,7 +647,6 @@ export default function Home() {
           </CollapsibleSection>
         </section>
 
-        {/* Skills Section */}
         <section
           id="skills"
           ref={skillsReveal.ref as React.RefObject<HTMLElement>}
@@ -744,80 +656,52 @@ export default function Home() {
               : "opacity-0 translate-y-10"
           }`}
         >
-          <CollapsibleSection title="Технические навыки" className="space-y-8">
+          <CollapsibleSection title={translations.skills.sectionTitle} className="space-y-8">
             <div className="flex flex-col items-center text-center space-y-4 mb-12">
               <GradientIcon className="mb-4" size={48} padding={8}>
                 <Code className="h-5 w-5 text-primary" />
               </GradientIcon>
-              <h2 className="text-3xl font-bold">Технические навыки</h2>
+              <h2 className="text-3xl font-bold">{translations.skills.sectionTitle}</h2>
               <p className="text-muted-foreground md:text-xl max-w-[700px]">
-                Мой технический стек и опыт работы с различными технологиями
+                {translations.skills.description}
               </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <Card className="group hover:shadow-lg transition-all duration-300 hover:scale-105 cursor-pointer">
-                <CardContent className="pt-6">
-                  <div className="flex items-center gap-2 mb-4">
-                    <Globe className="h-5 w-5 text-brand group-hover:scale-110 transition-transform duration-200" />
-                    <h3 className="text-xl font-semibold">Frontend</h3>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    <Badge>JavaScript</Badge>
-                    <Badge>TypeScript</Badge>
-                    <Badge>React</Badge>
-                    <Badge>Next.js</Badge>
-                    <Badge>Vite</Badge>
-                    <Badge>Tailwind CSS</Badge>
-                    <Badge>Shadcn/UI</Badge>
-                    <Badge>HTML</Badge>
-                    <Badge>CSS</Badge>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="group hover:shadow-lg transition-all duration-300 hover:scale-105 cursor-pointer">
-                <CardContent className="pt-6">
-                  <div className="flex items-center gap-2 mb-4">
-                    <Server className="h-5 w-5 text-brand group-hover:scale-110 transition-transform duration-200" />
-                    <h3 className="text-xl font-semibold">Backend</h3>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    <Badge>Node.js</Badge>
-                    <Badge>Nest.js</Badge>
-                    <Badge>Express</Badge>
-                    <Badge>PostgreSQL</Badge>
-                    <Badge>SQLite</Badge>
-                    <Badge>REST API</Badge>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="group hover:shadow-lg transition-all duration-300 hover:scale-105 cursor-pointer">
-                <CardContent className="pt-6">
-                  <div className="flex items-center gap-2 mb-4">
-                    <Database className="h-5 w-5 text-brand group-hover:scale-110 transition-transform duration-200" />
-                    <h3 className="text-xl font-semibold">DevOps</h3>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    <Badge>Git</Badge>
-                    <Badge>Docker</Badge>
-                    <Badge>Nginx</Badge>
-                    <Badge>Linux</Badge>
-                    <Badge>CI/CD</Badge>
-                  </div>
-                </CardContent>
-              </Card>
+              {skillsCategories.map((category) => (
+                <Card
+                  key={category.title}
+                  className="group hover:shadow-lg transition-all duration-300 hover:scale-105 cursor-pointer"
+                >
+                  <CardContent className="pt-6">
+                    <div className="flex items-center gap-2 mb-4">
+                      {category.title === "Frontend" && (
+                        <Globe className="h-5 w-5 text-brand group-hover:scale-110 transition-transform duration-200" />
+                      )}
+                      {category.title === "Backend" && (
+                        <Server className="h-5 w-5 text-brand group-hover:scale-110 transition-transform duration-200" />
+                      )}
+                      {category.title === "DevOps" && (
+                        <Database className="h-5 w-5 text-brand group-hover:scale-110 transition-transform duration-200" />
+                      )}
+                      <h3 className="text-xl font-semibold">{category.title}</h3>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {category.items.map((item) => (
+                        <Badge key={item}>{item}</Badge>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
 
-            {/* Skills Progression Chart */}
             <div className="mt-12">
               <SkillsProgressionChart />
             </div>
           </CollapsibleSection>
         </section>
 
-        {/* Experience Section */}
         <section
           id="experience"
           ref={experienceReveal.ref as React.RefObject<HTMLElement>}
@@ -827,105 +711,21 @@ export default function Home() {
               : "opacity-0 translate-y-10"
           }`}
         >
-          <CollapsibleSection title="Карьерный путь" className="space-y-8">
+          <CollapsibleSection title={translations.experience.sectionTitle} className="space-y-8">
             <div className="flex flex-col items-center text-center space-y-4 mb-12">
               <GradientIcon className="mb-4" size={48} padding={8}>
                 <Briefcase className="h-5 w-5 text-primary" />
               </GradientIcon>
-              <h2 className="text-3xl font-bold">Карьерный путь</h2>
+              <h2 className="text-3xl font-bold">{translations.experience.sectionTitle}</h2>
               <p className="text-muted-foreground md:text-xl max-w-[700px]">
-                Мой профессиональный рост и ключевые достижения
+                {translations.experience.description}
               </p>
             </div>
 
-            <AchievementTimeline
-              achievements={[
-                {
-                  year: "2022-наст.",
-                  title: "Инженер-программист",
-                  company: "ФГУП НИТИ им. А.П. Александрова",
-                  description:
-                    "Разработка веб-приложений и поддержка инфраструктуры",
-                  achievements: [
-                    "Разработал веб-приложения с использованием React, Next.js",
-                    "Создал и поддерживаю бэкенд на Node.js, Nest.js, Express",
-                    "Работаю с базами данных PostgreSQL, SQLite",
-                    "Настроил и поддерживаю CI/CD процессы",
-                    "Контейнеризую приложения с использованием Docker",
-                  ],
-                  quantifiedAchievements: [
-                    "15+ веб-приложений",
-                    "8 настроек CI/CD",
-                    "5+ интеграций систем",
-                    "1000+ запросов/день",
-                  ],
-                  technologies: [
-                    "React",
-                    "Next.js",
-                    "Node.js",
-                    "Nest.js",
-                    "PostgreSQL",
-                    "Docker",
-                  ],
-                  type: "job",
-                },
-                {
-                  year: "2019-2022",
-                  title: "Инженер-проектировщик",
-                  company: "Индивидуальное предпринимательство / фриланс",
-                  description: "Проектирование и внедрение систем безопасности",
-                  achievements: [
-                    "Спроектировал и внедрил системы контроля доступа",
-                    "Автоматизировал мониторинг и управление системами безопасности",
-                    "Разработал системы видеонаблюдения",
-                    "Создал комплексные системы безопасности под ключ",
-                  ],
-                  quantifiedAchievements: [
-                    "20+ систем контроля доступа",
-                    "15+ систем видеонаблюдения",
-                    "10+ комплексных решений",
-                    "50+ клиентов",
-                  ],
-                  technologies: [
-                    "Python",
-                    "JavaScript",
-                    "Linux",
-                    "Network Security",
-                  ],
-                  type: "job",
-                },
-                {
-                  year: "2018-2019",
-                  title: "Руководитель проектного отдела",
-                  company: "ООО 'Трекон'",
-                  description: "Управление проектами в области безопасности",
-                  achievements: [
-                    "Спроектировал интегрированные комплексы безопасности",
-                    "Разработал индивидуальные решения под заказчика",
-                    "Руководил командой разработчиков",
-                    "Внедрил процессы проектного управления",
-                  ],
-                  quantifiedAchievements: [
-                    "10+ интегрированных комплексов",
-                    "5 человек в команде",
-                    "100% соблюдение сроков",
-                    "30+ успешных проектов",
-                  ],
-                  technologies: [
-                    "Python",
-                    "JavaScript",
-                    "HTML",
-                    "CSS",
-                    "Project Management",
-                  ],
-                  type: "job",
-                },
-              ]}
-            />
+            <AchievementTimeline achievements={timeline} />
           </CollapsibleSection>
         </section>
 
-        {/* Projects Section */}
         <section
           id="projects"
           ref={projectsReveal.ref as React.RefObject<HTMLElement>}
@@ -939,175 +739,15 @@ export default function Home() {
             <GradientIcon className="mb-4" size={48} padding={8}>
               <FileCode className="h-5 w-5 text-primary" />
             </GradientIcon>
-            <h2 className="text-3xl font-bold">Проекты</h2>
+            <h2 className="text-3xl font-bold">{translations.projects.sectionTitle}</h2>
             <p className="text-muted-foreground md:text-xl max-w-[700px]">
-              Некоторые из моих недавних проектов
+              {translations.projects.description}
             </p>
           </div>
 
-          <SwipeableProjects
-            projects={[
-              {
-                title: "Портал АРМ",
-                description:
-                  "Корпоративная система управления автоматизированными рабочими местами с модулями мониторинга, отчетности и управления доступом",
-                technologies: [
-                  {
-                    name: "Next.js",
-                    level: "expert",
-                    description: "React фреймворк для серверного рендеринга",
-                    projects: 3,
-                  },
-                  {
-                    name: "RSC",
-                    level: "advanced",
-                    description: "React Server Components",
-                    projects: 2,
-                  },
-                  {
-                    name: "Tailwind",
-                    level: "expert",
-                    description: "CSS фреймворк",
-                    projects: 4,
-                  },
-                  {
-                    name: "PostgreSQL",
-                    level: "advanced",
-                    description: "Реляционная база данных",
-                    projects: 2,
-                  },
-                  {
-                    name: "Node.js",
-                    level: "expert",
-                    description: "JavaScript runtime",
-                    projects: 3,
-                  },
-                ],
-                imageUrl: "/Portal.png",
-                href: "https://portal-arm.vercel.app",
-                demoUrl: "https://portal-arm.vercel.app",
-                sourceUrl: "https://github.com/gtompel/portal-arm",
-                caseStudyUrl: "#",
-                caseStudyData: portalARMCaseStudy,
-                role: "Full-stack разработчик",
-                duration: "4 месяца",
-                teamSize: "Команда 3 человека",
-                impact:
-                  "Улучшил эффективность работы IT-отдела на 60% за счет автоматизации рутинных процессов",
-                metrics: [
-                  "Автоматизация 15+ процессов",
-                  "Снижение времени отклика на 40%",
-                  "Интеграция с 5 системами",
-                  "Обработка 1000+ запросов/день",
-                ],
-              },
-              {
-                title: "HR Система",
-                description:
-                  "Комплексная система управления ресурсами с модулями учета сотрудников, планирования отпусков и аналитики",
-                technologies: [
-                  {
-                    name: "Next.js",
-                    level: "expert",
-                    description: "React фреймворк для серверного рендеринга",
-                    projects: 3,
-                  },
-                  {
-                    name: "ShadcnUI",
-                    level: "advanced",
-                    description: "Компонентная библиотека",
-                    projects: 2,
-                  },
-                  {
-                    name: "Charts",
-                    level: "intermediate",
-                    description: "Библиотека для визуализации данных",
-                    projects: 1,
-                  },
-                  {
-                    name: "TypeScript",
-                    level: "expert",
-                    description: "Типизированный JavaScript",
-                    projects: 3,
-                  },
-                  {
-                    name: "Prisma",
-                    level: "intermediate",
-                    description: "ORM для баз данных",
-                    projects: 1,
-                  },
-                ],
-                imageUrl: "/HR.png",
-                href: "https://kebab-omega.vercel.app/",
-                demoUrl: "https://kebab-omega.vercel.app/",
-                sourceUrl: "https://github.com/gtompel/hr-system",
-                caseStudyUrl: "#",
-                caseStudyData: hrSystemCaseStudy,
-                role: "Архитектор и ведущий разработчик",
-                duration: "6 месяцев",
-                teamSize: "Команда 4 человека",
-                impact:
-                  "Оптимизировал процессы HR на 70% и сократил время обработки документов с 2 дней до 2 часов",
-                metrics: [
-                  "Автоматизация документооборота",
-                  "Интерактивные дашборды",
-                  "Мобильное приложение",
-                  "Интеграция с 1C",
-                ],
-              },
-              {
-                title: "GTO Protocol Management System",
-                description: `Приложение для ведения электронных протоколов сдачи норм ГТО (Готов к труду и обороне)\n\nВедения электронных протоколов выполнения нормативов ГТО\n- Управления справочниками видов испытаний, уровней выполнения и спортивных званий\n`,
-                technologies: [
-                  {
-                    name: "Next.js 16",
-                    level: "expert",
-                    description: "App Router, React 19, TypeScript",
-                  },
-                  {
-                    name: "Prisma ORM",
-                    level: "advanced",
-                    description: "PostgreSQL, localStorage fallback",
-                  },
-                  {
-                    name: "Tailwind CSS v4",
-                    level: "expert",
-                    description: "Для стилизации UI",
-                  },
-                  {
-                    name: "shadcn/ui",
-                    level: "advanced",
-                    description: "UI компоненты",
-                  },
-                  {
-                    name: "React Hook Form",
-                    level: "expert",
-                    description: "+ Zod для валидации форм",
-                  },
-                ],
-                imageUrl: "/Duel.png",
-                href: "https://duel2hero.vercel.app/",
-                demoUrl: "https://duel2hero.vercel.app/",
-                sourceUrl: "https://github.com/gtompel/duel2hero",
-                caseStudyUrl: "#case-gto",
-                caseStudyData: gtoCaseStudy,
-                role: "Ведущий разработчик",
-                duration: "3 месяца",
-                teamSize: "Соло или небольшая команда",
-                impact:
-                  "Автоматизация документооборота по ГТО, прозрачность результатов и повышение безопасности хранения данных.",
-                metrics: [
-                  "Ведение протоколов онлайн",
-                  "Экспорт CSV для организаций",
-                  "Раздельные роли: admin/user",
-                  "Аудит операций",
-                ],
-              },
-            ]}
-          />
+          <SwipeableProjects projects={projectCards as Project[]} />
         </section>
 
-        {/* Testimonials Section */}
         {isHydrated && isTestimonialsVisible && (
           <section
             id="testimonials"
@@ -1123,59 +763,17 @@ export default function Home() {
                 <Star className="h-5 w-5 text-primary" />
               </GradientIcon>
               <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
-                Отзывы
+                {translations.testimonials.sectionTitle}
               </h2>
               <p className="text-muted-foreground md:text-xl max-w-[700px]">
-                Что говорят коллеги и клиенты о моей работе
+                {translations.testimonials.description}
               </p>
             </div>
 
-            <Testimonials
-              testimonials={[
-                {
-                  id: "1",
-                  name: "Алексей Иванов",
-                  role: "Руководитель IT-отдела",
-                  company: "ФГУП НИТИ",
-                  content:
-                    "Юрий проявил себя как ответственный и профессиональный разработчик. Портал АРМ, который он создал, значительно упростил нашу работу и повысил эффективность процессов.",
-                  rating: 5,
-                  project: "Портал АРМ",
-                },
-                {
-                  id: "2",
-                  name: "Мария Петрова",
-                  role: "HR-директор",
-                  company: "Корпорация",
-                  content:
-                    "Работа с Юрием над HR-системой была очень продуктивной. Он внимательно выслушал все требования и создал решение, которое превзошло наши ожидания. Система работает стабильно и удобна в использовании.",
-                  rating: 5,
-                  project: "HR Система",
-                },
-                {
-                  id: "3",
-                  name: "Дмитрий Сидоров",
-                  role: "CTO",
-                  company: "Технологический стартап",
-                  content:
-                    "Юрий показал отличные навыки в full-stack разработке. Его код чистый, хорошо структурирован и легко поддерживается. Рекомендую его как надежного специалиста.",
-                  rating: 5,
-                },
-                {
-                  id: "4",
-                  name: "Елена Козлова",
-                  role: "Менеджер проектов",
-                  company: "IT-компания",
-                  content:
-                    "В работе с Юрием впечатлила его способность быстро вникать в задачи и предлагать оптимальные решения. Все проекты были сданы в срок и с высоким качеством.",
-                  rating: 5,
-                },
-              ]}
-            />
+            <Testimonials testimonials={testimonialsData} />
           </section>
         )}
 
-        {/* Contact Section */}
         <section
           id="contact"
           ref={contactReveal.ref as React.RefObject<HTMLElement>}
@@ -1185,15 +783,14 @@ export default function Home() {
               : "opacity-0 translate-y-10"
           }`}
         >
-          <CollapsibleSection title="Связаться со мной" className="space-y-8">
+          <CollapsibleSection title={translations.contact.sectionTitle} className="space-y-8">
             <div className="flex flex-col items-center text-center space-y-4 mb-12">
               <GradientIcon className="mb-4" size={48} padding={8}>
                 <MessageSquare className="h-5 w-5 text-primary" />
               </GradientIcon>
-              <h2 className="text-3xl font-bold">Связаться со мной</h2>
+              <h2 className="text-3xl font-bold">{translations.contact.sectionTitle}</h2>
               <p className="text-muted-foreground md:text-xl max-w-[700px]">
-                Заинтересованы в сотрудничестве? Свяжитесь со мной любым удобным
-                способом
+                {translations.contact.description}
               </p>
             </div>
 
@@ -1215,7 +812,7 @@ export default function Home() {
                     <div className="flex items-center gap-3">
                       <Send className="h-5 w-5 text-primary" />
                       <a
-                        href="https://github.com/gtompel"
+                        href="https://t.me/gtompel"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-primary hover:text-primary/80 transition-colors duration-200 hover:underline"
@@ -1223,10 +820,6 @@ export default function Home() {
                         @gtompel
                       </a>
                     </div>
-                    {/* <div className="flex items-center gap-3">
-                      <Linkedin className="h-5 w-5 text-primary" />
-                      <p>linkedin.com/in/yourprofile</p>
-                    </div> */}
                     <div className="flex items-center gap-3">
                       <Github className="h-5 w-5 text-primary" />
                       <a
@@ -1247,20 +840,20 @@ export default function Home() {
                   <form onSubmit={handleContactSubmit} className="space-y-4">
                     <div className="grid gap-2">
                       <label htmlFor="name" className="text-sm font-medium">
-                        Имя
+                        {translations.contact.form.nameLabel}
                       </label>
                       <input
                         id="name"
                         name="name"
                         required
                         className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all"
-                        placeholder="Ваше имя"
+                        placeholder={translations.contact.form.namePlaceholder}
                         autoComplete="name"
                       />
                     </div>
                     <div className="grid gap-2">
                       <label htmlFor="email" className="text-sm font-medium">
-                        Email
+                        {translations.contact.form.emailLabel}
                       </label>
                       <input
                         id="email"
@@ -1268,20 +861,20 @@ export default function Home() {
                         type="email"
                         required
                         className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all"
-                        placeholder="your@email.com"
+                        placeholder={translations.contact.form.emailPlaceholder}
                         autoComplete="email"
                       />
                     </div>
                     <div className="grid gap-2">
                       <label htmlFor="message" className="text-sm font-medium">
-                        Сообщение
+                        {translations.contact.form.messageLabel}
                       </label>
                       <textarea
                         id="message"
                         name="message"
                         required
                         className="flex min-h-[120px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all resize-none"
-                        placeholder="Ваше сообщение..."
+                        placeholder={translations.contact.form.messagePlaceholder}
                       />
                     </div>
                     <Button
@@ -1291,11 +884,13 @@ export default function Home() {
                     >
                       {isSubmitting ? (
                         <>
-                          <span className="mr-2">Отправка...</span>
+                          <span className="mr-2">
+                            {translations.contact.form.buttonLoading}
+                          </span>
                           <span className="animate-spin inline-block w-4 h-4 border-2 border-current border-t-transparent rounded-full" />
                         </>
                       ) : (
-                        "Отправить сообщение"
+                        translations.contact.form.buttonIdle
                       )}
                     </Button>
                   </form>
@@ -1306,11 +901,10 @@ export default function Home() {
         </section>
       </main>
 
-      {/* Footer */}
       <footer className="border-t py-6 md:py-0 bg-muted/50">
         <div className="container flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row">
           <p className="text-center text-sm leading-loose text-muted-foreground md:text-left">
-            © 2025 Юрий Королёв. Все права защищены.
+            {translations.footer.rights}
           </p>
           <div className="flex items-center gap-4">
             <a
@@ -1318,24 +912,19 @@ export default function Home() {
               className="text-muted-foreground hover:text-foreground hover:scale-110 transition-all duration-200 p-2 rounded-md min-h-[44px] min-w-[44px] flex items-center justify-center touch-manipulation"
             >
               <Github className="h-5 w-5" />
-              <span className="sr-only">GitHub</span>
+              <span className="sr-only">{translations.footer.githubLabel}</span>
             </a>
-            {/* <a href="#" className="text-muted-foreground hover:text-foreground">
-              <Linkedin className="h-5 w-5" />
-              <span className="sr-only">LinkedIn</span>
-            </a> */}
             <a
               href="#"
               className="text-muted-foreground hover:text-foreground hover:scale-110 transition-all duration-200 p-2 rounded-md min-h-[44px] min-w-[44px] flex items-center justify-center touch-manipulation"
             >
               <Mail className="h-5 w-5" />
-              <span className="sr-only">Email</span>
+              <span className="sr-only">{translations.footer.emailLabel}</span>
             </a>
           </div>
         </div>
       </footer>
 
-      {/* Quick Actions Bar */}
       <QuickActionsBar
         onCVEdit={() => setIsCVEditorOpen(true)}
         onToggleTestimonials={() =>
@@ -1344,13 +933,11 @@ export default function Home() {
         isTestimonialsVisible={isTestimonialsVisible}
       />
 
-      {/* CV Editor Modal */}
       <CVEditorModal
         isOpen={isCVEditorOpen}
         onClose={() => setIsCVEditorOpen(false)}
       />
 
-      {/* Case Study Modal */}
       <CaseStudyModal
         isOpen={isCaseStudyOpen}
         onClose={() => setIsCaseStudyOpen(false)}

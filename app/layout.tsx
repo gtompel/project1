@@ -3,6 +3,7 @@ import { JetBrains_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider"
 import { StructuredData } from "@/components/structured-data"
 import { Toaster } from "@/components/ui/toaster"
+import { LanguageProvider } from "@/components/language-provider"
 
 // My
 import { Analytics } from "@vercel/analytics/react"
@@ -104,9 +105,11 @@ export default function RootLayout({ children }: RootLayoutProps) {
       </head>
       <body className={`${jetbrain.variable} ${jetbrain.className} safe-area`}>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
-          <Analytics />
-          {children}
-          <Toaster />
+          <LanguageProvider>
+            <Analytics />
+            {children}
+            <Toaster />
+          </LanguageProvider>
         </ThemeProvider>
       </body>
     </html>

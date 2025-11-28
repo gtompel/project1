@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Download, MessageSquare, FileCode, Github, ChevronUp, Eye, EyeOff } from "lucide-react";
 import { cvData } from "@/lib/cv-data";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/components/language-provider";
 
 interface QuickActionsBarProps {
   onCVEdit?: () => void;
@@ -17,6 +18,8 @@ export function QuickActionsBar({ onCVEdit, onToggleTestimonials, isTestimonials
   const [isDesktop, setIsDesktop] = useState(false);
   const { toast } = useToast();
   const isDevMode = process.env.NODE_ENV === 'development';
+  const { translations } = useLanguage();
+  const labels = translations.quickActions;
 
   useEffect(() => {
     const toggleVisibility = () => {
@@ -78,14 +81,14 @@ export function QuickActionsBar({ onCVEdit, onToggleTestimonials, isTestimonials
 
       // Показываем стильное уведомление
       toast({
-        title: "CV успешно скачан!",
-        description: "HTML файл сохранен в папке загрузок",
+        title: labels.downloadSuccessTitle,
+        description: labels.downloadSuccessDescription,
         duration: 5000,
       });
     } catch (error) {
       toast({
-        title: "Ошибка при генерации CV",
-        description: "Попробуйте еще раз",
+        title: labels.downloadErrorTitle,
+        description: labels.downloadErrorDescription,
         variant: "destructive",
         duration: 5000,
       });
@@ -192,7 +195,7 @@ export function QuickActionsBar({ onCVEdit, onToggleTestimonials, isTestimonials
           onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
         >
           <MessageSquare className="h-4 w-4" />
-          <span className="hidden sm:inline">Написать</span>
+          <span className="hidden sm:inline">{labels.contact}</span>
         </Button>
 
         <Button
@@ -202,7 +205,7 @@ export function QuickActionsBar({ onCVEdit, onToggleTestimonials, isTestimonials
           onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}
         >
           <FileCode className="h-4 w-4" />
-          <span className="hidden sm:inline">Проекты</span>
+          <span className="hidden sm:inline">{labels.projects}</span>
         </Button>
 
         <Button
@@ -213,7 +216,7 @@ export function QuickActionsBar({ onCVEdit, onToggleTestimonials, isTestimonials
         >
           <a href="https://github.com/gtompel" target="_blank" rel="noopener noreferrer">
             <Github className="h-4 w-4" />
-            <span className="hidden sm:inline">GitHub</span>
+            <span className="hidden sm:inline">{labels.github}</span>
           </a>
         </Button>
 
@@ -227,7 +230,7 @@ export function QuickActionsBar({ onCVEdit, onToggleTestimonials, isTestimonials
           data-cv-download
         >
           <Download className="h-4 w-4" />
-          <span className="hidden sm:inline">CV</span>
+          <span className="hidden sm:inline">{labels.cv}</span>
         </Button>
 
         {isDevMode && (
@@ -239,7 +242,7 @@ export function QuickActionsBar({ onCVEdit, onToggleTestimonials, isTestimonials
               onClick={onCVEdit}
             >
               <FileCode className="h-4 w-4" />
-              <span className="hidden sm:inline">Редактировать CV</span>
+              <span className="hidden sm:inline">{labels.editCV}</span>
             </Button>
             <Button
               size="sm"
@@ -250,12 +253,12 @@ export function QuickActionsBar({ onCVEdit, onToggleTestimonials, isTestimonials
               {isTestimonialsVisible ? (
                 <>
                   <EyeOff className="h-4 w-4" />
-                  <span className="hidden sm:inline">Скрыть отзывы</span>
+                  <span className="hidden sm:inline">{labels.hideTestimonials}</span>
                 </>
               ) : (
                 <>
                   <Eye className="h-4 w-4" />
-                  <span className="hidden sm:inline">Показать отзывы</span>
+                  <span className="hidden sm:inline">{labels.showTestimonials}</span>
                 </>
               )}
             </Button>
