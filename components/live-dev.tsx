@@ -81,9 +81,14 @@ export function LiveDev({ inline = false, buttonClassName }: { inline?: boolean;
             <div className="pt-2">
               <div className="text-xs uppercase tracking-wide text-muted-foreground mb-1">APIs</div>
               <ul className="list-disc pl-5 space-y-1">
-                {data ? Object.entries(data.usedAPIs).map(([k, v]) => (
-                  <li key={k} className={v ? '' : 'opacity-50'}>{k}{v ? '' : ' (нет)'}</li>
-                )) : <li>...</li>}
+                {data
+                  ? Object.entries(data?.usedAPIs ?? {}).map(([k, v]) => (
+                      <li key={k} className={v ? '' : 'opacity-50'}>
+                        {k}
+                        {v ? '' : ' (нет)'}
+                      </li>
+                    ))
+                  : <li>...</li>}
               </ul>
             </div>
           </Card>

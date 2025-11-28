@@ -36,17 +36,29 @@ const nextConfig = {
     parallelServerCompiles: true,
   },
   async headers() {
+    const isProd = process.env.NODE_ENV === 'production'
+    const scriptSrc = [
+      "'self'",
+      "'unsafe-inline'",
+      'https://vercel.live',
+      'https://va.vercel-scripts.com',
+    ]
+
+    if (!isProd) {
+      scriptSrc.push("'unsafe-eval'")
+    }
+
     const csp = [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' https://vercel.live",
+      `script-src ${scriptSrc.join(' ')}`,
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' data: https:",
       "font-src 'self' data:",
-      "connect-src 'self' https://*.vercel-insights.com",
+      "connect-src 'self' https://*.vercel-insights.com https://va.vercel-scripts.com",
       "frame-ancestors 'self'",
       "base-uri 'self'",
       "form-action 'self' mailto:",
-    ].join("; ")
+    ].join('; ')
 
     const securityHeaders = [
       {
