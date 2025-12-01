@@ -1,8 +1,8 @@
-"use client";
-import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+'use client';
+import React, { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import {
   Github,
   Send,
@@ -17,46 +17,35 @@ import {
   MessageSquare,
   Star,
   Menu,
-} from "lucide-react";
-import { ThemeToggle } from "@/components/theme-toggle";
-import { LiveDev } from "@/components/live-dev";
-import { QuickActionsBar } from "@/components/ui/quick-actions-bar";
-import { CVEditorModal } from "@/components/cv-editor-modal";
-import { CaseStudyModal } from "@/components/case-study-modal";
-import {
-  AchievementTimeline,
-  Achievement,
-} from "@/components/ui/achievement-timeline";
-import { CollapsibleSection } from "@/components/ui/collapsible-section";
-import { SkillsProgressionChart } from "@/components/ui/skills-progression-chart";
-import { SwipeableProjects, type Project } from "@/components/ui/swipeable-projects";
-import { Testimonials } from "@/components/ui/testimonials";
-import { GradientIcon } from "@/components/ui/gradient-icon";
-import {
-  Sheet,
-  SheetContent,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-import { useToast } from "@/hooks/use-toast";
-import { useInView } from "@/hooks/use-in-view";
-import { useScrollSection } from "@/hooks/use-scroll-section";
-import { useScrollReveal } from "@/hooks/use-scroll-reveal";
-import {
-  portalARMCaseStudy,
-  hrSystemCaseStudy,
-  gtoCaseStudy,
-} from "@/lib/case-study-data";
-import { LanguageSwitcher } from "@/components/language-switcher";
-import { useLanguage } from "@/components/language-provider";
+} from 'lucide-react';
+import { ThemeToggle } from '@/components/theme-toggle';
+import { LiveDev } from '@/components/live-dev';
+import { QuickActionsBar } from '@/components/ui/quick-actions-bar';
+import { CVEditorModal } from '@/components/cv-editor-modal';
+import { CaseStudyModal } from '@/components/case-study-modal';
+import { AchievementTimeline, Achievement } from '@/components/ui/achievement-timeline';
+import { CollapsibleSection } from '@/components/ui/collapsible-section';
+import { SkillsProgressionChart } from '@/components/ui/skills-progression-chart';
+import { SwipeableProjects, type Project } from '@/components/ui/swipeable-projects';
+import { Testimonials } from '@/components/ui/testimonials';
+import { GradientIcon } from '@/components/ui/gradient-icon';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { useToast } from '@/hooks/use-toast';
+import { useInView } from '@/hooks/use-in-view';
+import { useScrollSection } from '@/hooks/use-scroll-section';
+import { useScrollReveal } from '@/hooks/use-scroll-reveal';
+import { portalARMCaseStudy, hrSystemCaseStudy, gtoCaseStudy } from '@/lib/case-study-data';
+import { LanguageSwitcher } from '@/components/language-switcher';
+import { useLanguage } from '@/components/language-provider';
 
 const cloneTranslations = <T,>(data: T): T => {
-  if (typeof structuredClone === "function") {
+  if (typeof structuredClone === 'function') {
     return structuredClone(data);
   }
   return JSON.parse(JSON.stringify(data));
 };
 
-type CaseStudyKey = "portalARM" | "hrSystem" | "gto";
+type CaseStudyKey = 'portalARM' | 'hrSystem' | 'gto';
 
 const CASE_STUDY_MAP: Record<
   CaseStudyKey,
@@ -74,10 +63,7 @@ const ABOUT_ICON_MAP = {
 
 export default function Home() {
   const { translations: rawTranslations } = useLanguage();
-  const translations = React.useMemo(
-    () => cloneTranslations(rawTranslations),
-    [rawTranslations]
-  );
+  const translations = React.useMemo(() => cloneTranslations(rawTranslations), [rawTranslations]);
   const [isCVEditorOpen, setIsCVEditorOpen] = useState(false);
   const [isCaseStudyOpen, setIsCaseStudyOpen] = useState(false);
   const [currentCaseStudy, setCurrentCaseStudy] = useState<any>(null);
@@ -101,33 +87,29 @@ export default function Home() {
   const [isTestimonialsVisible, setIsTestimonialsVisible] = useState(false);
 
   const navItems = Array.isArray(translations.nav.items)
-    ? translations.nav.items.map((item) =>
-        item && typeof item === "object" ? { ...item } : item
-      )
+    ? translations.nav.items.map((item) => (item && typeof item === 'object' ? { ...item } : item))
     : [];
   const skipLinks = Array.isArray(translations.header.skipLinks)
     ? translations.header.skipLinks.map((item) =>
-        item && typeof item === "object" ? { ...item } : item
+        item && typeof item === 'object' ? { ...item } : item,
       )
     : [];
-  const topTechnologies = ["Next.js", "React", "TypeScript", "Node.js", "PostgreSQL"];
-  const aboutCardsRaw = Array.isArray(translations.about.cards)
-    ? translations.about.cards
-    : [];
+  const topTechnologies = ['Next.js', 'React', 'TypeScript', 'Node.js', 'PostgreSQL'];
+  const aboutCardsRaw = Array.isArray(translations.about.cards) ? translations.about.cards : [];
   const aboutCards: typeof aboutCardsRaw = [];
   for (const card of aboutCardsRaw) {
-    if (card && typeof card === "object") {
+    if (card && typeof card === 'object') {
       aboutCards.push(card);
     }
   }
   const skillsCategories = Array.isArray(translations.skills.categories)
     ? translations.skills.categories.map((category) =>
-        category && typeof category === "object" ? { ...category } : category
+        category && typeof category === 'object' ? { ...category } : category,
       )
     : [];
   const timeline = Array.isArray(translations.experience.timeline)
     ? (translations.experience.timeline.map((item) =>
-        item && typeof item === "object" ? { ...item } : item
+        item && typeof item === 'object' ? { ...item } : item,
       ) as Achievement[])
     : [];
   const projectCards = Array.isArray(translations.projects.list)
@@ -140,13 +122,12 @@ export default function Home() {
     : [];
   const testimonialsData = Array.isArray(translations.testimonials.items)
     ? translations.testimonials.items.map((item) =>
-        item && typeof item === "object" ? { ...item } : item
+        item && typeof item === 'object' ? { ...item } : item,
       )
     : [];
   const aboutCardElements: React.ReactNode[] = [];
   for (const card of aboutCards) {
-    const Icon =
-      ABOUT_ICON_MAP[card.icon as keyof typeof ABOUT_ICON_MAP] ?? Code;
+    const Icon = ABOUT_ICON_MAP[card.icon as keyof typeof ABOUT_ICON_MAP] ?? Code;
     aboutCardElements.push(
       <div key={card.title} className="flex items-start gap-4">
         <div className="rounded-lg bg-primary/10 p-2 mt-1">
@@ -156,29 +137,24 @@ export default function Home() {
           <h3 className="font-semibold text-lg mb-2">{card.title}</h3>
           <p className="text-body text-muted-foreground">{card.description}</p>
         </div>
-      </div>
+      </div>,
     );
   }
 
   React.useEffect(() => {
     setIsHydrated(true);
     const saved =
-      typeof window !== "undefined"
-        ? localStorage.getItem("testimonials-visible")
-        : null;
+      typeof window !== 'undefined' ? localStorage.getItem('testimonials-visible') : null;
     if (saved !== null) {
-      setIsTestimonialsVisible(saved === "true");
+      setIsTestimonialsVisible(saved === 'true');
     } else {
       setIsTestimonialsVisible(false);
     }
   }, []);
 
   React.useEffect(() => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem(
-        "testimonials-visible",
-        String(isTestimonialsVisible)
-      );
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('testimonials-visible', String(isTestimonialsVisible));
     }
   }, [isTestimonialsVisible]);
 
@@ -191,9 +167,9 @@ export default function Home() {
 
   React.useEffect(() => {
     const reduceMotion =
-      typeof window !== "undefined" &&
+      typeof window !== 'undefined' &&
       window.matchMedia &&
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reduceMotion) return;
 
     const handleParallax = () => {
@@ -201,15 +177,15 @@ export default function Home() {
       setParallaxOffset({ x: scrollY * 0.3, y: scrollY * 0.2 });
     };
 
-    window.addEventListener("scroll", handleParallax);
-    return () => window.removeEventListener("scroll", handleParallax);
+    window.addEventListener('scroll', handleParallax);
+    return () => window.removeEventListener('scroll', handleParallax);
   }, []);
 
   const handleCaseStudyClick = (e: React.MouseEvent) => {
     const target = e.target as HTMLElement;
     const card = target.closest('[data-case-study="true"]') as HTMLElement | null;
     if (card) {
-      const key = card.getAttribute("data-project-key") as CaseStudyKey | null;
+      const key = card.getAttribute('data-project-key') as CaseStudyKey | null;
       if (key && CASE_STUDY_MAP[key]) {
         setCurrentCaseStudy(CASE_STUDY_MAP[key]);
         setIsCaseStudyOpen(true);
@@ -226,8 +202,8 @@ export default function Home() {
       setScrollProgress(progress);
     };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   React.useEffect(() => {
@@ -272,15 +248,15 @@ export default function Home() {
 
     const form = e.currentTarget;
     const formData = new FormData(form);
-    const name = formData.get("name") as string;
-    const email = formData.get("email") as string;
-    const message = formData.get("message") as string;
+    const name = formData.get('name') as string;
+    const email = formData.get('email') as string;
+    const message = formData.get('message') as string;
 
     if (!name || !email || !message) {
       toast({
         title: translations.contact.toast.missingFieldsTitle,
         description: translations.contact.toast.missingFieldsDescription,
-        variant: "destructive",
+        variant: 'destructive',
       });
       return;
     }
@@ -293,7 +269,7 @@ export default function Home() {
       const mailtoLink = `mailto:quimpik@yandex.ru?subject=${
         translations.contact.mailSubjectPrefix
       } ${encodeURIComponent(name)}&body=${encodeURIComponent(
-        `${message}\n\n${translations.contact.mailSubjectPrefix}: ${email}`
+        `${message}\n\n${translations.contact.mailSubjectPrefix}: ${email}`,
       )}`;
       window.location.href = mailtoLink;
 
@@ -307,7 +283,7 @@ export default function Home() {
       toast({
         title: translations.contact.toast.errorTitle,
         description: translations.contact.toast.errorDescription,
-        variant: "destructive",
+        variant: 'destructive',
       });
     } finally {
       setIsSubmitting(false);
@@ -318,64 +294,46 @@ export default function Home() {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.ctrlKey || e.metaKey) {
         switch (e.key) {
-          case "1":
+          case '1':
             e.preventDefault();
-            document
-              .getElementById("about")
-              ?.scrollIntoView({ behavior: "smooth" });
+            document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' });
             break;
-          case "2":
+          case '2':
             e.preventDefault();
-            document
-              .getElementById("skills")
-              ?.scrollIntoView({ behavior: "smooth" });
+            document.getElementById('skills')?.scrollIntoView({ behavior: 'smooth' });
             break;
-          case "3":
+          case '3':
             e.preventDefault();
-            document
-              .getElementById("experience")
-              ?.scrollIntoView({ behavior: "smooth" });
+            document.getElementById('experience')?.scrollIntoView({ behavior: 'smooth' });
             break;
-          case "4":
+          case '4':
             e.preventDefault();
-            document
-              .getElementById("projects")
-              ?.scrollIntoView({ behavior: "smooth" });
+            document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' });
             break;
-          case "5":
+          case '5':
             e.preventDefault();
-            document
-              .getElementById("contact")
-              ?.scrollIntoView({ behavior: "smooth" });
+            document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
             break;
-          case "h":
-          case "Home":
+          case 'h':
+          case 'Home':
             e.preventDefault();
-            window.scrollTo({ top: 0, behavior: "smooth" });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
             break;
-          case "e":
+          case 'e':
             e.preventDefault();
             setIsCVEditorOpen(true);
             break;
-          case "d":
+          case 'd':
             e.preventDefault();
-            const cvButton = document.querySelector(
-              "[data-cv-download]"
-            ) as HTMLButtonElement;
+            const cvButton = document.querySelector('[data-cv-download]') as HTMLButtonElement;
             cvButton?.click();
             break;
         }
       }
 
-      if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
         e.preventDefault();
-        const sections = [
-          "about",
-          "skills",
-          "experience",
-          "projects",
-          "contact",
-        ];
+        const sections = ['about', 'skills', 'experience', 'projects', 'contact'];
         const currentSection = sections.find((section) => {
           const element = document.getElementById(section);
           if (element) {
@@ -389,44 +347,42 @@ export default function Home() {
           const currentIndex = sections.indexOf(currentSection);
           let nextIndex;
 
-          if (e.key === "ArrowDown") {
+          if (e.key === 'ArrowDown') {
             nextIndex = Math.min(currentIndex + 1, sections.length - 1);
           } else {
             nextIndex = Math.max(currentIndex - 1, 0);
           }
 
-          document
-            .getElementById(sections[nextIndex])
-            ?.scrollIntoView({ behavior: "smooth" });
+          document.getElementById(sections[nextIndex])?.scrollIntoView({ behavior: 'smooth' });
         }
       }
     };
 
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
   }, []);
 
   const renderSummaryValue = (key: string) => {
     const card = translations.summary.cards.find((item) => item.key === key);
-    if (!card) return "";
+    if (!card) return '';
     if (card.value) return card.value;
 
-    let value = "";
+    let value = '';
     switch (key) {
-      case "years":
+      case 'years':
         value = `${counters.years}`;
         break;
-      case "projects":
+      case 'projects':
         value = `${counters.projects}`;
         break;
-      case "technologies":
+      case 'technologies':
         value = `${counters.technologies}`;
         break;
       default:
-        value = "";
+        value = '';
     }
 
-    return `${value}${card.suffix ?? ""}`;
+    return `${value}${card.suffix ?? ''}`;
   };
 
   return (
@@ -460,8 +416,8 @@ export default function Home() {
                   key={item.id}
                   className={`transition-all hover:text-foreground/80 hover:border-b-2 min-h-[44px] px-3 py-2 flex items-center touch-manipulation ${
                     activeSection === item.id
-                      ? "text-primary border-b-2 border-primary font-medium"
-                      : ""
+                      ? 'text-primary border-b-2 border-primary font-medium'
+                      : ''
                   }`}
                   href={`#${item.id}`}
                 >
@@ -485,10 +441,7 @@ export default function Home() {
                     <Menu className="h-5 w-5" />
                   </Button>
                 </SheetTrigger>
-                <SheetContent
-                  side="top"
-                  className="flex flex-col gap-6 pt-10 pb-8"
-                >
+                <SheetContent side="top" className="flex flex-col gap-6 pt-10 pb-8">
                   <nav className="flex flex-col gap-4 text-lg">
                     {navItems.map((item) => (
                       <a
@@ -503,21 +456,13 @@ export default function Home() {
                 </SheetContent>
               </Sheet>
             </div>
-            {(process.env.NODE_ENV === "development" ||
-              process.env.NEXT_PUBLIC_LIVE_DEV === "1") && (
+            {(process.env.NODE_ENV === 'development' ||
+              process.env.NEXT_PUBLIC_LIVE_DEV === '1') && (
               <LiveDev inline buttonClassName="h-8 w-8" />
             )}
             <div className="w-full flex-1 md:w-auto md:flex-none">
-              <Button
-                variant="outline"
-                size="icon"
-                className="ml-auto hidden h-8 w-8 md:flex"
-              >
-                <a
-                  href="https://github.com/gtompel"
-                  target="_blank"
-                  rel="noreferrer"
-                >
+              <Button variant="outline" size="icon" className="ml-auto hidden h-8 w-8 md:flex">
+                <a href="https://github.com/gtompel" target="_blank" rel="noreferrer">
                   <Github className="h-4 w-4" />
                   <span className="sr-only">GitHub</span>
                 </a>
@@ -619,9 +564,7 @@ export default function Home() {
           id="about"
           ref={aboutReveal.ref as React.RefObject<HTMLElement>}
           className={`container py-12 md:py-24 transition-all duration-1000 ${
-            aboutReveal.isVisible
-              ? "opacity-100 translate-y-0"
-              : "opacity-0 translate-y-10"
+            aboutReveal.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
           }`}
         >
           <CollapsibleSection title={translations.about.sectionTitle} className="space-y-8">
@@ -638,9 +581,7 @@ export default function Home() {
               </h2>
               <div className="max-w-3xl prose-spacing">
                 <Card className="p-6 md:p-8 bg-gradient-to-br from-card to-card/50 border-2 shadow-lg">
-                  <div className="space-y-4 text-left">
-                    {aboutCardElements}
-                  </div>
+                  <div className="space-y-4 text-left">{aboutCardElements}</div>
                 </Card>
               </div>
             </div>
@@ -651,9 +592,7 @@ export default function Home() {
           id="skills"
           ref={skillsReveal.ref as React.RefObject<HTMLElement>}
           className={`container py-12 md:py-24 transition-all duration-1000 ${
-            skillsReveal.isVisible
-              ? "opacity-100 translate-y-0"
-              : "opacity-0 translate-y-10"
+            skillsReveal.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
           }`}
         >
           <CollapsibleSection title={translations.skills.sectionTitle} className="space-y-8">
@@ -675,13 +614,13 @@ export default function Home() {
                 >
                   <CardContent className="pt-6">
                     <div className="flex items-center gap-2 mb-4">
-                      {category.title === "Frontend" && (
+                      {category.title === 'Frontend' && (
                         <Globe className="h-5 w-5 text-brand group-hover:scale-110 transition-transform duration-200" />
                       )}
-                      {category.title === "Backend" && (
+                      {category.title === 'Backend' && (
                         <Server className="h-5 w-5 text-brand group-hover:scale-110 transition-transform duration-200" />
                       )}
-                      {category.title === "DevOps" && (
+                      {category.title === 'DevOps' && (
                         <Database className="h-5 w-5 text-brand group-hover:scale-110 transition-transform duration-200" />
                       )}
                       <h3 className="text-xl font-semibold">{category.title}</h3>
@@ -706,9 +645,7 @@ export default function Home() {
           id="experience"
           ref={experienceReveal.ref as React.RefObject<HTMLElement>}
           className={`container py-12 md:py-24 transition-all duration-1000 ${
-            experienceReveal.isVisible
-              ? "opacity-100 translate-y-0"
-              : "opacity-0 translate-y-10"
+            experienceReveal.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
           }`}
         >
           <CollapsibleSection title={translations.experience.sectionTitle} className="space-y-8">
@@ -730,9 +667,7 @@ export default function Home() {
           id="projects"
           ref={projectsReveal.ref as React.RefObject<HTMLElement>}
           className={`container py-12 md:py-24 space-y-8 transition-all duration-1000 ${
-            projectsReveal.isVisible
-              ? "opacity-100 translate-y-0"
-              : "opacity-0 translate-y-10"
+            projectsReveal.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
           }`}
         >
           <div className="flex flex-col items-center text-center space-y-4 mb-12">
@@ -754,8 +689,8 @@ export default function Home() {
             ref={testimonialsReveal.ref as React.RefObject<HTMLElement>}
             className={`container py-12 md:py-24 transition-all duration-1000 ${
               testimonialsReveal.isVisible
-                ? "opacity-100 translate-y-0"
-                : "opacity-0 translate-y-10"
+                ? 'opacity-100 translate-y-0'
+                : 'opacity-0 translate-y-10'
             }`}
           >
             <div className="flex flex-col items-center text-center space-y-4 mb-12">
@@ -778,9 +713,7 @@ export default function Home() {
           id="contact"
           ref={contactReveal.ref as React.RefObject<HTMLElement>}
           className={`container py-12 md:py-24 transition-all duration-1000 ${
-            contactReveal.isVisible
-              ? "opacity-100 translate-y-0"
-              : "opacity-0 translate-y-10"
+            contactReveal.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
           }`}
         >
           <CollapsibleSection title={translations.contact.sectionTitle} className="space-y-8">
@@ -884,9 +817,7 @@ export default function Home() {
                     >
                       {isSubmitting ? (
                         <>
-                          <span className="mr-2">
-                            {translations.contact.form.buttonLoading}
-                          </span>
+                          <span className="mr-2">{translations.contact.form.buttonLoading}</span>
                           <span className="animate-spin inline-block w-4 h-4 border-2 border-current border-t-transparent rounded-full" />
                         </>
                       ) : (
@@ -927,21 +858,16 @@ export default function Home() {
 
       <QuickActionsBar
         onCVEdit={() => setIsCVEditorOpen(true)}
-        onToggleTestimonials={() =>
-          setIsTestimonialsVisible(!isTestimonialsVisible)
-        }
+        onToggleTestimonials={() => setIsTestimonialsVisible(!isTestimonialsVisible)}
         isTestimonialsVisible={isTestimonialsVisible}
       />
 
-      <CVEditorModal
-        isOpen={isCVEditorOpen}
-        onClose={() => setIsCVEditorOpen(false)}
-      />
+      <CVEditorModal isOpen={isCVEditorOpen} onClose={() => setIsCVEditorOpen(false)} />
 
       <CaseStudyModal
         isOpen={isCaseStudyOpen}
         onClose={() => setIsCaseStudyOpen(false)}
-        projectName={currentCaseStudy?.title || ""}
+        projectName={currentCaseStudy?.title || ''}
         caseStudyData={currentCaseStudy}
       />
     </div>

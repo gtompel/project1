@@ -1,14 +1,20 @@
-"use client";
-import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Badge } from "@/components/ui/badge";
-import { Plus, Trash2, Save, Eye, X } from "lucide-react";
-import { cvData, CVData } from "@/lib/cv-data";
+'use client';
+import React, { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Badge } from '@/components/ui/badge';
+import { Plus, Trash2, Save, Eye, X } from 'lucide-react';
+import { cvData, CVData } from '@/lib/cv-data';
 
 interface CVEditorModalProps {
   isOpen: boolean;
@@ -19,27 +25,27 @@ export function CVEditorModal({ isOpen, onClose }: CVEditorModalProps) {
   const [data, setData] = useState<CVData>(cvData);
 
   const updatePersonal = (field: keyof CVData['personal'], value: string) => {
-    setData(prev => ({
+    setData((prev) => ({
       ...prev,
       personal: {
         ...prev.personal,
-        [field]: value
-      }
+        [field]: value,
+      },
     }));
   };
 
   const updateSkills = (field: keyof CVData['skills'], value: string) => {
-    setData(prev => ({
+    setData((prev) => ({
       ...prev,
       skills: {
         ...prev.skills,
-        [field]: value
-      }
+        [field]: value,
+      },
     }));
   };
 
   const addExperience = () => {
-    setData(prev => ({
+    setData((prev) => ({
       ...prev,
       experience: [
         ...prev.experience,
@@ -47,48 +53,44 @@ export function CVEditorModal({ isOpen, onClose }: CVEditorModalProps) {
           company: '',
           period: '',
           position: '',
-          description: ''
-        }
-      ]
+          description: '',
+        },
+      ],
     }));
   };
 
   const updateExperience = (index: number, field: keyof CVData['experience'][0], value: string) => {
-    setData(prev => ({
+    setData((prev) => ({
       ...prev,
-      experience: prev.experience.map((exp, i) =>
-        i === index ? { ...exp, [field]: value } : exp
-      )
+      experience: prev.experience.map((exp, i) => (i === index ? { ...exp, [field]: value } : exp)),
     }));
   };
 
   const removeExperience = (index: number) => {
-    setData(prev => ({
+    setData((prev) => ({
       ...prev,
-      experience: prev.experience.filter((_, i) => i !== index)
+      experience: prev.experience.filter((_, i) => i !== index),
     }));
   };
 
   const addProject = () => {
-    setData(prev => ({
+    setData((prev) => ({
       ...prev,
-      projects: [...prev.projects, '']
+      projects: [...prev.projects, ''],
     }));
   };
 
   const updateProject = (index: number, value: string) => {
-    setData(prev => ({
+    setData((prev) => ({
       ...prev,
-      projects: prev.projects.map((project, i) =>
-        i === index ? value : project
-      )
+      projects: prev.projects.map((project, i) => (i === index ? value : project)),
     }));
   };
 
   const removeProject = (index: number) => {
-    setData(prev => ({
+    setData((prev) => ({
       ...prev,
-      projects: prev.projects.filter((_, i) => i !== index)
+      projects: prev.projects.filter((_, i) => i !== index),
     }));
   };
 
@@ -302,11 +304,7 @@ export function CVEditorModal({ isOpen, onClose }: CVEditorModalProps) {
                     onChange={(e) => updateProject(index, e.target.value)}
                     className="flex-1"
                   />
-                  <Button
-                    onClick={() => removeProject(index)}
-                    variant="outline"
-                    size="sm"
-                  >
+                  <Button onClick={() => removeProject(index)} variant="outline" size="sm">
                     <Trash2 className="h-4 w-4" />
                   </Button>
                 </div>
@@ -385,19 +383,23 @@ function generateCVHTML(data: CVData): string {
 
       <div class="section">
         <h2>Опыт работы</h2>
-        ${data.experience.map(exp => `
+        ${data.experience
+          .map(
+            (exp) => `
           <div class="experience-item">
             <h4>${exp.company} (${exp.period})</h4>
             <p><strong>${exp.position}</strong></p>
             <p>${exp.description}</p>
           </div>
-        `).join('')}
+        `,
+          )
+          .join('')}
       </div>
 
       <div class="section">
         <h2>Ключевые проекты</h2>
         <ul class="projects-list">
-          ${data.projects.map(project => `<li>${project}</li>`).join('')}
+          ${data.projects.map((project) => `<li>${project}</li>`).join('')}
         </ul>
       </div>
     </body>

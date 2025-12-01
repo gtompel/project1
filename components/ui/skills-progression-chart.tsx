@@ -1,9 +1,9 @@
-"use client";
-import React from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
-import { TrendingUp, Calendar, Star } from "lucide-react";
+'use client';
+import React from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Progress } from '@/components/ui/progress';
+import { TrendingUp, Calendar, Star } from 'lucide-react';
 
 interface SkillProgression {
   skill: string;
@@ -16,79 +16,82 @@ interface SkillsProgressionChartProps {
   className?: string;
 }
 
-export function SkillsProgressionChart({ className = "" }: SkillsProgressionChartProps) {
+export function SkillsProgressionChart({ className = '' }: SkillsProgressionChartProps) {
   const skillProgression: SkillProgression[] = [
     {
-      skill: "JavaScript",
+      skill: 'JavaScript',
       level: 9,
-      year: "2018",
-      description: "Базовое знание, работа с DOM"
+      year: '2018',
+      description: 'Базовое знание, работа с DOM',
     },
     {
-      skill: "React",
+      skill: 'React',
       level: 8,
-      year: "2019",
-      description: "Создание компонентов, state management"
+      year: '2019',
+      description: 'Создание компонентов, state management',
     },
     {
-      skill: "Node.js",
+      skill: 'Node.js',
       level: 7,
-      year: "2020",
-      description: "Backend API, Express, базы данных"
+      year: '2020',
+      description: 'Backend API, Express, базы данных',
     },
     {
-      skill: "TypeScript",
+      skill: 'TypeScript',
       level: 8,
-      year: "2021",
-      description: "Типизация, продвинутые возможности"
+      year: '2021',
+      description: 'Типизация, продвинутые возможности',
     },
     {
-      skill: "Next.js",
+      skill: 'Next.js',
       level: 9,
-      year: "2022",
-      description: "SSR, App Router, оптимизация"
+      year: '2022',
+      description: 'SSR, App Router, оптимизация',
     },
     {
-      skill: "Docker",
+      skill: 'Docker',
       level: 7,
-      year: "2022",
-      description: "Контейнеризация, DevOps практики"
+      year: '2022',
+      description: 'Контейнеризация, DevOps практики',
     },
     {
-      skill: "PostgreSQL",
+      skill: 'PostgreSQL',
       level: 8,
-      year: "2023",
-      description: "Сложные запросы, оптимизация"
+      year: '2023',
+      description: 'Сложные запросы, оптимизация',
     },
     {
-      skill: "Nest.js",
+      skill: 'Nest.js',
       level: 8,
-      year: "2023",
-      description: "Enterprise backend, микросервисы"
-    }
+      year: '2023',
+      description: 'Enterprise backend, микросервисы',
+    },
   ];
 
   // Группируем навыки по годам
-  const skillsByYear = skillProgression.reduce((acc, skill) => {
-    if (!acc[skill.year]) {
-      acc[skill.year] = [];
-    }
-    acc[skill.year].push(skill);
-    return acc;
-  }, {} as Record<string, SkillProgression[]>);
+  const skillsByYear = skillProgression.reduce(
+    (acc, skill) => {
+      if (!acc[skill.year]) {
+        acc[skill.year] = [];
+      }
+      acc[skill.year].push(skill);
+      return acc;
+    },
+    {} as Record<string, SkillProgression[]>,
+  );
 
   const getLevelLabel = (level: number) => {
-    if (level >= 9) return "Эксперт";
-    if (level >= 7) return "Продвинутый";
-    if (level >= 5) return "Средний";
-    return "Начинающий";
+    if (level >= 9) return 'Эксперт';
+    if (level >= 7) return 'Продвинутый';
+    if (level >= 5) return 'Средний';
+    return 'Начинающий';
   };
 
   const getLevelColor = (level: number) => {
-    if (level >= 9) return "bg-green-500";
-    if (level >= 7) return "bg-blue-500";
-    if (level >= 5) return "bg-yellow-500";
-    return "bg-gray-500";
+    if (level >= 9) return 'bg-green-500';
+    if (level >= 7) return 'bg-blue-500';
+    if (level >= 5) return 'bg-yellow-500';
+    return 'bg-gray-500';
   };
 
   return (
@@ -125,15 +128,15 @@ export function SkillsProgressionChart({ className = "" }: SkillsProgressionChar
                         </div>
                         <div className="flex items-center gap-2">
                           <span className="text-sm text-muted-foreground">{skill.level}/10</span>
-                          <div className={`w-3 h-3 rounded-full ${getLevelColor(skill.level)}`}></div>
+                          <div
+                            className={`w-3 h-3 rounded-full ${getLevelColor(skill.level)}`}
+                          ></div>
                         </div>
                       </div>
 
                       <Progress value={skill.level * 10} className="h-2" />
 
-                      <p className="text-xs text-muted-foreground">
-                        {skill.description}
-                      </p>
+                      <p className="text-xs text-muted-foreground">{skill.description}</p>
                     </div>
                   ))}
                 </div>
@@ -144,29 +147,31 @@ export function SkillsProgressionChart({ className = "" }: SkillsProgressionChar
           <div className="pt-4 border-t">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="text-center p-3 bg-muted/50 rounded-lg">
-                <div className="text-2xl font-bold text-primary">
-                  {skillProgression.length}
-                </div>
+                <div className="text-2xl font-bold text-primary">{skillProgression.length}</div>
                 <div className="text-sm text-muted-foreground">Навыков освоено</div>
               </div>
 
               <div className="text-center p-3 bg-muted/50 rounded-lg">
                 <div className="text-2xl font-bold text-primary">
-                  {Math.round(skillProgression.reduce((sum, skill) => sum + skill.level, 0) / skillProgression.length)}/10
+                  {Math.round(
+                    skillProgression.reduce((sum, skill) => sum + skill.level, 0) /
+                      skillProgression.length,
+                  )}
+                  /10
                 </div>
                 <div className="text-sm text-muted-foreground">Средний уровень</div>
               </div>
 
               <div className="text-center p-3 bg-muted/50 rounded-lg">
                 <div className="text-2xl font-bold text-primary">
-                  {skillProgression.filter(skill => skill.level >= 8).length}
+                  {skillProgression.filter((skill) => skill.level >= 8).length}
                 </div>
                 <div className="text-sm text-muted-foreground">Экспертных навыков</div>
               </div>
 
               <div className="text-center p-3 bg-muted/50 rounded-lg">
                 <div className="text-2xl font-bold text-primary">
-                  {new Set(skillProgression.map(skill => skill.year)).size}
+                  {new Set(skillProgression.map((skill) => skill.year)).size}
                 </div>
                 <div className="text-sm text-muted-foreground">Лет опыта</div>
               </div>

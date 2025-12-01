@@ -1,4 +1,4 @@
-import { CVEditor } from "@/components/cv-editor";
+import { CVEditor } from '@/components/cv-editor';
 
 export default function CVEditorPage() {
   return (

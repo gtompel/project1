@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from 'react';
 
 interface UseScrollRevealOptions {
   threshold?: number;
@@ -9,12 +9,8 @@ interface UseScrollRevealOptions {
 }
 
 export function useScrollReveal(options: UseScrollRevealOptions = {}) {
-  const {
-    threshold = 0.1,
-    rootMargin = "0px",
-    once = true,
-  } = options;
-  
+  const { threshold = 0.1, rootMargin = '0px', once = true } = options;
+
   const ref = useRef<HTMLElement>(null);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -36,7 +32,7 @@ export function useScrollReveal(options: UseScrollRevealOptions = {}) {
       {
         threshold,
         rootMargin,
-      }
+      },
     );
 
     observer.observe(element);
@@ -48,4 +44,3 @@ export function useScrollReveal(options: UseScrollRevealOptions = {}) {
 
   return { ref, isVisible };
 }
-

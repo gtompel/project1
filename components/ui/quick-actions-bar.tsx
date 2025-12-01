@@ -1,11 +1,11 @@
-"use client";
-import React, { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Download, MessageSquare, FileCode, Github, ChevronUp, Eye, EyeOff } from "lucide-react";
-import { cvData } from "@/lib/cv-data";
-import { useToast } from "@/hooks/use-toast";
-import { useLanguage } from "@/components/language-provider";
+'use client';
+import React, { useState, useEffect } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Download, MessageSquare, FileCode, Github, ChevronUp, Eye, EyeOff } from 'lucide-react';
+import { cvData } from '@/lib/cv-data';
+import { useToast } from '@/hooks/use-toast';
+import { useLanguage } from '@/components/language-provider';
 
 interface QuickActionsBarProps {
   onCVEdit?: () => void;
@@ -13,7 +13,11 @@ interface QuickActionsBarProps {
   isTestimonialsVisible?: boolean;
 }
 
-export function QuickActionsBar({ onCVEdit, onToggleTestimonials, isTestimonialsVisible = true }: QuickActionsBarProps) {
+export function QuickActionsBar({
+  onCVEdit,
+  onToggleTestimonials,
+  isTestimonialsVisible = true,
+}: QuickActionsBarProps) {
   const [isVisible, setIsVisible] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
   const { toast } = useToast();
@@ -30,35 +34,34 @@ export function QuickActionsBar({ onCVEdit, onToggleTestimonials, isTestimonials
       }
     };
 
-    window.addEventListener("scroll", toggleVisibility);
-    return () => window.removeEventListener("scroll", toggleVisibility);
+    window.addEventListener('scroll', toggleVisibility);
+    return () => window.removeEventListener('scroll', toggleVisibility);
   }, []);
 
   // Показываем панель только на десктопе (min-width: 640px)
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (typeof window === 'undefined') return;
 
-    const mq = window.matchMedia("(min-width: 640px)");
+    const mq = window.matchMedia('(min-width: 640px)');
     const update = (event?: MediaQueryList | MediaQueryListEvent) => {
-      const matches = "matches" in mq ? mq.matches : (event as MediaQueryListEvent).matches;
+      const matches = 'matches' in mq ? mq.matches : (event as MediaQueryListEvent).matches;
       setIsDesktop(matches);
     };
 
     update();
-    mq.addEventListener("change", update);
-    return () => mq.removeEventListener("change", update);
+    mq.addEventListener('change', update);
+    return () => mq.removeEventListener('change', update);
   }, []);
 
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
-      behavior: "smooth",
+      behavior: 'smooth',
     });
   };
 
   const generateCV = () => {
     try {
-
       // Импортируем функцию генерации HTML из CVEditor
       const cvHTML = generateCVHTMLFromData(cvData);
 
@@ -89,7 +92,7 @@ export function QuickActionsBar({ onCVEdit, onToggleTestimonials, isTestimonials
       toast({
         title: labels.downloadErrorTitle,
         description: labels.downloadErrorDescription,
-        variant: "destructive",
+        variant: 'destructive',
         duration: 5000,
       });
     }
@@ -161,13 +164,17 @@ export function QuickActionsBar({ onCVEdit, onToggleTestimonials, isTestimonials
 
         <div class="section">
           <h2>Опыт работы</h2>
-          ${data.experience.map((exp: any) => `
+          ${data.experience
+            .map(
+              (exp: any) => `
             <div class="experience-item">
               <h4>${exp.company} (${exp.period})</h4>
               <p><strong>${exp.position}</strong></p>
               <p>${exp.description}</p>
             </div>
-          `).join('')}
+          `,
+            )
+            .join('')}
         </div>
 
         <div class="section">
@@ -184,9 +191,7 @@ export function QuickActionsBar({ onCVEdit, onToggleTestimonials, isTestimonials
   if (!isVisible || !isDesktop) return null;
 
   return (
-    <Card
-      className="fixed top-1/2 right-6 z-50 -translate-y-1/2 shadow-lg border-2"
-    >
+    <Card className="fixed top-1/2 right-6 z-50 -translate-y-1/2 shadow-lg border-2">
       <div className="flex flex-col gap-2 p-2">
         <Button
           size="sm"
@@ -202,7 +207,9 @@ export function QuickActionsBar({ onCVEdit, onToggleTestimonials, isTestimonials
           size="sm"
           variant="outline"
           className="w-full justify-start gap-2 min-h-[44px] touch-manipulation"
-          onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}
+          onClick={() =>
+            document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })
+          }
         >
           <FileCode className="h-4 w-4" />
           <span className="hidden sm:inline">{labels.projects}</span>

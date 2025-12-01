@@ -96,7 +96,12 @@
   }
 
   /* Улучшенная типографика для сканирования */
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     font-weight: 600;
     line-height: 1.2;
     letter-spacing: -0.025em;
@@ -218,7 +223,9 @@
   .reveal-hidden {
     opacity: 0;
     transform: translateY(30px);
-    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+    transition:
+      opacity 0.8s ease-out,
+      transform 0.8s ease-out;
   }
 
   .reveal-visible {
@@ -233,13 +240,17 @@
 
   .card-hover:hover {
     transform: translateY(-4px);
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    box-shadow:
+      0 20px 25px -5px rgba(0, 0, 0, 0.1),
+      0 10px 10px -5px rgba(0, 0, 0, 0.04);
   }
 
   /* Улучшенная типографика 2025 */
   @supports (font-variation-settings: normal) {
     body {
-      font-feature-settings: "kern" 1, "liga" 1;
+      font-feature-settings:
+        'kern' 1,
+        'liga' 1;
       font-optical-sizing: auto;
       text-rendering: optimizeLegibility;
       -webkit-font-smoothing: antialiased;
@@ -248,7 +259,8 @@
   }
 
   /* Плавные переходы для всех интерактивных элементов */
-  a, button {
+  a,
+  button {
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
@@ -275,4 +287,3 @@
     background-clip: text;
   }
 }
-

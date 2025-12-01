@@ -1,10 +1,28 @@
-"use client";
-import React from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { CheckCircle, TrendingUp, Users, Zap, Shield, Database, Workflow, BarChart3, Clock, Target, Award } from "lucide-react";
-import { useLanguage } from "@/components/language-provider";
+'use client';
+import React from 'react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import {
+  CheckCircle,
+  TrendingUp,
+  Users,
+  Zap,
+  Shield,
+  Database,
+  Workflow,
+  BarChart3,
+  Clock,
+  Target,
+  Award,
+} from 'lucide-react';
+import { useLanguage } from '@/components/language-provider';
 
 interface CaseStudyModalProps {
   isOpen: boolean;
@@ -63,7 +81,12 @@ interface CaseStudyModalProps {
   };
 }
 
-export function CaseStudyModal({ isOpen, onClose, projectName, caseStudyData }: CaseStudyModalProps) {
+export function CaseStudyModal({
+  isOpen,
+  onClose,
+  projectName,
+  caseStudyData,
+}: CaseStudyModalProps) {
   // Проверяем, что caseStudyData существует
   if (!caseStudyData) {
     return null;
@@ -124,7 +147,9 @@ export function CaseStudyModal({ isOpen, onClose, projectName, caseStudyData }: 
                   <h4 className="font-semibold mb-2">{dict.context.technologies}</h4>
                   <div className="flex flex-wrap gap-1">
                     {caseStudyData.context.technologies.map((tech, i) => (
-                      <Badge key={i} variant="secondary" className="text-xs">{tech}</Badge>
+                      <Badge key={i} variant="secondary" className="text-xs">
+                        {tech}
+                      </Badge>
                     ))}
                   </div>
                 </div>
@@ -197,7 +222,10 @@ export function CaseStudyModal({ isOpen, onClose, projectName, caseStudyData }: 
                     </h4>
                     <ul className="space-y-1">
                       {items.map((item, i) => (
-                        <li key={i} className="text-sm text-muted-foreground flex items-start gap-2">
+                        <li
+                          key={i}
+                          className="text-sm text-muted-foreground flex items-start gap-2"
+                        >
                           <span className="text-primary mt-1">•</span>
                           <span>{item}</span>
                         </li>
@@ -270,7 +298,10 @@ export function CaseStudyModal({ isOpen, onClose, projectName, caseStudyData }: 
                     </h4>
                     <ul className="space-y-1">
                       {tasks.map((task, i) => (
-                        <li key={i} className="text-sm text-muted-foreground flex items-start gap-2">
+                        <li
+                          key={i}
+                          className="text-sm text-muted-foreground flex items-start gap-2"
+                        >
                           <span className="text-primary mt-1">•</span>
                           <span>{task}</span>
                         </li>

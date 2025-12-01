@@ -1,7 +1,7 @@
-"use client";
-import React from "react";
-import { Badge } from "@/components/ui/badge";
-import { ExternalLink, Github, FileText, Play } from "lucide-react";
+'use client';
+import React from 'react';
+import { Badge } from '@/components/ui/badge';
+import { ExternalLink, Github, FileText, Play } from 'lucide-react';
 
 export interface LiveDemoBadgesProps {
   demoUrl?: string;
@@ -14,7 +14,7 @@ export function LiveDemoBadges({
   demoUrl,
   sourceUrl,
   caseStudyUrl,
-  className = ""
+  className = '',
 }: LiveDemoBadgesProps) {
   const badges = [];
 
@@ -28,7 +28,7 @@ export function LiveDemoBadges({
       >
         <Play className="w-3 h-3 mr-1" />
         Попробовать демо
-      </Badge>
+      </Badge>,
     );
   }
 
@@ -42,7 +42,7 @@ export function LiveDemoBadges({
       >
         <Github className="w-3 h-3 mr-1" />
         Исходный код
-      </Badge>
+      </Badge>,
     );
   }
 
@@ -60,15 +60,11 @@ export function LiveDemoBadges({
       >
         <FileText className="w-3 h-3 mr-1" />
         Кейс-стади
-      </Badge>
+      </Badge>,
     );
   }
 
   if (badges.length === 0) return null;
 
-  return (
-    <div className="flex flex-wrap gap-2 mb-3">
-      {badges}
-    </div>
-  );
+  return <div className="flex flex-wrap gap-2 mb-3">{badges}</div>;
 }

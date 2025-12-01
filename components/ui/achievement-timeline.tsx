@@ -1,7 +1,7 @@
-import React from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Calendar, MapPin, Award, TrendingUp } from "lucide-react";
+import React from 'react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Calendar, MapPin, Award, TrendingUp } from 'lucide-react';
 
 export interface Achievement {
   year: string;
@@ -11,7 +11,7 @@ export interface Achievement {
   achievements: string[];
   quantifiedAchievements?: string[]; // Конкретные количественные достижения
   technologies?: string[];
-  type: "job" | "project" | "certification" | "promotion";
+  type: 'job' | 'project' | 'certification' | 'promotion';
 }
 
 export interface AchievementTimelineProps {
@@ -19,34 +19,34 @@ export interface AchievementTimelineProps {
   className?: string;
 }
 
-export function AchievementTimeline({ achievements, className = "" }: AchievementTimelineProps) {
-  const getIcon = (type: Achievement["type"]) => {
+export function AchievementTimeline({ achievements, className = '' }: AchievementTimelineProps) {
+  const getIcon = (type: Achievement['type']) => {
     switch (type) {
-      case "job":
+      case 'job':
         return <MapPin className="h-4 w-4" />;
-      case "project":
+      case 'project':
         return <Award className="h-4 w-4" />;
-      case "certification":
+      case 'certification':
         return <Award className="h-4 w-4" />;
-      case "promotion":
+      case 'promotion':
         return <TrendingUp className="h-4 w-4" />;
       default:
         return <Calendar className="h-4 w-4" />;
     }
   };
 
-  const getTypeColor = (type: Achievement["type"]) => {
+  const getTypeColor = (type: Achievement['type']) => {
     switch (type) {
-      case "job":
-        return "bg-blue-100 text-blue-800 border-blue-200";
-      case "project":
-        return "bg-green-100 text-green-800 border-green-200";
-      case "certification":
-        return "bg-purple-100 text-purple-800 border-purple-200";
-      case "promotion":
-        return "bg-orange-100 text-orange-800 border-orange-200";
+      case 'job':
+        return 'bg-blue-100 text-blue-800 border-blue-200';
+      case 'project':
+        return 'bg-green-100 text-green-800 border-green-200';
+      case 'certification':
+        return 'bg-purple-100 text-purple-800 border-purple-200';
+      case 'promotion':
+        return 'bg-orange-100 text-orange-800 border-orange-200';
       default:
-        return "bg-gray-100 text-gray-800 border-gray-200";
+        return 'bg-gray-100 text-gray-800 border-gray-200';
     }
   };
 
@@ -57,9 +57,14 @@ export function AchievementTimeline({ achievements, className = "" }: Achievemen
 
       <div className="space-y-8">
         {achievements.map((achievement, index) => (
-          <div key={index} className={`relative flex items-start ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'}`}>
+          <div
+            key={index}
+            className={`relative flex items-start ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'}`}
+          >
             {/* Timeline dot */}
-            <div className={`absolute left-4 md:left-1/2 w-3 h-3 rounded-full border-2 border-background transform -translate-x-1.5 mt-2 ${getTypeColor(achievement.type).replace('text-', 'bg-').replace('border-', 'border-')}`}></div>
+            <div
+              className={`absolute left-4 md:left-1/2 w-3 h-3 rounded-full border-2 border-background transform -translate-x-1.5 mt-2 ${getTypeColor(achievement.type).replace('text-', 'bg-').replace('border-', 'border-')}`}
+            ></div>
 
             {/* Content */}
             <div className={`ml-12 md:ml-0 md:w-1/2 ${index % 2 === 0 ? 'md:pr-8' : 'md:pl-8'}`}>
@@ -68,7 +73,10 @@ export function AchievementTimeline({ achievements, className = "" }: Achievemen
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center gap-2">
                       {getIcon(achievement.type)}
-                      <Badge variant="outline" className={`text-xs ${getTypeColor(achievement.type)}`}>
+                      <Badge
+                        variant="outline"
+                        className={`text-xs ${getTypeColor(achievement.type)}`}
+                      >
                         {achievement.year}
                       </Badge>
                     </div>
@@ -89,7 +97,10 @@ export function AchievementTimeline({ achievements, className = "" }: Achievemen
                       <h4 className="text-sm font-medium mb-2">Ключевые достижения:</h4>
                       <ul className="space-y-1">
                         {achievement.achievements.map((ach, i) => (
-                          <li key={i} className="text-sm text-muted-foreground flex items-start gap-2">
+                          <li
+                            key={i}
+                            className="text-sm text-muted-foreground flex items-start gap-2"
+                          >
                             <span className="text-primary mt-1">•</span>
                             <span>{ach}</span>
                           </li>
@@ -98,18 +109,25 @@ export function AchievementTimeline({ achievements, className = "" }: Achievemen
                     </div>
                   )}
 
-                  {achievement.quantifiedAchievements && achievement.quantifiedAchievements.length > 0 && (
-                    <div className="mb-4">
-                      <h4 className="text-sm font-medium mb-2 text-primary">Количественные показатели:</h4>
-                      <div className="flex flex-wrap gap-2">
-                        {achievement.quantifiedAchievements.map((metric, i) => (
-                          <Badge key={i} variant="secondary" className="text-xs bg-primary/10 text-primary border-primary/20">
-                            {metric}
-                          </Badge>
-                        ))}
+                  {achievement.quantifiedAchievements &&
+                    achievement.quantifiedAchievements.length > 0 && (
+                      <div className="mb-4">
+                        <h4 className="text-sm font-medium mb-2 text-primary">
+                          Количественные показатели:
+                        </h4>
+                        <div className="flex flex-wrap gap-2">
+                          {achievement.quantifiedAchievements.map((metric, i) => (
+                            <Badge
+                              key={i}
+                              variant="secondary"
+                              className="text-xs bg-primary/10 text-primary border-primary/20"
+                            >
+                              {metric}
+                            </Badge>
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
 
                   {achievement.technologies && achievement.technologies.length > 0 && (
                     <div>

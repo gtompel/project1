@@ -1,11 +1,11 @@
-"use client";
-import React from "react";
-import { cn } from "@/lib/utils";
+'use client';
+import React from 'react';
+import { cn } from '@/lib/utils';
 
 interface GradientIconProps extends React.HTMLAttributes<HTMLDivElement> {
   size?: number; // внешний размер круга в px
   padding?: number; // внутренний паддинг для иконки
-  rounded?: "full" | "lg";
+  rounded?: 'full' | 'lg';
 }
 
 export function GradientIcon({
@@ -13,10 +13,10 @@ export function GradientIcon({
   className,
   size = 48,
   padding = 8,
-  rounded = "full",
+  rounded = 'full',
   ...props
 }: GradientIconProps) {
-  const roundedClass = rounded === "full" ? "rounded-full" : "rounded-lg";
+  const roundedClass = rounded === 'full' ? 'rounded-full' : 'rounded-lg';
   const outerStyle: React.CSSProperties = {
     width: size,
     height: size,
@@ -24,15 +24,15 @@ export function GradientIcon({
   return (
     <div
       className={cn(
-        "inline-block bg-gradient-to-r from-primary to-primary/60 p-[2px]",
+        'inline-block bg-gradient-to-r from-primary to-primary/60 p-[2px]',
         roundedClass,
-        className
+        className,
       )}
       style={outerStyle}
       {...props}
     >
       <div
-        className={cn("bg-background w-full h-full flex items-center justify-center", roundedClass)}
+        className={cn('bg-background w-full h-full flex items-center justify-center', roundedClass)}
         style={{ padding }}
       >
         {children}
@@ -40,5 +40,3 @@ export function GradientIcon({
     </div>
   );
 }
-
-

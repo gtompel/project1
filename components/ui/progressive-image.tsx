@@ -1,7 +1,7 @@
-"use client";
-import React, { useState } from "react";
-import Image from "next/image";
-import { Skeleton } from "@/components/ui/skeleton";
+'use client';
+import React, { useState } from 'react';
+import Image from 'next/image';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export interface ProgressiveImageProps {
   src: string;
@@ -18,13 +18,13 @@ export interface ProgressiveImageProps {
 export function ProgressiveImage({
   src,
   alt,
-  className = "",
+  className = '',
   placeholder,
   width = 400,
   height = 200,
   priority = false,
   onLoad,
-  onError
+  onError,
 }: ProgressiveImageProps) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
@@ -71,9 +71,7 @@ export function ProgressiveImage({
         width={width}
         height={height}
         priority={priority}
-        className={`transition-opacity duration-300 ${
-          isLoaded ? 'opacity-100' : 'opacity-0'
-        }`}
+        className={`transition-opacity duration-300 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
         onLoad={handleLoad}
         onError={handleError}
         style={{ width: '100%', height: '100%', objectFit: 'cover' }}

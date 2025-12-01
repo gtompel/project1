@@ -1,11 +1,17 @@
-"use client";
+'use client';
 
-import React from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Star, Quote } from "lucide-react";
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import React from 'react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { Star, Quote } from 'lucide-react';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from '@/components/ui/carousel';
 
 export interface Testimonial {
   id: string;
@@ -23,16 +29,16 @@ interface TestimonialsProps {
   className?: string;
 }
 
-export function Testimonials({ testimonials, className = "" }: TestimonialsProps) {
+export function Testimonials({ testimonials, className = '' }: TestimonialsProps) {
   if (!testimonials || testimonials.length === 0) {
     return null;
   }
 
   const getInitials = (name: string) => {
     return name
-      .split(" ")
+      .split(' ')
       .map((n) => n[0])
-      .join("")
+      .join('')
       .toUpperCase()
       .slice(0, 2);
   };
@@ -41,7 +47,7 @@ export function Testimonials({ testimonials, className = "" }: TestimonialsProps
     <div className={className}>
       <Carousel
         opts={{
-          align: "start",
+          align: 'start',
           loop: true,
         }}
         className="w-full"
@@ -79,8 +85,8 @@ export function Testimonials({ testimonials, className = "" }: TestimonialsProps
                           key={i}
                           className={`h-4 w-4 ${
                             i < testimonial.rating
-                              ? "fill-yellow-400 text-yellow-400"
-                              : "fill-muted text-muted"
+                              ? 'fill-yellow-400 text-yellow-400'
+                              : 'fill-muted text-muted'
                           }`}
                         />
                       ))}
@@ -107,4 +113,3 @@ export function Testimonials({ testimonials, className = "" }: TestimonialsProps
     </div>
   );
 }
-

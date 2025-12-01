@@ -1,9 +1,9 @@
-"use client"
+'use client';
 
-import { useState } from "react"
-import { Elements } from "@stripe/react-stripe-js"
-import { loadStripe } from "@stripe/stripe-js"
-import { ReactNode } from "react"
+import { useState } from 'react';
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+import { ReactNode } from 'react';
 
 // Define the props interface for the Stripe component
 interface StripeProps {
@@ -14,7 +14,7 @@ interface StripeProps {
 
 // This is a placeholder component to simulate the Stripe integration
 export function Stripe({ children, options, className }: StripeProps) {
-  const [stripePromise] = useState(() => loadStripe("pk_test_placeholder"))
+  const [stripePromise] = useState(() => loadStripe(process.env.NEXT_PUBLIC_STRIPE_KEY || ''));
 
   return (
     <div className={className}>
@@ -22,5 +22,5 @@ export function Stripe({ children, options, className }: StripeProps) {
         {children}
       </Elements>
     </div>
-  )
+  );
 }
