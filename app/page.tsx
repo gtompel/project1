@@ -1,8 +1,14 @@
 'use client';
+
+// === ИМПОРТЫ ===
 import React, { useState } from 'react';
+
+// UI-компоненты
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+
+// Иконки (Lucide React)
 import {
   Github,
   Send,
@@ -18,26 +24,42 @@ import {
   Star,
   Menu,
 } from 'lucide-react';
-import { ThemeToggle } from '@/components/theme-toggle';
-import { LiveDev } from '@/components/live-dev';
+
+// Кастомные компоненты
+import { ThemeToggle } from '@/components/theme-toggle'; // Переключатель темы
+import { LiveDev } from '@/components/live-dev'; // Кнопка "Live Dev" (только в dev-режиме)
 import { QuickActionsBar } from '@/components/ui/quick-actions-bar';
-import { CVEditorModal } from '@/components/cv-editor-modal';
-import { CaseStudyModal } from '@/components/case-study-modal';
+import { CVEditorModal } from '@/components/cv-editor-modal'; // Модальное окно редактора CV
+import { CaseStudyModal } from '@/components/case-study-modal'; // Модальное окно с кейсом
 import { AchievementTimeline, Achievement } from '@/components/ui/achievement-timeline';
 import { CollapsibleSection } from '@/components/ui/collapsible-section';
 import { SkillsProgressionChart } from '@/components/ui/skills-progression-chart';
 import { SwipeableProjects, type Project } from '@/components/ui/swipeable-projects';
 import { Testimonials } from '@/components/ui/testimonials';
 import { GradientIcon } from '@/components/ui/gradient-icon';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+
+// Radix UI + UI-kit
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+
+// Хуки
 import { useToast } from '@/hooks/use-toast';
-import { useInView } from '@/hooks/use-in-view';
-import { useScrollSection } from '@/hooks/use-scroll-section';
-import { useScrollReveal } from '@/hooks/use-scroll-reveal';
+import { useInView } from '@/hooks/use-in-view'; // Проверка видимости элемента
+import { useScrollSection } from '@/hooks/use-scroll-section'; // Определение активной секции при скролле
+import { useScrollReveal } from '@/hooks/use-scroll-reveal'; // Анимация появления при скролле
+
+// Данные
 import { portalARMCaseStudy, hrSystemCaseStudy, gtoCaseStudy } from '@/lib/case-study-data';
+
+// Локализация
 import { LanguageSwitcher } from '@/components/language-switcher';
 import { useLanguage } from '@/components/language-provider';
 
+// === ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ===
+
+/**
+ * Глубокая клонирование объекта для безопасного использования в useMemo.
+ * Используется, чтобы избежать мутаций трансляций.
+ */
 const cloneTranslations = <T,>(data: T): T => {
   if (typeof structuredClone === 'function') {
     return structuredClone(data);
@@ -45,8 +67,13 @@ const cloneTranslations = <T,>(data: T): T => {
   return JSON.parse(JSON.stringify(data));
 };
 
+// Типы для кейсов
 type CaseStudyKey = 'portalARM' | 'hrSystem' | 'gto';
 
+/**
+ * Карта соответствия ключей кейсов и их данных.
+ * Используется при открытии модального окна с деталями проекта.
+ */
 const CASE_STUDY_MAP: Record<
   CaseStudyKey,
   typeof portalARMCaseStudy | typeof hrSystemCaseStudy | typeof gtoCaseStudy
@@ -55,37 +82,60 @@ const CASE_STUDY_MAP: Record<
   hrSystem: hrSystemCaseStudy,
   gto: gtoCaseStudy,
 };
+
+/**
+ * Соответствие ключей иконок для секции "Обо мне".
+ */
 const ABOUT_ICON_MAP = {
   code: Code,
   briefcase: Briefcase,
   globe: Globe,
 } as const;
 
+// === ОСНОВНОЙ КОМПОНЕНТ ===
 export default function Home() {
+  // --- ЛОКАЛИЗАЦИЯ ---
   const { translations: rawTranslations } = useLanguage();
   const translations = React.useMemo(() => cloneTranslations(rawTranslations), [rawTranslations]);
+
+  // --- СОСТОЯНИЯ МОДАЛЬНЫХ ОКОН ---
   const [isCVEditorOpen, setIsCVEditorOpen] = useState(false);
   const [isCaseStudyOpen, setIsCaseStudyOpen] = useState(false);
   const [currentCaseStudy, setCurrentCaseStudy] = useState<any>(null);
+
+  // --- ИНДИКАТОР ПРОГРЕССА СКРОЛЛА (для header-линии) ---
   const [scrollProgress, setScrollProgress] = useState(0);
+
+  // --- TOAST-УВЕДОМЛЕНИЯ ---
   const { toast } = useToast();
+
+  // --- РЕФЫ ДЛЯ АНИМАЦИЙ И СКРОЛЛА ---
   const statsRef = React.useRef<HTMLDivElement | null>(null);
   const isStatsInView = useInView(statsRef as React.RefObject<HTMLElement>, {
-    threshold: 0.5,
+    threshold: 0.5, // Анимация запустится, когда 50% блока окажется в поле зрения
   });
+
+  // --- ОПРЕДЕЛЕНИЕ АКТИВНОЙ СЕКЦИИ НАВИГАЦИИ ---
   const activeSection = useScrollSection();
+
+  // --- СЧЁТЧИКИ ДЛЯ АНИМИРОВАННЫХ ЧИСЕЛ ---
   const [counters, setCounters] = useState({
     years: 0,
     projects: 0,
     technologies: 0,
   });
+
+  // --- СОСТОЯНИЕ ОТПРАВКИ ФОРМЫ ---
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // --- ПАРАЛЛАКС ДЛЯ ФОНА ---
   const [parallaxOffset, setParallaxOffset] = useState({ x: 0, y: 0 });
 
-  // Гидратация и стабильное SSR: не читаем localStorage до монтирования
+  // --- ГИДРАТАЦИЯ (для корректной работы localStorage на клиенте) ---
   const [isHydrated, setIsHydrated] = useState(false);
   const [isTestimonialsVisible, setIsTestimonialsVisible] = useState(false);
 
+  // --- ПОДГОТОВКА ДАННЫХ ИЗ ТРАНСЛЯЦИЙ ---
   const navItems = Array.isArray(translations.nav.items)
     ? translations.nav.items.map((item) => (item && typeof item === 'object' ? { ...item } : item))
     : [];
@@ -125,6 +175,8 @@ export default function Home() {
         item && typeof item === 'object' ? { ...item } : item,
       )
     : [];
+
+  // --- РЕНДЕР ЭЛЕМЕНТОВ "Обо мне" С ИКОНКАМИ ---
   const aboutCardElements: React.ReactNode[] = [];
   for (const card of aboutCards) {
     const Icon = ABOUT_ICON_MAP[card.icon as keyof typeof ABOUT_ICON_MAP] ?? Code;
@@ -141,6 +193,11 @@ export default function Home() {
     );
   }
 
+  // --- ЭФФЕКТЫ ---
+
+  /**
+   * Инициализация состояний после гидратации (чтобы не было ошибок SSR).
+   */
   React.useEffect(() => {
     setIsHydrated(true);
     const saved =
@@ -152,12 +209,18 @@ export default function Home() {
     }
   }, []);
 
+  /**
+   * Сохранение видимости отзывов в localStorage.
+   */
   React.useEffect(() => {
     if (typeof window !== 'undefined') {
       localStorage.setItem('testimonials-visible', String(isTestimonialsVisible));
     }
   }, [isTestimonialsVisible]);
 
+  /**
+   * Настройка анимаций появления для каждой секции.
+   */
   const aboutReveal = useScrollReveal({ threshold: 0.2 });
   const skillsReveal = useScrollReveal({ threshold: 0.2 });
   const experienceReveal = useScrollReveal({ threshold: 0.2 });
@@ -165,6 +228,9 @@ export default function Home() {
   const testimonialsReveal = useScrollReveal({ threshold: 0.2 });
   const contactReveal = useScrollReveal({ threshold: 0.2 });
 
+  /**
+   * Параллакс-эффект для фона (только если пользователь не предпочитает reduced motion).
+   */
   React.useEffect(() => {
     const reduceMotion =
       typeof window !== 'undefined' &&
@@ -181,6 +247,9 @@ export default function Home() {
     return () => window.removeEventListener('scroll', handleParallax);
   }, []);
 
+  /**
+   * Обработчик клика по карточкам проектов для открытия модального окна с кейсом.
+   */
   const handleCaseStudyClick = (e: React.MouseEvent) => {
     const target = e.target as HTMLElement;
     const card = target.closest('[data-case-study="true"]') as HTMLElement | null;
@@ -193,6 +262,9 @@ export default function Home() {
     }
   };
 
+  /**
+   * Обновление прогресса скролла для анимированной линии в шапке.
+   */
   React.useEffect(() => {
     const handleScroll = () => {
       const windowHeight = window.innerHeight;
@@ -206,6 +278,9 @@ export default function Home() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  /**
+   * Анимация счётчиков при попадании в поле зрения.
+   */
   React.useEffect(() => {
     if (!isStatsInView) return;
 
@@ -242,6 +317,9 @@ export default function Home() {
     return () => clearInterval(timer);
   }, [isStatsInView]);
 
+  /**
+   * Обработка отправки формы обратной связи.
+   */
   const handleContactSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (isSubmitting) return;
@@ -290,6 +368,14 @@ export default function Home() {
     }
   };
 
+  /**
+   * Глобальные горячие клавиши:
+   * - Ctrl/Cmd + 1..5: навигация по секциям
+   * - Ctrl/Cmd + h: вверх
+   * - Ctrl/Cmd + e: открыть редактор CV
+   * - Ctrl/Cmd + d: скачать CV
+   * - Стрелки вверх/вниз: переход между секциями
+   */
   React.useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.ctrlKey || e.metaKey) {
@@ -362,6 +448,9 @@ export default function Home() {
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, []);
 
+  /**
+   * Вспомогательная функция для рендеринга значений в блоке "Ключевые показатели".
+   */
   const renderSummaryValue = (key: string) => {
     const card = translations.summary.cards.find((item) => item.key === key);
     if (!card) return '';
@@ -385,8 +474,11 @@ export default function Home() {
     return `${value}${card.suffix ?? ''}`;
   };
 
+  // --- ОСНОВНОЙ РЕНДЕР ---
+
   return (
     <div className="min-h-screen bg-background" onClick={handleCaseStudyClick}>
+      {/* Скрытые ссылки для скринридеров (skip links) */}
       <div className="sr-only focus-within:not-sr-only focus-within:absolute focus-within:top-0 focus-within:left-0 focus-within:z-50">
         {skipLinks.map((link) => (
           <a
@@ -399,12 +491,15 @@ export default function Home() {
         ))}
       </div>
 
+      {/* ШАПКА САЙТА */}
       <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        {/* Анимированная линия прогресса */}
         <div
           className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-primary via-primary/80 to-primary transition-all duration-150"
           style={{ width: `${scrollProgress}%` }}
         />
         <div className="container flex h-16 items-center">
+          {/* Логотип и навигация (только на десктопе) */}
           <div className="mr-4 hidden md:flex">
             <a className="mr-6 flex items-center space-x-2 font-bold" href="/">
               <Code className="h-6 w-6" />
@@ -426,22 +521,36 @@ export default function Home() {
               ))}
             </nav>
           </div>
-          <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
+
+          {/* Правый блок: язык/тема + бургер (моб) + кнопки (десктоп) */}
+          <div className="flex flex-1 items-center justify-end space-x-2">
             <div className="flex items-center gap-2">
               <LanguageSwitcher />
               <ThemeToggle />
+            </div>
+
+            {/* Бургер только на мобилке */}
+            <div className="md:hidden">
               <Sheet>
                 <SheetTrigger asChild>
                   <Button
                     variant="outline"
                     size="icon"
-                    className="md:hidden h-10 w-10"
+                    className="h-10 w-10"
                     aria-label={translations.header.mobileMenuLabel}
                   >
                     <Menu className="h-5 w-5" />
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="top" className="flex flex-col gap-6 pt-10 pb-8">
+                {/* Мобильное меню: исправлено для доступности и адаптивности */}
+                <SheetContent
+                  side="top"
+                  className="w-full max-w-full flex flex-col gap-4 pt-6 pb-6 px-6 bg-background/95"
+                  aria-describedby={undefined} // Отключает предупреждение об отсутствии Description
+                >
+                  <SheetHeader>
+                    <SheetTitle>{translations.header.mobileMenuLabel}</SheetTitle>
+                  </SheetHeader>
                   <nav className="flex flex-col gap-4 text-lg">
                     {navItems.map((item) => (
                       <a
@@ -456,75 +565,80 @@ export default function Home() {
                 </SheetContent>
               </Sheet>
             </div>
-            {(process.env.NODE_ENV === 'development' ||
-              process.env.NEXT_PUBLIC_LIVE_DEV === '1') && (
-              <LiveDev inline buttonClassName="h-8 w-8" />
-            )}
-            <div className="w-full flex-1 md:w-auto md:flex-none">
-              <Button variant="outline" size="icon" className="ml-auto hidden h-8 w-8 md:flex">
+
+            {/* Правые кнопки только на десктопе */}
+            <div className="hidden md:flex items-center gap-2">
+              {(process.env.NODE_ENV === 'development' ||
+                process.env.NEXT_PUBLIC_LIVE_DEV === '1') && (
+                <LiveDev inline buttonClassName="h-10 w-10" />
+              )}
+              <Button variant="outline" size="icon" className="h-10 w-10">
                 <a href="https://github.com/gtompel" target="_blank" rel="noreferrer">
                   <Github className="h-4 w-4" />
                   <span className="sr-only">GitHub</span>
                 </a>
               </Button>
+              <Button variant="outline" size="icon" className="h-10 w-10">
+                <a href="https://t.me/gtompel" target="_blank" rel="noreferrer">
+                  <Send className="h-4 w-4" />
+                  <span className="sr-only">Telegram</span>
+                </a>
+              </Button>
             </div>
-            <Button variant="outline" className="ml-auto hidden h-8 w-8 md:flex">
-              <a href="https://t.me/gtompel" target="_blank" rel="noreferrer">
-                <Send className="h-4 w-4" />
-                <span className="sr-only">Telegram</span>
-              </a>
-            </Button>
           </div>
         </div>
       </header>
 
-      <main className="flex-1" id="main">
-        <section className="container py-24 md:py-32 space-y-8 relative">
-          <div
-            aria-hidden="true"
-            className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/5 via-background to-primary/5 dark:from-primary/10 dark:via-background dark:to-primary/10"
-          />
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute top-1/2 left-1/2 w-[720px] h-[720px] bg-primary/15 dark:bg-primary/20 rounded-full blur-3xl md:blur-[120px] opacity-70 dark:opacity-50 transition-transform duration-500 ease-out"
-            style={{
-              transform: `translate(calc(-50% + ${parallaxOffset.x}px), calc(-50% + ${parallaxOffset.y}px))`,
-            }}
-          />
+      {/* ОСНОВНОЙ КОНТЕНТ */}
+      <main className="flex-1 pt-16" id="main">
+        {/* Герой-секция */}
+        <section className="overflow-hidden relative pt-24 pb-32 md:pt-32 md:pb-40">
 
-          <div className="flex flex-col items-center text-center space-y-4 relative z-10">
-            <div className="inline-block rounded-full bg-gradient-to-r from-primary to-primary/60 p-1 mb-4 animate-fade-in">
-              <div className="rounded-full bg-background p-2">
-                <Code className="h-8 w-8 text-primary" />
+          {/* Яркое свечение за иконкой (видно в обеих темах) */}
+          <div aria-hidden="true"
+       className="pointer-events-none absolute top-16 left-1/2 -translate-x-1/2 z-10 w-[520px] h-[520px] blur-3xl opacity-90"
+       style={{
+         background:
+           'radial-gradient(circle at center, rgba(59,130,246,0.85) 0%, rgba(59,130,246,0.35) 25%, rgba(15,23,42,0) 55%)',
+         mixBlendMode: 'screen'
+       }}
+  />
+          <div className="container relative z-10 space-y-8">
+            <div className="flex flex-col items-center text-center space-y-4 relative z-10">
+              <div className="inline-block rounded-full bg-gradient-to-r from-primary to-primary/60 p-1 mb-4 animate-fade-in">
+                <div className="rounded-full bg-background p-2">
+                  <Code className="h-8 w-8 text-primary" />
+                </div>
               </div>
-            </div>
-            <h1 className="text-hero bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent animate-fade-in">
-              {translations.hero.title}
-            </h1>
-            <p className="text-subtitle max-w-[700px] animate-fade-in animation-delay-200">
-              {translations.hero.subtitle}
-            </p>
-            <p className="text-muted-foreground max-w-[600px] animate-fade-in animation-delay-400">
-              {translations.hero.description}
-            </p>
-            <div className="flex gap-4 pt-4 animate-fade-in animation-delay-600">
-              <Button
-                asChild
-                className="hover:scale-105 transition-transform duration-200 min-h-[44px] px-6 py-3 bg-gradient-to-r from-primary to-primary/80 shadow-lg hover:shadow-xl"
-              >
-                <a href="#contact">{translations.hero.primaryCta}</a>
-              </Button>
-              <Button
-                variant="outline"
-                asChild
-                className="hover:scale-105 transition-transform duration-200 min-h-[44px] px-6 py-3 border-2"
-              >
-                <a href="#projects">{translations.hero.secondaryCta}</a>
-              </Button>
+              <h1 className="text-hero bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent animate-fade-in">
+                {translations.hero.title}
+              </h1>
+              <p className="text-subtitle max-w-[700px] animate-fade-in animation-delay-200">
+                {translations.hero.subtitle}
+              </p>
+              <p className="text-muted-foreground max-w-[600px] animate-fade-in animation-delay-400">
+                {translations.hero.description}
+              </p>
+              <div className="flex flex-col sm:flex-row w-full sm:w-auto gap-4 pt-4 animate-fade-in animation-delay-600">
+                <Button
+                  asChild
+                  className="hover:scale-105 transition-transform duration-200 min-h-[44px] px-6 py-3 bg-gradient-to-r from-primary to-primary/80 shadow-lg hover:shadow-xl"
+                >
+                  <a href="#contact">{translations.hero.primaryCta}</a>
+                </Button>
+                <Button
+                  variant="outline"
+                  asChild
+                  className="hover:scale-105 transition-transform duration-200 min-h-[44px] px-6 py-3 border-2"
+                >
+                  <a href="#projects">{translations.hero.secondaryCta}</a>
+                </Button>
+              </div>
             </div>
           </div>
         </section>
 
+        {/* Ключевые показатели */}
         <section className="container py-12 space-y-8" ref={statsRef}>
           <Card className="max-w-4xl mx-auto border-2 shadow-lg hover:shadow-xl transition-shadow duration-300">
             <CardHeader className="text-center pb-8">
@@ -533,7 +647,7 @@ export default function Home() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-2 md:grid-cols-5 gap-6 text-center">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6 text-center">
                 {translations.summary.cards.map((card) => (
                   <div
                     key={card.key}
@@ -560,10 +674,11 @@ export default function Home() {
           </Card>
         </section>
 
+        {/* Обо мне */}
         <section
           id="about"
           ref={aboutReveal.ref as React.RefObject<HTMLElement>}
-          className={`container py-12 md:py-24 transition-all duration-1000 ${
+          className={`container py-8 md:py-24 transition-all duration-1000 ${
             aboutReveal.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
           }`}
         >
@@ -588,10 +703,11 @@ export default function Home() {
           </CollapsibleSection>
         </section>
 
+        {/* Навыки */}
         <section
           id="skills"
           ref={skillsReveal.ref as React.RefObject<HTMLElement>}
-          className={`container py-12 md:py-24 transition-all duration-1000 ${
+          className={`container py-8 md:py-24 transition-all duration-1000 ${
             skillsReveal.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
           }`}
         >
@@ -641,10 +757,11 @@ export default function Home() {
           </CollapsibleSection>
         </section>
 
+        {/* Опыт */}
         <section
           id="experience"
           ref={experienceReveal.ref as React.RefObject<HTMLElement>}
-          className={`container py-12 md:py-24 transition-all duration-1000 ${
+          className={`container py-8 md:py-24 transition-all duration-1000 ${
             experienceReveal.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
           }`}
         >
@@ -663,10 +780,11 @@ export default function Home() {
           </CollapsibleSection>
         </section>
 
+        {/* Проекты */}
         <section
           id="projects"
           ref={projectsReveal.ref as React.RefObject<HTMLElement>}
-          className={`container py-12 md:py-24 space-y-8 transition-all duration-1000 ${
+          className={`container py-8 md:py-24 transition-all duration-1000 ${
             projectsReveal.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
           }`}
         >
@@ -683,11 +801,12 @@ export default function Home() {
           <SwipeableProjects projects={projectCards as Project[]} />
         </section>
 
+        {/* Отзывы (условный рендер) */}
         {isHydrated && isTestimonialsVisible && (
           <section
             id="testimonials"
             ref={testimonialsReveal.ref as React.RefObject<HTMLElement>}
-            className={`container py-12 md:py-24 transition-all duration-1000 ${
+            className={`container py-8 md:py-24 transition-all duration-1000 ${
               testimonialsReveal.isVisible
                 ? 'opacity-100 translate-y-0'
                 : 'opacity-0 translate-y-10'
@@ -709,10 +828,11 @@ export default function Home() {
           </section>
         )}
 
+        {/* Контакты */}
         <section
           id="contact"
           ref={contactReveal.ref as React.RefObject<HTMLElement>}
-          className={`container py-12 md:py-24 transition-all duration-1000 ${
+          className={`container py-8 md:py-24 transition-all duration-1000 ${
             contactReveal.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
           }`}
         >
@@ -832,6 +952,7 @@ export default function Home() {
         </section>
       </main>
 
+      {/* ФУТЕР */}
       <footer className="border-t py-6 md:py-0 bg-muted/50">
         <div className="container flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row">
           <p className="text-center text-sm leading-loose text-muted-foreground md:text-left">
@@ -839,14 +960,16 @@ export default function Home() {
           </p>
           <div className="flex items-center gap-4">
             <a
-              href="#"
+              href="https://github.com/gtompel"
+              target="_blank"
+              rel="noopener noreferrer"
               className="text-muted-foreground hover:text-foreground hover:scale-110 transition-all duration-200 p-2 rounded-md min-h-[44px] min-w-[44px] flex items-center justify-center touch-manipulation"
             >
               <Github className="h-5 w-5" />
               <span className="sr-only">{translations.footer.githubLabel}</span>
             </a>
             <a
-              href="#"
+              href="mailto:quimpik@yandex.ru"
               className="text-muted-foreground hover:text-foreground hover:scale-110 transition-all duration-200 p-2 rounded-md min-h-[44px] min-w-[44px] flex items-center justify-center touch-manipulation"
             >
               <Mail className="h-5 w-5" />
@@ -856,14 +979,15 @@ export default function Home() {
         </div>
       </footer>
 
+      {/* БЫСТРЫЕ ДЕЙСТВИЯ (всплывающая панель) */}
       <QuickActionsBar
         onCVEdit={() => setIsCVEditorOpen(true)}
         onToggleTestimonials={() => setIsTestimonialsVisible(!isTestimonialsVisible)}
         isTestimonialsVisible={isTestimonialsVisible}
       />
 
+      {/* МОДАЛЬНЫЕ ОКНА */}
       <CVEditorModal isOpen={isCVEditorOpen} onClose={() => setIsCVEditorOpen(false)} />
-
       <CaseStudyModal
         isOpen={isCaseStudyOpen}
         onClose={() => setIsCaseStudyOpen(false)}
