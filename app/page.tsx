@@ -592,17 +592,22 @@ export default function Home() {
       {/* ОСНОВНОЙ КОНТЕНТ */}
       <main className="flex-1 pt-16" id="main">
         {/* Герой-секция */}
-        <section className="overflow-hidden relative pt-24 pb-32 md:pt-32 md:pb-40">
-
-          {/* Яркое свечение за иконкой (видно в обеих темах) */}
-          <div aria-hidden="true"
-       className="pointer-events-none absolute top-16 left-1/2 -translate-x-1/2 z-10 w-[520px] h-[520px] blur-3xl opacity-90"
-       style={{
-         background:
-           'radial-gradient(circle at center, rgba(59,130,246,0.85) 0%, rgba(59,130,246,0.35) 25%, rgba(15,23,42,0) 55%)',
-         mixBlendMode: 'screen'
-       }}
-  />
+        <section className="overflow-x-hidden relative pt-10 pb-12 md:pt-24 md:pb-32">
+          {/* Свечение для dark (тёмная тема) */}
+          <div
+            className="pointer-events-none hidden dark:block absolute top-20 left-1/2 -translate-x-1/2 z-10 w-full max-w-[520px] h-[320px] rounded-full blur-2xl md:blur-[64px]"
+            style={{
+              background:
+                'radial-gradient(circle at center, rgba(59,130,246,0.54) 0%, transparent 70%)',
+            }}
+          />
+          {/* Свечение для light (светлая тема) */}
+          <div
+            className="pointer-events-none block dark:hidden absolute top-20 left-1/2 -translate-x-1/2 z-10 w-full max-w-[520px] h-[320px] rounded-full blur-xl md:blur-[56px]"
+            style={{
+              background: 'radial-gradient(circle at center, #bae6fd 0%, transparent 70%)',
+            }}
+          />
           <div className="container relative z-10 space-y-8">
             <div className="flex flex-col items-center text-center space-y-4 relative z-10">
               <div className="inline-block rounded-full bg-gradient-to-r from-primary to-primary/60 p-1 mb-4 animate-fade-in">
@@ -639,7 +644,7 @@ export default function Home() {
         </section>
 
         {/* Ключевые показатели */}
-        <section className="container py-12 space-y-8" ref={statsRef}>
+        <section className="container py-6 md:py-16 space-y-8" ref={statsRef}>
           <Card className="max-w-4xl mx-auto border-2 shadow-lg hover:shadow-xl transition-shadow duration-300">
             <CardHeader className="text-center pb-8">
               <CardTitle className="text-2xl md:text-3xl bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
@@ -678,7 +683,7 @@ export default function Home() {
         <section
           id="about"
           ref={aboutReveal.ref as React.RefObject<HTMLElement>}
-          className={`container py-8 md:py-24 transition-all duration-1000 ${
+          className={`container py-6 md:py-16 transition-all duration-1000 ${
             aboutReveal.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
           }`}
         >
@@ -707,7 +712,7 @@ export default function Home() {
         <section
           id="skills"
           ref={skillsReveal.ref as React.RefObject<HTMLElement>}
-          className={`container py-8 md:py-24 transition-all duration-1000 ${
+          className={`container py-6 md:py-16 transition-all duration-1000 ${
             skillsReveal.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
           }`}
         >
@@ -761,7 +766,7 @@ export default function Home() {
         <section
           id="experience"
           ref={experienceReveal.ref as React.RefObject<HTMLElement>}
-          className={`container py-8 md:py-24 transition-all duration-1000 ${
+          className={`container py-6 md:py-16 transition-all duration-1000 ${
             experienceReveal.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
           }`}
         >
@@ -784,7 +789,7 @@ export default function Home() {
         <section
           id="projects"
           ref={projectsReveal.ref as React.RefObject<HTMLElement>}
-          className={`container py-8 md:py-24 transition-all duration-1000 ${
+          className={`container py-6 md:py-16 transition-all duration-1000 ${
             projectsReveal.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
           }`}
         >
@@ -806,7 +811,7 @@ export default function Home() {
           <section
             id="testimonials"
             ref={testimonialsReveal.ref as React.RefObject<HTMLElement>}
-            className={`container py-8 md:py-24 transition-all duration-1000 ${
+            className={`container py-6 md:py-16 transition-all duration-1000 ${
               testimonialsReveal.isVisible
                 ? 'opacity-100 translate-y-0'
                 : 'opacity-0 translate-y-10'
@@ -832,7 +837,7 @@ export default function Home() {
         <section
           id="contact"
           ref={contactReveal.ref as React.RefObject<HTMLElement>}
-          className={`container py-8 md:py-24 transition-all duration-1000 ${
+          className={`container py-6 md:py-16 transition-all duration-1000 ${
             contactReveal.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
           }`}
         >
