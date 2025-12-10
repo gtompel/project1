@@ -8,6 +8,8 @@ export interface LiveDemoBadgesProps {
   sourceUrl?: string;
   caseStudyUrl?: string;
   className?: string;
+  classNameBadgeDemo?: string;
+  classNameBadgeSource?: string;
 }
 
 export function LiveDemoBadges({
@@ -15,6 +17,8 @@ export function LiveDemoBadges({
   sourceUrl,
   caseStudyUrl,
   className = '',
+  classNameBadgeDemo = '',
+  classNameBadgeSource = '',
 }: LiveDemoBadgesProps) {
   const badges = [];
 
@@ -23,7 +27,7 @@ export function LiveDemoBadges({
       <Badge
         key="demo"
         variant="default"
-        className={`cursor-pointer bg-green-100 text-green-800 hover:bg-green-200 border-green-300 ${className}`}
+        className={`cursor-pointer bg-green-100 text-green-800 hover:bg-green-200 border-green-300 ${className} ${classNameBadgeDemo}`}
         onClick={() => window.open(demoUrl, '_blank', 'noopener,noreferrer')}
       >
         <Play className="w-3 h-3 mr-1" />
@@ -37,7 +41,7 @@ export function LiveDemoBadges({
       <Badge
         key="source"
         variant="secondary"
-        className={`cursor-pointer bg-gray-100 text-gray-800 hover:bg-gray-200 border-gray-300 ${className}`}
+        className={`cursor-pointer bg-gray-100 text-gray-800 hover:bg-gray-200 border-gray-300 ${className} ${classNameBadgeSource}`}
         onClick={() => window.open(sourceUrl, '_blank', 'noopener,noreferrer')}
       >
         <Github className="w-3 h-3 mr-1" />

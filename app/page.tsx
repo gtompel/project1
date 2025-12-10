@@ -48,7 +48,7 @@ import { useScrollSection } from '@/hooks/use-scroll-section'; // Определ
 import { useScrollReveal } from '@/hooks/use-scroll-reveal'; // Анимация появления при скролле
 
 // Данные
-import { portalARMCaseStudy, hrSystemCaseStudy, gtoCaseStudy } from '@/lib/case-study-data';
+import { portalARMCaseStudy, hrSystemCaseStudy, gtoCaseStudy, itsmCaseStudy } from '@/lib/case-study-data';
 
 // Локализация
 import { LanguageSwitcher } from '@/components/language-switcher';
@@ -68,7 +68,7 @@ const cloneTranslations = <T,>(data: T): T => {
 };
 
 // Типы для кейсов
-type CaseStudyKey = 'portalARM' | 'hrSystem' | 'gto';
+type CaseStudyKey = 'portalARM' | 'hrSystem' | 'gto' | 'itsm';
 
 /**
  * Карта соответствия ключей кейсов и их данных.
@@ -76,11 +76,12 @@ type CaseStudyKey = 'portalARM' | 'hrSystem' | 'gto';
  */
 const CASE_STUDY_MAP: Record<
   CaseStudyKey,
-  typeof portalARMCaseStudy | typeof hrSystemCaseStudy | typeof gtoCaseStudy
+  typeof portalARMCaseStudy | typeof hrSystemCaseStudy | typeof gtoCaseStudy | typeof itsmCaseStudy
 > = {
   portalARM: portalARMCaseStudy,
   hrSystem: hrSystemCaseStudy,
   gto: gtoCaseStudy,
+  itsm: itsmCaseStudy,
 };
 
 /**
@@ -803,7 +804,11 @@ export default function Home() {
             </p>
           </div>
 
-          <SwipeableProjects projects={projectCards as Project[]} />
+          <SwipeableProjects
+            projects={projectCards as Project[]}
+            className="your-class"
+            onCardClick={handleCaseStudyClick}
+          />
         </section>
 
         {/* Отзывы (условный рендер) */}

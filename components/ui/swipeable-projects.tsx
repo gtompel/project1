@@ -35,9 +35,10 @@ export interface Project {
 interface SwipeableProjectsProps {
   projects: Project[];
   className?: string;
+  onCardClick?: (e: React.MouseEvent, project: Project) => void;
 }
 
-export function SwipeableProjects({ projects, className = '' }: SwipeableProjectsProps) {
+export function SwipeableProjects({ projects, className = '', onCardClick }: SwipeableProjectsProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [touchStart, setTouchStart] = useState<number>(0);
   const [touchEnd, setTouchEnd] = useState<number>(0);
@@ -87,7 +88,7 @@ export function SwipeableProjects({ projects, className = '' }: SwipeableProject
       {/* Desktop Grid - скрываем на мобильных */}
       <div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {projects.map((project, index) => (
-          <ProjectCard key={index} project={project} />
+          <ProjectCard key={index} project={project} onCardClick={onCardClick} />
         ))}
       </div>
 
@@ -109,7 +110,7 @@ export function SwipeableProjects({ projects, className = '' }: SwipeableProject
           {projects.map((project, index) => (
             <div key={index} className="w-full flex-shrink-0">
               <div className="px-4">
-                <ProjectCard project={project} />
+                <ProjectCard project={project} onCardClick={onCardClick} />
               </div>
             </div>
           ))}
@@ -157,9 +158,10 @@ export function SwipeableProjects({ projects, className = '' }: SwipeableProject
 
 interface ProjectCardProps {
   project: Project;
+  onCardClick?: (e: React.MouseEvent, project: Project) => void;
 }
 
-function ProjectCard({ project }: ProjectCardProps) {
+function ProjectCard({ project, onCardClick }: ProjectCardProps) {
   const { translations } = useLanguage();
   const labels = translations.projects.cardLabels;
   const {
@@ -172,20 +174,27 @@ function ProjectCard({ project }: ProjectCardProps) {
     sourceUrl,
     caseStudyUrl,
     caseStudyData,
+    caseStudyKey,
     role,
     duration,
     teamSize,
     impact,
     metrics,
-  } = project;
-
+    key: projectKey
+  } = project as any;
+  
   const handleProjectClick = (e: React.MouseEvent) => {
-    if (caseStudyData || !href) return;
     const target = e.target as HTMLElement;
-    if (target.closest('a') || target.closest('button')) {
+    // Игнорировать клики по badge demo/source (не вызывать onCardClick для них)
+    if (
+      target.closest('.badge-demo') ||
+      target.closest('.badge-source')
+    ) {
       return;
     }
-    window.open(href, '_blank', 'noopener,noreferrer');
+    if (onCardClick) {
+      onCardClick(e, project);
+    }
   };
 
   return (
@@ -196,16 +205,8 @@ function ProjectCard({ project }: ProjectCardProps) {
       data-project-key={project.caseStudyKey}
       onClick={handleProjectClick}
     >
-      <a
-        href={href && !caseStudyData ? href : undefined}
-        target={href && !caseStudyData ? '_blank' : undefined}
-        rel={href && !caseStudyData ? 'noopener noreferrer' : undefined}
-        className={
-          href && !caseStudyData
-            ? 'block focus:outline-none flex-shrink-0'
-            : 'block focus:outline-none flex-shrink-0'
-        }
-      >
+      {/* Картинка — если есть caseStudyData, нет <a>, если нет — оставить <a> */}
+      {caseStudyData ? (
         <div className="aspect-video w-full overflow-hidden">
           <ProgressiveImage
             src={imageUrl || '/placeholder.svg'}
@@ -216,17 +217,42 @@ function ProjectCard({ project }: ProjectCardProps) {
             className="transition-all hover:scale-105"
           />
         </div>
-      </a>
+      ) : (
+        <a
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block focus:outline-none flex-shrink-0"
+        >
+          <div className="aspect-video w-full overflow-hidden">
+            <ProgressiveImage
+              src={imageUrl || '/placeholder.svg'}
+              alt={title}
+              width={400}
+              height={200}
+              priority={true}
+              className="transition-all hover:scale-105"
+            />
+          </div>
+        </a>
+      )}
 
       <div className="p-4 md:p-6 flex-1 flex flex-col">
-        {/* Live Demo Badges - мобильная оптимизация */}
+        {/* Live Demo Badges — добавляем className для поиска и предотвращения клика */}
         <div className="px-0 pt-0 pb-3">
-          <LiveDemoBadges demoUrl={demoUrl} sourceUrl={sourceUrl} caseStudyUrl={caseStudyUrl} />
+          <LiveDemoBadges 
+            demoUrl={demoUrl} 
+            sourceUrl={sourceUrl} 
+            caseStudyUrl={caseStudyUrl}
+            classNameBadgeDemo="badge-demo" 
+            classNameBadgeSource="badge-source" 
+          />
         </div>
-
         <div className="min-w-0 flex-1">
           <h3 className="text-lg md:text-xl font-semibold mb-2 leading-tight">
-            {href && !caseStudyData ? (
+            {caseStudyData ? (
+              <span className="transition-colors hover:text-foreground/80 hover:border-b-2 cursor-pointer block">{title}</span>
+            ) : (
               <a
                 href={href}
                 target="_blank"
@@ -235,13 +261,8 @@ function ProjectCard({ project }: ProjectCardProps) {
               >
                 {title}
               </a>
-            ) : (
-              <span className="transition-colors hover:text-foreground/80 hover:border-b-2 cursor-pointer block">
-                {title}
-              </span>
             )}
           </h3>
-
           {/* Метрики проекта - мобильная оптимизация */}
           {(role || duration || teamSize) && (
             <div className="flex flex-col sm:flex-row sm:flex-wrap gap-2 sm:gap-4 mb-3 text-sm text-muted-foreground">
@@ -278,7 +299,7 @@ function ProjectCard({ project }: ProjectCardProps) {
           {metrics && metrics.length > 0 && (
             <div className="mb-3">
               <div className="flex flex-wrap gap-1.5 md:gap-2">
-                {metrics.map((metric, index) => (
+                {metrics.map((metric: string, index: number) => (
                   <Badge
                     key={index}
                     variant="secondary"
@@ -298,7 +319,7 @@ function ProjectCard({ project }: ProjectCardProps) {
 
         {/* Технологии - мобильная оптимизация */}
         <div className="flex flex-wrap gap-1.5 md:gap-2 mt-auto">
-          {technologies.slice(0, 6).map((tech, i) => (
+          {technologies.slice(0, 6).map((tech: { name: string; level: 'beginner' | 'intermediate' | 'advanced' | 'expert'; description?: string; projects?: number; }, i: number) => (
             <TechnologyBadge
               key={i}
               technology={tech.name}
