@@ -19,7 +19,7 @@
 
 ## Структура
 
-```
+```txt
 app/
   layout.tsx           — общий макет, ThemeProvider, метаданные
   page.tsx             — главная страница (все секции)
@@ -49,7 +49,7 @@ lib/
 
 Создайте `.env.local` и задайте:
 
-```
+```env
 # Базовый публичный URL (используется в sitemap/robots, OG)
 NEXT_PUBLIC_SITE_URL=https://youchoice.vercel.app
 
